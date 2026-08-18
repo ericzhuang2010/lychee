@@ -1,0 +1,30 @@
+=====================REVIEW FROM PLOS ONE=================
+
+The manuscript is a re-analysis of previously published data without
+providing substantial new biological insights.
+
+Absence of Experimental Validation (Wet-Lab).
+
+While the random-promoter background simulation is statistically
+interesting , identifying cis-elements (like ABRE or MeJA-responsive
+motifs) in a 2-kb upstream region is highly speculative without
+ChIP-seq data or dual-luciferase assays to prove these elements
+actually drive the observed expression.
+
+The interaction analysis was only applied to 18 selected genes rather
+than being conducted as a genome-wide interaction test, which
+introduces significant selection bias into the results.
+
+
+====================REVIEW FROM PLANTS=====================
+Reviewer 1 Feedback:
+
+The authors present a transcriptomic analysis and identify candidate genes and cis-regulatory elements in the lychee response to Peronophythora litchii. The authors used a straightforward and simple bioinformatics pipeline, and the presented experimental data does not provide an answer to the molecular mechanisms underlying the lychee response to P. litchii. The experimental evidence presented is insufficient to support the main conclusions, and the claims made are overly speculative. All differential expression results are based solely on the secondary analysis of public RNA-seq data and lack independent experimental validation. Further experiments are required to support the conclusions. The cultivar-by-treatment interaction analysis only calculated effect sizes (log2FC differences) and did not provide adjusted P-values or FDR correction. The introduction is too brief and lacks logical structure, which fails to highlight the necessity and innovation of the study. Much of the bioinformatics analysis appears to be included merely to generate data without meaningful purpose. For example, the analyses of chromosomal locations, gene structures, conserved motifs, and cis-regulatory elements are not justified by any demonstrated homology among the differentially expressed genes, making these analyses meaningless in the current context. The Discussion lacks a clear thematic argument or central thesis. Consequently, the logical flow is weak, and the broader implications of the findings are not effectively communicated. The study contains insufficient data and lacks the necessary experimental depth to robustly support its conclusions. Therefore, I recommend rejection. 
+
+Reviewer 2 Feedback:
+
+Manuscript plants-4325960, entitled “Transcriptomic Reanalysis Identifies Candidate Genes and Cis Regulatory Elements in the Lychee Response to Peronophythora litchii”, explored genes and regulatory features associated with early host responses. I have several questions regarding this manuscript. There are certain deviations in the material selection of this paper. Peronophythora litchii mainly infects and damages mature litchi fruits, flower panicles and young leaves. However, this study fails to specify the leaf inoculation method (mycelia, sporangia or zoospores) and the type of leaves selected. In addition, Peronophythora litchii can infect litchi without artificial wounding, which casts doubt on the reliability of subsequent results. This manuscript only conducts a simple analysis based on RNA-seq data without further detailed experimental verification. There are deficiencies in writing format, such as the lack of consistent italicization for the Latin name of Peronophythora litchii and non-compliance with standard keywords quantity requirements.
+
+
+
+
