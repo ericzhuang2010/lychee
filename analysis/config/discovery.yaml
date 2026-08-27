@@ -1,0 +1,71 @@
+{
+  "protocol_version": "1.0.0",
+  "random_seed": 20260718,
+  "discovery_study": "PRJNA830488",
+  "primary_model": "~ cultivar + treatment + cultivar:treatment",
+  "primary_coefficient": "infection effect in Yurong1 minus infection effect in Guiwei",
+  "factor_references": {
+    "cultivar": "Guiwei",
+    "treatment": "mock"
+  },
+  "primary_filter": {
+    "rule": "count >= 10 in at least 3 libraries",
+    "minimum_count": 10,
+    "minimum_libraries": 3
+  },
+  "sensitivity_filter": {
+    "rule": "CPM > 1 in at least 3 libraries",
+    "minimum_cpm": 1.0,
+    "minimum_libraries": 3
+  },
+  "gene_discovery": {
+    "bh_q_max": 0.05,
+    "absolute_log2fc_min": 0.5849625007211562,
+    "require_mappability_pass": true,
+    "require_unique_gene_model": true
+  },
+  "internal_robustness": {
+    "signed_statistic_spearman_min": 0.85,
+    "maximum_absolute_lfc_difference": 0.5,
+    "method_q_max": 0.10,
+    "leave_one_out_sign_required": 12,
+    "leave_one_out_q_max": 0.10,
+    "leave_one_out_q_required": 10
+  },
+  "external_gene_support": {
+    "bh_q_max": 0.05,
+    "absolute_log2fc_min": 0.5849625007211562,
+    "require_ci_excludes_zero": true,
+    "require_same_prespecified_direction": true
+  },
+  "pathway_collection": {
+    "name": "Plant Reactome current snapshot",
+    "source": "https://plantreactome.gramene.org/download/current/gene_ids_by_pathway_and_species.tab",
+    "snapshot_date": "2026-08-18",
+    "reference_species": "Oryza sativa",
+    "mapping": "one-to-one reciprocal-best DIAMOND protein hits, evalue <= 1e-5 and bidirectional coverage >= 70%",
+    "minimum_size": 10,
+    "maximum_size": 500,
+    "primary_method": "fgseaMultilevel",
+    "external_method": "camera"
+  },
+  "pathway_support": {
+    "bh_q_max": 0.05,
+    "independent_studies_required": 2,
+    "leading_edge_deletion_q_max": 0.10,
+    "matched_random_sets": 1000,
+    "matched_random_percentile_min": 0.95
+  },
+  "dtu_gate": {
+    "minimum_expressed_isoforms": 2,
+    "minimum_genes_with_multiple_isoforms": 1000,
+    "minimum_salmon_mapping_rate": 0.60,
+    "ofdr_max": 0.05
+  },
+  "fallback": "If no gene passes the locked q/effect/mappability rule, freeze an empty gene signature and test only the prespecified pathway-level signature; never substitute a top-N list.",
+  "sample_exclusion": "No sample exclusion is allowed for biological appearance. Exclude only a preregistered technical failure: failed FASTQ integrity, fewer than 10 million surviving read pairs, less than 40% uniquely mapped reads, irreconcilable sample identity, or model-breaking technical duplication. Preserve all-sample sensitivity results.",
+  "gse262200_role": "exploratory",
+  "headline_rule": "discovered AND robust AND cross-context-supported in PRJNA450886 AND mapping/annotation pass AND at least one orthogonal evidence class",
+  "allow_zero_headline_candidates": true
+}
+

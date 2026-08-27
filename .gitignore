@@ -1,28 +1,53 @@
 # Large or reproducible inputs
 /data/
-data/active_discovery/
-data/active_external/
-data/active_holdout/
-data/reference/combined/
-data/reference/indexes/
-data/reference/host/*.fa
-data/reference/host/*.fasta
-data/reference/host/*.gff3
-data/reference/host/*.gtf
-data/reference/host/*.cds
-data/reference/host/*.pep
-data/reference/pathogen/*.fa
-data/reference/pathogen/*.fasta
-data/reference/pathways/*.fasta.gz
-data/reference/pathways/*.fa
-data/reference/pathways/*.fasta
-data/reference/pathways/*.headers
-data/reference/pathways/diamond/
-data/reference/pathways/diamond_UP000059680/
-data/reference/mappability/*.bed
-data/reference/mappability/*.bedgraph
+# data/active_discovery/
+# data/active_external/
+# data/active_holdout/
+# data/reference/combined/
+# data/reference/indexes/
+# data/reference/host/*.fa
+# data/reference/host/*.fasta
+# data/reference/host/*.gff3
+# data/reference/host/*.gtf
+# data/reference/host/*.cds
+# data/reference/host/*.pep
+# data/reference/pathogen/*.fa
+# data/reference/pathogen/*.fasta
+# data/reference/pathways/*.fasta.gz
+# data/reference/pathways/*.fa
+# data/reference/pathways/*.fasta
+# data/reference/pathways/*.headers
+# data/reference/pathways/diamond/
+# data/reference/pathways/diamond_UP000059680/
+# data/reference/mappability/*.bed
+# data/reference/mappability/*.bedgraph
 
-analysis/
+# Paper-relevant analysis source and reproducibility metadata.
+# Keep runtime logs, downloaded environments, caches, and recovery artifacts local.
+/analysis/*
+!/analysis/config/
+!/analysis/config/**
+!/analysis/workflow/
+!/analysis/workflow/**
+!/analysis/metadata/
+!/analysis/metadata/**
+!/analysis/scripts/
+!/analysis/scripts/**
+!/analysis/preregistration/
+!/analysis/preregistration/**
+!/analysis/tests/
+!/analysis/tests/**
+!/analysis/envs/
+/analysis/envs/*
+!/analysis/envs/*.yml
+!/analysis/envs/*.yaml
+!/analysis/envs/*.lock
+!/analysis/envs/*.R
+!/analysis/envs/sources/
+/analysis/envs/sources/*
+!/analysis/envs/sources/README.md
+!/analysis/envs/sources/source_packages.sha256
+/analysis/logs/
 
 # Local environments and workflow state
 .conda/
@@ -30,15 +55,37 @@ analysis/
 .snakemake/
 .Rhistory
 
-# Large intermediate results
-results/alignment/
-results/quantification/
-results/qc/raw/
-results/qc/trimmed/
-results/qc/multiqc_data/
+# Paper-facing results only. Everything else under results is a reproducible
+# intermediate and remains local (alignments, quantification, QC payloads,
+# discovery working files, external-study matrices, and evidence workspaces).
+/results/*
+!/results/figures/
+!/results/figures/**
+!/results/tables/
+!/results/tables/**
+!/results/supplement/
+!/results/supplement/**
+!/results/candidates/
+!/results/candidates/**
+!/results/release/
+!/results/release/**
+!/results/validation/
+!/results/validation/**
+
+# The original-paper candidate audit is needed when revising the manuscript.
+!/results/discovery/
+/results/discovery/*
+!/results/discovery/primary/
+/results/discovery/primary/*
+!/results/discovery/primary/legacy_18_audit.tsv
+
+# Project sync policy excludes files at or above 100,000,000 bytes.
+# This machine-readable supplement remains local; its compact conclusions are in the paper tables.
+/results/supplement/S10_motif_background_tests.tsv
 
 # Temporary/editor artifacts
 __pycache__/
 *.pyc
+*.orig
 *.tmp
 *.swp

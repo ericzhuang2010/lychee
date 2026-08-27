@@ -1,0 +1,16 @@
+{
+  "cores": 16,
+  "alignment_slots": 1,
+  "star_threads": 12,
+  "star_sort_ram_bytes": 4000000000,
+  "fastp_threads": 8,
+  "minimum_free_bytes_before_study": 161061273600,
+  "active_study": "PRJNA830488",
+  "retain_bam": false,
+  "retain_trimmed_fastq": false,
+  "external_unlock_required": true,
+  "discovery_protocol": "analysis/config/discovery.yaml",
+  "host_accession": "GCA_019925255.1",
+  "host_bundle": "Mendeley 10.17632/kggzfwpdr9.1 monoploid chromosome assembly",
+  "pathogen_accession": "GWHAOTU00000000"
+}

@@ -1,3 +1,0 @@
-sample_id	run	mate	path	bytes	expected_md5	observed_md5	status
-SFZ_Mock2	SRR28413512	1	data/active_external/PRJNA1090613/fastq/SFZ_Mock2_R1.fastq.gz	1463995550	8eb6c87281978d5bbeb5a746ac35d4e0	8eb6c87281978d5bbeb5a746ac35d4e0	DOWNLOADED
-SFZ_Mock2	SRR28413512	2	data/active_external/PRJNA1090613/fastq/SFZ_Mock2_R2.fastq.gz	1491693928	6aabcfbabf3617b8874cc619c68f6499	6aabcfbabf3617b8874cc619c68f6499	DOWNLOADED

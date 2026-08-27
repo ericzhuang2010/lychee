@@ -1,0 +1,117 @@
+{
+  "version": "1.0.0",
+  "frozen_at": "2026-08-18T23:22:12-04:00",
+  "outcomes_viewed": false,
+  "annotation": {
+    "representative_protein": "longest CDS; ties use lexicographically smallest transcript ID",
+    "reviewed_reference": "UniProtKB/Swiss-Prot release 2026_02",
+    "reviewed_reference_sha256": "b774748a050fd3de0bf2ad49b359ed59a2c2b02c89df3fe0679fafa446751794",
+    "minimum_query_coverage": 0.70,
+    "evidence_classes": [
+      "reviewed Swiss-Prot DIAMOND match",
+      "InterPro/Pfam architecture",
+      "one-to-one reciprocal-best Oryza ortholog"
+    ],
+    "high_confidence_minimum_classes": 2,
+    "require_no_conflicting_architecture": true,
+    "otherwise_report": "family-level function",
+    "interpro_route": "targeted EBI InterPro Matches API by sequence MD5; submit unmatched sequences to EBI InterProScan only",
+    "maximum_targeted_sequences_per_request": 100
+  },
+  "small_rna": {
+    "study": "PRJNA922965",
+    "geo_series": "GSE222650",
+    "matched_mrna_study": "PRJNA922966",
+    "matched_mrna_geo_series": "GSE222651",
+    "pairing_status": "design matched by cultivar, tissue, treatment, time, and replicate label; zero shared BioSample accessions",
+    "allowed_claim": "condition-level orthogonal regulatory coherence",
+    "forbidden_claim": "specimen-level pairing or target validation",
+    "adapter_3prime": "TGGAATTCTCGGGTGCCAAGG",
+    "minimum_length": 18,
+    "maximum_length": 30,
+    "minimum_count": 10,
+    "minimum_count_samples": 3,
+    "model": "~ tissue + treatment + tissue:treatment",
+    "contrasts": [
+      "fruit infection effect: treatmentinfected",
+      "leaf infection effect: treatmentinfected + tissueleaf:treatmentinfected"
+    ],
+    "mirna_bh_q_max": 0.05,
+    "mrna_bh_q_max": 0.05,
+    "require_opposite_direction": true,
+    "required_target_prediction_tools": ["psRNATarget", "sPARTA"],
+    "known_mirna_reference": "PmiREN litchi mature sequences; record release and checksum at acquisition",
+    "quantification": "exact mature-sequence counts after adapter trimming; multi-mappers divided equally",
+    "novel_mirna_role": "exploratory only"
+  },
+  "motifs": {
+    "reference": "JASPAR 2026 CORE Plants non-redundant MEME",
+    "reference_sha256": "7cbcc251837fa59ad10af60ed309cdf3af7694921ec9f9d9cb37ced2338bd6f6",
+    "promoter_windows_bp": [1000, 2000],
+    "anchor": "canonical-transcript strand-aware transcription start site; clip at contig bounds",
+    "minimum_frozen_genes": 3,
+    "matched_background_sets": 100,
+    "background_size": "same number of genes as the frozen candidate set",
+    "background_exclusions": ["frozen genes", "genes failing uniform mappability", "promoters with less than 80% non-N sequence"],
+    "background_matching": ["mean normalized expression quintile", "promoter GC quintile"],
+    "insufficient_pool_rule": "choose unused genes with minimum Manhattan quintile distance; break ties by seeded random order",
+    "seed": 20260718,
+    "primary_known_motif_test": "AME one-tailed Fisher enrichment with totalhits scoring and hit-lo-fraction 0.25 against each matched background",
+    "ame_evalue_report_threshold": 1000000,
+    "site_presence_sensitivity": "FIMO p<1e-4 followed by per-replicate one-tailed Fisher exact odds ratio and BH correction across fixed JASPAR motifs",
+    "fimo_p_threshold": 0.0001,
+    "de_novo_method": "STREME once per promoter window against the union of matched backgrounds; compare to fixed JASPAR motifs with TOMTOM",
+    "de_novo_role": "candidate motifs only",
+    "streme_min_width": 6,
+    "streme_max_width": 20,
+    "streme_max_motifs": 10,
+    "streme_p_threshold": 0.05,
+    "tomtom_q_threshold": 0.05,
+    "replicate_bh_q_max": 0.05,
+    "minimum_odds_ratio": 1.5,
+    "minimum_passing_backgrounds": 80,
+    "require_both_windows_same_direction": true,
+    "require_cognate_tf_family_expressed": true,
+    "cognate_tf_mapping": "one-to-one reciprocal protein hits from JASPAR TF accessions to litchi; every component of a :: composite motif must map and be expressed",
+    "tf_expression_rule": "median normalized count >=10 in at least one discovery cultivar-treatment group",
+    "tf_median_normalized_count_min": 10,
+    "external_test": "test frozen PWMs in independently derived external response sets without rediscovery or retuning",
+    "external_transport": {
+      "study": "PRJNA450886",
+      "contrast": "primary_24h",
+      "response_gene_filter": "genome-wide BH q<0.05 and absolute log2 fold change >=log2(1.5)",
+      "response_gene_bh_q_max": 0.05,
+      "response_gene_absolute_log2fc_min": 0.5849625007211562,
+      "minimum_response_genes": 3,
+      "background_matching": "same 100 expression-and-GC matched sets and 1-kb/2-kb promoter implementation as discovery",
+      "fixed_motif_set": "discovery motifs labeled ROBUST_CANDIDATE_MOTIF only",
+      "primary_test": "AME one-tailed Fisher enrichment with totalhits scoring and hit-lo-fraction 0.25",
+      "transport_acceptance": "q<0.05 and OR>=1.5 in >=80/100 backgrounds in both promoter windows",
+      "fimo_role": "site-presence sensitivity only",
+      "streme_or_other_rediscovery": false,
+      "failed_or_empty_rule": "emit not_testable or unsupported without substituting motifs or response genes"
+    }
+  },
+  "published_evidence": {
+    "required_fields": [
+      "DOI", "gene_or_pathway", "species_or_cultivar", "biological_material",
+      "accession_overlap", "evidence_modality", "independent_of_current_datasets",
+      "exact_support", "limitation"
+    ],
+    "same_accession_rule": "prior interpretation, not independent validation"
+  },
+  "tiers": {
+    "allow_zero_tier_a": true,
+    "tier_a_gene": "discovered AND internal robustness PASS AND PRJNA450886 cross_context_supported AND no mapping/annotation failure AND at least one orthogonal evidence class",
+    "tier_b_gene": "discovered AND internal robustness PASS AND external support partial or not_testable AND no mapping/annotation failure",
+    "tier_c_pathway": "frozen pathway AND internal pathway robustness PASS AND PRJNA450886 cross_context_supported, without a qualifying gene-level candidate",
+    "exploratory": "post hoc, incomplete, discovery-only without robustness, or evidence from PRJNA1090613/GSE262200 only",
+    "retired": "contradictory external direction, severe mapping bias, or annotation failure",
+    "orthogonal_classes": [
+      "high-confidence annotation",
+      "condition-level miRNA-mRNA coherence",
+      "robust motif with external transport",
+      "independent published evidence"
+    ]
+  }
+}

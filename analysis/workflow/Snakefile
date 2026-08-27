@@ -1,0 +1,835 @@
+configfile: "analysis/config/release.yaml"
+
+import csv
+from pathlib import Path
+
+
+SAMPLE_TABLE = "analysis/metadata/PRJNA830488_samples.tsv"
+with open(SAMPLE_TABLE) as handle:
+    SAMPLE_ROWS = list(csv.DictReader(handle, delimiter="\t"))
+
+SAMPLES = [row["sample_id"] for row in SAMPLE_ROWS]
+ROW = {row["sample_id"]: row for row in SAMPLE_ROWS}
+RUN = {sample: ROW[sample]["run"] for sample in SAMPLES}
+RAW_DIR = "data/active_discovery/PRJNA830488/fastq"
+TRIM_DIR = "data/active_discovery/PRJNA830488/trimmed"
+ALIGN_DIR = "results/alignment/PRJNA830488"
+SALMON_DIR = "results/quantification/PRJNA830488/salmon"
+QC_DIR = "results/qc/PRJNA830488"
+PATHWAY_GMT = "data/reference/pathways/frozen_plant_reactome_UP000059680/plant_reactome_litchi.gmt"
+GENE_QC = f"{QC_DIR}/uniform_gene_mappability.tsv"
+RAW_FASTQS = [
+    f"{RAW_DIR}/{RUN[sample]}_{mate}.fastq.gz"
+    for sample in SAMPLES
+    for mate in (1, 2)
+]
+
+
+rule all:
+    input:
+        "results/quantification/PRJNA830488/gene_counts.tsv",
+        "results/quantification/PRJNA830488/discovery_matrix.sha256",
+        "results/audit/PRJNA830488_technical_qc.tsv",
+        "results/audit/PRJNA830488_sample_decisions.tsv",
+        f"{QC_DIR}/multiqc_report.html",
+        expand(f"{SALMON_DIR}/{{sample}}/quant.sf", sample=SAMPLES),
+        "results/discovery/frozen_results.sha256",
+        "results/discovery/external_outcomes_unlock_timestamp.txt",
+        "results/robustness/genes/frozen_gene_robustness.tsv",
+        "results/robustness/pathways/frozen_pathway_robustness.tsv",
+        "results/robustness/internal_results.sha256",
+        "results/evidence/annotation/candidate_annotation_evidence.tsv",
+        "results/evidence/annotation/annotation_results.sha256",
+        "results/evidence/annotation/interpro_candidate_summary.tsv",
+        "results/evidence/annotation/interpro_results.sha256",
+        "results/evidence/annotation/final_candidate_annotations.tsv",
+        "results/evidence/annotation/final_annotation.sha256",
+        "results/evidence/motifs/results/motif_results.sha256",
+        "results/evidence/small_rna/reference/small_rna_reference.sha256",
+        "results/evidence/published/published_evidence.sha256",
+
+
+rule download_discovery_fastq:
+    output:
+        marker=f"{RAW_DIR}/.download_complete",
+        report="results/audit/PRJNA830488_fastq_download.tsv",
+        fastqs=RAW_FASTQS,
+    threads: 1
+    resources:
+        mem_mb=1000
+    shell:
+        """
+        python analysis/scripts/04_download_fastq.py \
+          --samples {SAMPLE_TABLE} \
+          --outdir {RAW_DIR} \
+          --report {output.report} \
+          --minimum-free-bytes {config[minimum_free_bytes_before_study]} \
+          --connections 4
+        """
+
+
+rule prepare_reference:
+    input:
+        host="data/reference/host/Lchinesis_genome.Chr.fasta.gz",
+        gff="data/reference/host/Lchinesis_genome.Chr.gff3.gz",
+        cds="data/reference/host/Lchinesis_genome.Chr.cds.gz",
+        protein="data/reference/host/Lchinesis_genome.Chr.pep.gz",
+        pathogen="data/reference/pathogen/GWHAOTU00000000.genome.fasta.gz",
+    output:
+        genome="data/reference/combined/host_pathogen.fa",
+        gtf="data/reference/combined/host.annotation.gtf",
+        transcripts="data/reference/combined/host.transcripts.fa",
+        tx2gene="data/reference/combined/transcript_to_gene.tsv",
+        canonical="data/reference/combined/canonical_transcripts.tsv",
+        qc="data/reference/combined/reference_qc.tsv",
+        checksums="data/reference/combined/reference_checksums.sha256",
+    threads: 1
+    resources:
+        mem_mb=3000
+    shell:
+        "python analysis/scripts/02_prepare_reference.py"
+
+
+rule combined_genome_faidx:
+    input:
+        genome=rules.prepare_reference.output.genome,
+    output:
+        "data/reference/combined/host_pathogen.fa.fai"
+    threads: 1
+    resources:
+        mem_mb=1000
+    shell:
+        "samtools faidx {input.genome}"
+
+
+rule star_index:
+    input:
+        genome=rules.prepare_reference.output.genome,
+        gtf=rules.prepare_reference.output.gtf,
+    output:
+        genome="data/reference/indexes/star/Genome",
+        sa="data/reference/indexes/star/SA",
+        saindex="data/reference/indexes/star/SAindex",
+    threads: config["star_threads"]
+    resources:
+        mem_mb=14000,
+        alignment_slots=1
+    shell:
+        """
+        mkdir -p data/reference/indexes/star
+        STAR --runThreadN {threads} \
+          --runMode genomeGenerate \
+          --genomeDir data/reference/indexes/star \
+          --genomeFastaFiles {input.genome} \
+          --sjdbGTFfile {input.gtf} \
+          --sjdbOverhang 149 \
+          --genomeSAindexNbases 13 \
+          --limitGenomeGenerateRAM 14000000000
+        """
+
+
+rule salmon_gentrome:
+    input:
+        transcripts=rules.prepare_reference.output.transcripts,
+        genome=rules.prepare_reference.output.genome,
+    output:
+        gentrome="data/reference/indexes/salmon/gentrome.fa",
+        decoys="data/reference/indexes/salmon/decoys.txt",
+    threads: 1
+    resources:
+        mem_mb=3000
+    shell:
+        """
+        python analysis/scripts/05_build_salmon_reference.py \
+          --transcripts {input.transcripts} \
+          --genome {input.genome} \
+          --gentrome {output.gentrome} \
+          --decoys {output.decoys}
+        """
+
+
+rule salmon_index:
+    input:
+        gentrome=rules.salmon_gentrome.output.gentrome,
+        decoys=rules.salmon_gentrome.output.decoys,
+    output:
+        "data/reference/indexes/salmon/index/info.json"
+    threads: 8
+    resources:
+        mem_mb=8000
+    shell:
+        """
+        salmon index -t {input.gentrome} -d {input.decoys} \
+          -i data/reference/indexes/salmon/index -k 31 -p {threads}
+        """
+
+
+rule raw_fastqc:
+    input:
+        r1=lambda wildcards: f"{RAW_DIR}/{RUN[wildcards.sample]}_1.fastq.gz",
+        r2=lambda wildcards: f"{RAW_DIR}/{RUN[wildcards.sample]}_2.fastq.gz",
+    output:
+        html1=f"{QC_DIR}/raw/{{sample}}_R1_fastqc.html",
+        zip1=f"{QC_DIR}/raw/{{sample}}_R1_fastqc.zip",
+        html2=f"{QC_DIR}/raw/{{sample}}_R2_fastqc.html",
+        zip2=f"{QC_DIR}/raw/{{sample}}_R2_fastqc.zip",
+    params:
+        run=lambda wildcards: RUN[wildcards.sample],
+    threads: 2
+    resources:
+        mem_mb=2000
+    shell:
+        """
+        mkdir -p {QC_DIR}/raw
+        fastqc -t {threads} -o {QC_DIR}/raw {input.r1} {input.r2}
+        mv {QC_DIR}/raw/{params.run}_1_fastqc.html {output.html1}
+        mv {QC_DIR}/raw/{params.run}_1_fastqc.zip {output.zip1}
+        mv {QC_DIR}/raw/{params.run}_2_fastqc.html {output.html2}
+        mv {QC_DIR}/raw/{params.run}_2_fastqc.zip {output.zip2}
+        """
+
+
+rule fastp:
+    input:
+        r1=lambda wildcards: f"{RAW_DIR}/{RUN[wildcards.sample]}_1.fastq.gz",
+        r2=lambda wildcards: f"{RAW_DIR}/{RUN[wildcards.sample]}_2.fastq.gz",
+    output:
+        r1=f"{TRIM_DIR}/{{sample}}_R1.fastq.gz",
+        r2=f"{TRIM_DIR}/{{sample}}_R2.fastq.gz",
+        json=f"{QC_DIR}/fastp/{{sample}}.json",
+        html=f"{QC_DIR}/fastp/{{sample}}.html",
+    threads: config["fastp_threads"]
+    resources:
+        mem_mb=4000
+    shell:
+        """
+        mkdir -p {TRIM_DIR} {QC_DIR}/fastp
+        fastp --thread {threads} --detect_adapter_for_pe \
+          --qualified_quality_phred 15 --length_required 30 \
+          --in1 {input.r1} --in2 {input.r2} \
+          --out1 {output.r1} --out2 {output.r2} \
+          --json {output.json} --html {output.html}
+        """
+
+
+rule trimmed_fastqc:
+    input:
+        r1=rules.fastp.output.r1,
+        r2=rules.fastp.output.r2,
+    output:
+        html1=f"{QC_DIR}/trimmed/{{sample}}_R1_fastqc.html",
+        zip1=f"{QC_DIR}/trimmed/{{sample}}_R1_fastqc.zip",
+        html2=f"{QC_DIR}/trimmed/{{sample}}_R2_fastqc.html",
+        zip2=f"{QC_DIR}/trimmed/{{sample}}_R2_fastqc.zip",
+    threads: 2
+    resources:
+        mem_mb=2000
+    shell:
+        "mkdir -p {QC_DIR}/trimmed && fastqc -t {threads} -o {QC_DIR}/trimmed {input.r1} {input.r2}"
+
+
+rule star_align:
+    input:
+        r1=rules.fastp.output.r1,
+        r2=rules.fastp.output.r2,
+        genome=rules.star_index.output.genome,
+        sa=rules.star_index.output.sa,
+        saindex=rules.star_index.output.saindex,
+    output:
+        bam=f"{ALIGN_DIR}/{{sample}}/Aligned.sortedByCoord.out.bam",
+        bai=f"{ALIGN_DIR}/{{sample}}/Aligned.sortedByCoord.out.bam.bai",
+        log=f"{ALIGN_DIR}/{{sample}}/Log.final.out",
+        gene_counts=f"{ALIGN_DIR}/{{sample}}/ReadsPerGene.out.tab",
+        idxstats=f"{ALIGN_DIR}/{{sample}}/idxstats.tsv",
+    threads: config["star_threads"]
+    resources:
+        mem_mb=14000,
+        alignment_slots=1
+    shell:
+        """
+        mkdir -p {ALIGN_DIR}/{wildcards.sample}
+        STAR --runThreadN {threads} --genomeDir data/reference/indexes/star \
+          --readFilesIn {input.r1} {input.r2} --readFilesCommand zcat \
+          --twopassMode Basic --outFileNamePrefix {ALIGN_DIR}/{wildcards.sample}/ \
+          --outSAMtype BAM SortedByCoordinate \
+          --outSAMattributes NH HI AS nM MD \
+          --outSAMunmapped Within --quantMode GeneCounts \
+          --outFilterMultimapNmax 20 --outFilterMismatchNoverReadLmax 0.04 \
+          --limitBAMsortRAM {config[star_sort_ram_bytes]}
+        samtools index -@ {threads} {output.bam}
+        samtools idxstats {output.bam} > {output.idxstats}
+        """
+
+
+rule featurecounts:
+    input:
+        bams=expand(f"{ALIGN_DIR}/{{sample}}/Aligned.sortedByCoord.out.bam", sample=SAMPLES),
+        gtf=rules.prepare_reference.output.gtf,
+    output:
+        counts="results/quantification/PRJNA830488/featureCounts.txt",
+        summary="results/quantification/PRJNA830488/featureCounts.txt.summary",
+    threads: 8
+    resources:
+        mem_mb=8000
+    shell:
+        """
+        mkdir -p results/quantification/PRJNA830488
+        featureCounts -T {threads} -p --countReadPairs -B -C -s 0 \
+          -t exon -g gene_id -a {input.gtf} -o {output.counts} {input.bams}
+        """
+
+
+rule merge_featurecounts:
+    input:
+        counts=rules.featurecounts.output.counts,
+        samples=SAMPLE_TABLE,
+    output:
+        counts="results/quantification/PRJNA830488/gene_counts.tsv",
+        annotation="results/quantification/PRJNA830488/gene_annotation.tsv",
+    threads: 1
+    resources:
+        mem_mb=3000
+    shell:
+        """
+        python analysis/scripts/06_merge_featurecounts.py \
+          --featurecounts {input.counts} --samples {input.samples} \
+          --counts {output.counts} --annotation {output.annotation}
+        """
+
+
+rule salmon_quant:
+    input:
+        r1=rules.fastp.output.r1,
+        r2=rules.fastp.output.r2,
+        index=rules.salmon_index.output,
+        tx2gene=rules.prepare_reference.output.tx2gene,
+    output:
+        quant=f"{SALMON_DIR}/{{sample}}/quant.sf",
+        meta=f"{SALMON_DIR}/{{sample}}/aux_info/meta_info.json",
+    threads: 8
+    resources:
+        mem_mb=6000
+    shell:
+        """
+        salmon quant -i data/reference/indexes/salmon/index -l A \
+          -1 {input.r1} -2 {input.r2} -p {threads} \
+          --geneMap {input.tx2gene} --deterministic \
+          --seqBias --gcBias --numBootstraps 30 \
+          -o {SALMON_DIR}/{wildcards.sample}
+        """
+
+
+rule collect_discovery_qc:
+    input:
+        fastp=expand(f"{QC_DIR}/fastp/{{sample}}.json", sample=SAMPLES),
+        star=expand(f"{ALIGN_DIR}/{{sample}}/Log.final.out", sample=SAMPLES),
+        idxstats=expand(f"{ALIGN_DIR}/{{sample}}/idxstats.tsv", sample=SAMPLES),
+        salmon=expand(f"{SALMON_DIR}/{{sample}}/aux_info/meta_info.json", sample=SAMPLES),
+    output:
+        report="results/audit/PRJNA830488_technical_qc.tsv",
+        decisions="results/audit/PRJNA830488_sample_decisions.tsv",
+    threads: 1
+    resources:
+        mem_mb=1000
+    shell:
+        """
+        python analysis/scripts/07_collect_discovery_qc.py \
+          --samples {SAMPLE_TABLE} --qc-root {QC_DIR} \
+          --alignment-root {ALIGN_DIR} --salmon-root {SALMON_DIR} \
+          --report {output.report} --decisions {output.decisions}
+        """
+
+
+rule multiqc:
+    input:
+        raw=expand(f"{QC_DIR}/raw/{{sample}}_R{{mate}}_fastqc.zip", sample=SAMPLES, mate=[1, 2]),
+        trimmed=expand(f"{QC_DIR}/trimmed/{{sample}}_R{{mate}}_fastqc.zip", sample=SAMPLES, mate=[1, 2]),
+        fastp=expand(f"{QC_DIR}/fastp/{{sample}}.json", sample=SAMPLES),
+        star=expand(f"{ALIGN_DIR}/{{sample}}/Log.final.out", sample=SAMPLES),
+        salmon=expand(f"{SALMON_DIR}/{{sample}}/aux_info/meta_info.json", sample=SAMPLES),
+        featurecounts=rules.featurecounts.output.summary,
+    output:
+        html=f"{QC_DIR}/multiqc_report.html",
+        data=directory(f"{QC_DIR}/multiqc_data"),
+    threads: 2
+    resources:
+        mem_mb=3000
+    shell:
+        "multiqc -f -o {QC_DIR} {QC_DIR} {ALIGN_DIR} {SALMON_DIR} results/quantification/PRJNA830488"
+
+
+rule freeze_matrix:
+    input:
+        counts=rules.merge_featurecounts.output.counts,
+        annotation=rules.merge_featurecounts.output.annotation,
+        metadata=SAMPLE_TABLE,
+        qc=rules.collect_discovery_qc.output.report,
+        decisions=rules.collect_discovery_qc.output.decisions,
+    output:
+        "results/quantification/PRJNA830488/discovery_matrix.sha256"
+    threads: 1
+    resources:
+        mem_mb=500
+    shell:
+        "sha256sum {input.counts} {input.annotation} {input.metadata} {input.qc} {input.decisions} > {output}"
+
+
+rule mappability_selection:
+    input:
+        gtf=rules.prepare_reference.output.gtf,
+    output:
+        bed="data/reference/mappability/host_exons.union.bed",
+        report="results/audit/mappability_selection.tsv",
+    threads: 1
+    resources:
+        mem_mb=2000
+    shell:
+        """
+        python analysis/scripts/15_write_mappability_selection.py \
+          --gtf {input.gtf} --output {output.bed} --report {output.report}
+        """
+
+
+rule genmap_index:
+    input:
+        genome=rules.prepare_reference.output.genome,
+    output:
+        directory("data/reference/indexes/genmap/combined")
+    threads: 4
+    resources:
+        mem_mb=6000
+    shell:
+        """
+        mkdir -p data/reference/indexes/genmap
+        genmap index -F {input.genome} -I {output} \
+          -A divsufsort -S 10 -v --version-check false
+        """
+
+
+rule genmap_host_exons:
+    input:
+        index=rules.genmap_index.output,
+        selection=rules.mappability_selection.output.bed,
+    output:
+        "data/reference/mappability/combined_host_exons.bedgraph"
+    threads: 8
+    resources:
+        mem_mb=8000
+    shell:
+        """
+        genmap map -I {input.index} \
+          -O data/reference/mappability/combined_host_exons \
+          -K 100 -E 2 -S {input.selection} -bg -m -T {threads} -v \
+          --version-check false
+        """
+
+
+rule uniform_gene_mappability:
+    input:
+        gtf=rules.prepare_reference.output.gtf,
+        bedgraph=rules.genmap_host_exons.output,
+        selection=rules.mappability_selection.output.bed,
+        index=rules.genmap_index.output,
+        config="analysis/config/operational_qc.yaml",
+    output:
+        qc=GENE_QC,
+        manifest="data/reference/mappability/mappability_bundle.sha256",
+    threads: 1
+    resources:
+        mem_mb=3000
+    shell:
+        """
+        python analysis/scripts/10_gene_mappability.py \
+          --gtf {input.gtf} --bedgraph {input.bedgraph} \
+          --config {input.config} --output {output.qc} \
+          --selection {input.selection} --index-dir {input.index} \
+          --checksum-manifest {output.manifest}
+        sha256sum -c {output.manifest}
+        """
+
+
+rule primary_discovery:
+    input:
+        counts=rules.merge_featurecounts.output.counts,
+        metadata=SAMPLE_TABLE,
+        decisions=rules.collect_discovery_qc.output.decisions,
+        frozen_matrix=rules.freeze_matrix.output,
+        config="analysis/config/discovery.yaml",
+        legacy="analysis/config/legacy_18.tsv",
+    output:
+        genes="results/discovery/primary/all_genes_primary.tsv",
+        candidates="results/discovery/primary/statistical_candidates.tsv",
+        lrt="results/discovery/primary/interaction_lrt.tsv",
+        normalized="results/discovery/primary/normalized_counts.tsv",
+        summary="results/discovery/primary/statistical_summary.md",
+    threads: 4
+    resources:
+        mem_mb=12000
+    shell:
+        """
+        Rscript analysis/scripts/08_primary_discovery.R \
+          --counts {input.counts} --metadata {input.metadata} \
+          --decisions {input.decisions} --config {input.config} \
+          --legacy {input.legacy} --outdir results/discovery/primary
+        """
+
+
+rule primary_pathways:
+    input:
+        genes=rules.primary_discovery.output.genes,
+        gmt=PATHWAY_GMT,
+        config="analysis/config/discovery.yaml",
+        operational="analysis/config/operational_qc.yaml",
+    output:
+        all="results/discovery/primary_pathways/all_pathways_primary.tsv",
+        frozen="results/discovery/primary_pathways/frozen_pathways.tsv",
+        long="results/discovery/primary_pathways/frozen_pathway_gene_statistics.tsv",
+        summary="results/discovery/primary_pathways/pathway_summary.md",
+    threads: 2
+    resources:
+        mem_mb=4000
+    shell:
+        """
+        Rscript analysis/scripts/09_primary_pathways.R \
+          --genes {input.genes} --gmt {input.gmt} --config {input.config} \
+          --operational-config {input.operational} \
+          --outdir results/discovery/primary_pathways
+        """
+
+
+rule conditional_dtu:
+    input:
+        quant=expand(f"{SALMON_DIR}/{{sample}}/quant.sf", sample=SAMPLES),
+        meta=expand(f"{SALMON_DIR}/{{sample}}/aux_info/meta_info.json", sample=SAMPLES),
+        metadata=SAMPLE_TABLE,
+        decisions=rules.collect_discovery_qc.output.decisions,
+        tx2gene=rules.prepare_reference.output.tx2gene,
+        duplicates="data/reference/indexes/salmon/index/duplicate_clusters.tsv",
+        config="analysis/config/discovery.yaml",
+        operational="analysis/config/operational_qc.yaml",
+    output:
+        gate="results/discovery/dtu/dtu_gate.tsv",
+        nontranscript="results/discovery/dtu/salmon_nontranscript_targets.tsv",
+        all="results/discovery/dtu/all_dtu_results.tsv",
+        frozen="results/discovery/dtu/frozen_dtu_input.tsv",
+        summary="results/discovery/dtu/dtu_summary.md",
+    threads: 4
+    resources:
+        mem_mb=14000
+    shell:
+        """
+        Rscript analysis/scripts/14_conditional_dtu.R \
+          --metadata {input.metadata} --decisions {input.decisions} \
+          --salmon-root {SALMON_DIR} --tx2gene {input.tx2gene} \
+          --duplicate-clusters {input.duplicates} --config {input.config} \
+          --operational-config {input.operational} \
+          --outdir results/discovery/dtu
+        """
+
+
+rule freeze_discovery:
+    input:
+        genes=rules.primary_discovery.output.genes,
+        gene_qc=rules.uniform_gene_mappability.output.qc,
+        pathways=rules.primary_pathways.output.frozen,
+        pathway_genes=rules.primary_pathways.output.long,
+        dtu=rules.conditional_dtu.output.frozen,
+        config="analysis/config/discovery.yaml",
+    output:
+        genes="results/discovery/frozen_genes.tsv",
+        pathways="results/discovery/frozen_pathways.tsv",
+        pathway_genes="results/discovery/frozen_pathway_gene_statistics.tsv",
+        signature="results/discovery/frozen_signature.tsv",
+        dtu="results/discovery/frozen_dtu.tsv",
+        checksums="results/discovery/frozen_results.sha256",
+        unlock="results/discovery/external_outcomes_unlock_timestamp.txt",
+        summary="results/discovery/discovery_summary.md",
+    threads: 1
+    resources:
+        mem_mb=4000
+    shell:
+        """
+        Rscript analysis/scripts/11_freeze_discovery.R \
+          --genes {input.genes} --gene-qc {input.gene_qc} \
+          --pathways {input.pathways} --pathway-genes {input.pathway_genes} \
+          --dtu {input.dtu} --config {input.config} \
+          --outdir results/discovery
+        """
+
+
+rule candidate_mapping_sensitivity:
+    input:
+        frozen=rules.freeze_discovery.output.genes,
+        gtf=rules.prepare_reference.output.gtf,
+        metadata=SAMPLE_TABLE,
+        bams=expand(f"{ALIGN_DIR}/{{sample}}/Aligned.sortedByCoord.out.bam", sample=SAMPLES),
+        config="analysis/config/operational_qc.yaml",
+    output:
+        summary="results/robustness/mapping/candidate_mapping_sensitivity.tsv",
+        per_sample="results/robustness/mapping/candidate_mapping_per_sample.tsv",
+        bed="results/robustness/mapping/candidate_exons.bed",
+    threads: 2
+    resources:
+        mem_mb=4000
+    shell:
+        """
+        python analysis/scripts/16_candidate_mapping_sensitivity.py \
+          --frozen-genes {input.frozen} --gtf {input.gtf} \
+          --metadata {input.metadata} --bam-root {ALIGN_DIR} \
+          --config {input.config} --outdir results/robustness/mapping
+        """
+
+
+rule candidate_sequence_annotation:
+    input:
+        frozen=rules.freeze_discovery.output.genes,
+        canonical=rules.prepare_reference.output.canonical,
+        proteins="data/reference/host/Lchinesis_genome.Chr.pep.gz",
+        swissprot="data/reference/annotation/uniprot_sprot_2026-08-18.dmnd",
+        rice="data/reference/pathways/frozen_plant_reactome_UP000059680/one_to_one_rbh.tsv",
+    output:
+        fasta="results/evidence/annotation/frozen_candidate_proteins.faa",
+        selection="results/evidence/annotation/representative_proteins.tsv",
+        hits="results/evidence/annotation/reviewed_swissprot_hits.tsv",
+        evidence="results/evidence/annotation/candidate_annotation_evidence.tsv",
+        summary="results/evidence/annotation/annotation_summary.md",
+        manifest="results/evidence/annotation/annotation_results.sha256",
+    threads: 4
+    resources:
+        mem_mb=4000
+    shell:
+        """
+        python analysis/scripts/24_candidate_annotation.py \
+          --frozen-genes {input.frozen} --canonical {input.canonical} \
+          --proteins {input.proteins} --swissprot-db {input.swissprot} \
+          --rice-rbh {input.rice} --outdir results/evidence/annotation \
+          --threads {threads}
+        sha256sum -c {output.manifest}
+        """
+
+
+rule candidate_interpro_matches:
+    input:
+        representatives=rules.candidate_sequence_annotation.output.selection,
+    output:
+        raw="results/evidence/annotation/interpro_matches_raw.json",
+        matches="results/evidence/annotation/interpro_matches.tsv",
+        summary="results/evidence/annotation/interpro_candidate_summary.tsv",
+        report="results/evidence/annotation/interpro_summary.md",
+        manifest="results/evidence/annotation/interpro_results.sha256",
+    threads: 1
+    resources:
+        mem_mb=1000
+    shell:
+        """
+        python analysis/scripts/25_interpro_matches.py \
+          --representatives {input.representatives} \
+          --outdir results/evidence/annotation
+        sha256sum -c {output.manifest}
+        """
+
+
+rule finalize_candidate_annotation:
+    input:
+        sequence=rules.candidate_sequence_annotation.output.evidence,
+        interpro=rules.candidate_interpro_matches.output.summary,
+        config="analysis/config/orthogonal_validation.yaml",
+    output:
+        table="results/evidence/annotation/final_candidate_annotations.tsv",
+        summary="results/evidence/annotation/final_annotation_summary.md",
+        manifest="results/evidence/annotation/final_annotation.sha256",
+    threads: 1
+    resources:
+        mem_mb=500
+    shell:
+        """
+        python analysis/scripts/33_finalize_annotation.py \
+          --sequence-evidence {input.sequence} --interpro-summary {input.interpro} \
+          --config {input.config} --outdir results/evidence/annotation
+        sha256sum -c {output.manifest}
+        """
+
+
+rule prepare_motif_inputs:
+    input:
+        frozen=rules.freeze_discovery.output.genes,
+        normalized=rules.primary_discovery.output.normalized,
+        gene_qc=rules.uniform_gene_mappability.output.qc,
+        canonical=rules.prepare_reference.output.canonical,
+        gtf=rules.prepare_reference.output.gtf,
+        genome=rules.prepare_reference.output.genome,
+        fai=rules.combined_genome_faidx.output,
+        config="analysis/config/orthogonal_validation.yaml",
+    output:
+        manifest="results/evidence/motifs/inputs/motif_inputs.sha256",
+        gate="results/evidence/motifs/inputs/motif_gate.tsv",
+        assignments="results/evidence/motifs/inputs/background_assignments.tsv",
+        promoters="results/evidence/motifs/inputs/promoter_metadata.tsv",
+        candidates_1kb="results/evidence/motifs/inputs/frozen_candidates_1000bp.fa",
+        candidates_2kb="results/evidence/motifs/inputs/frozen_candidates_2000bp.fa",
+    threads: 1
+    resources:
+        mem_mb=4000
+    shell:
+        """
+        python analysis/scripts/26_prepare_motif_inputs.py \
+          --frozen-genes {input.frozen} --normalized-counts {input.normalized} \
+          --gene-qc {input.gene_qc} --canonical {input.canonical} \
+          --gtf {input.gtf} --genome {input.genome} --config {input.config} \
+          --outdir results/evidence/motifs/inputs
+        sha256sum -c {output.manifest}
+        """
+
+
+rule discovery_motif_enrichment:
+    input:
+        motif_manifest=rules.prepare_motif_inputs.output.manifest,
+        motifs="data/reference/motifs/JASPAR2026_CORE_plants_non-redundant_pfms_meme.txt",
+        tf_map="data/reference/motifs/jaspar2026_litchi_tf_map/jaspar_motif_litchi_tf.tsv",
+        normalized=rules.primary_discovery.output.normalized,
+        metadata=SAMPLE_TABLE,
+        decisions=rules.collect_discovery_qc.output.decisions,
+        config="analysis/config/orthogonal_validation.yaml",
+    output:
+        manifest="results/evidence/motifs/results/motif_results.sha256",
+        robust="results/evidence/motifs/results/robust_candidate_motifs.tsv",
+        ame="results/evidence/motifs/results/ame_matched_background_replicates.tsv",
+        fimo="results/evidence/motifs/results/fimo_matched_background_sensitivity.tsv",
+        candidate_sites="results/evidence/motifs/results/candidate_motif_site_presence.tsv",
+        summary="results/evidence/motifs/results/motif_summary.md",
+    threads: 2
+    resources:
+        mem_mb=6000
+    shell:
+        """
+        python analysis/scripts/28_motif_enrichment.py \
+          --inputs results/evidence/motifs/inputs \
+          --motifs {input.motifs} --tf-map {input.tf_map} \
+          --normalized-counts {input.normalized} --metadata {input.metadata} \
+          --decisions {input.decisions} --config {input.config} \
+          --outdir results/evidence/motifs/results
+        sha256sum -c {output.manifest}
+        """
+
+
+rule audit_small_rna_reference:
+    input:
+        archive="data/reference/small_rna/PmiREN_ftp_download_2019-11-19.zip",
+        provenance="data/reference/small_rna/PmiREN_ftp_download_2019-11-19.source.json",
+        config="analysis/config/orthogonal_validation.yaml",
+    output:
+        manifest="results/evidence/small_rna/reference/small_rna_reference.sha256",
+        gate="results/evidence/small_rna/reference/small_rna_reference_gate.tsv",
+        catalogue="results/evidence/small_rna/reference/pmiren_species_catalogue.tsv",
+        summary="results/evidence/small_rna/reference/small_rna_reference_summary.md",
+    threads: 1
+    resources:
+        mem_mb=500
+    shell:
+        """
+        python analysis/scripts/29_audit_pmiren_reference.py \
+          --archive {input.archive} --provenance {input.provenance} \
+          --config {input.config} --outdir results/evidence/small_rna/reference
+        sha256sum -c {output.manifest}
+        """
+
+
+rule validate_published_evidence:
+    input:
+        registry="results/evidence/published_evidence_registry.tsv",
+        config="analysis/config/orthogonal_validation.yaml",
+    output:
+        manifest="results/evidence/published/published_evidence.sha256",
+        audit="results/evidence/published/published_evidence_audit.tsv",
+        summary="results/evidence/published/published_evidence_summary.md",
+    threads: 1
+    resources:
+        mem_mb=500
+    shell:
+        """
+        python analysis/scripts/30_validate_published_evidence.py \
+          --registry {input.registry} --config {input.config} \
+          --outdir results/evidence/published
+        sha256sum -c {output.manifest}
+        """
+
+
+rule internal_gene_robustness:
+    input:
+        counts=rules.merge_featurecounts.output.counts,
+        primary=rules.primary_discovery.output.genes,
+        frozen=rules.freeze_discovery.output.genes,
+        metadata=SAMPLE_TABLE,
+        decisions=rules.collect_discovery_qc.output.decisions,
+        quant=expand(f"{SALMON_DIR}/{{sample}}/quant.sf", sample=SAMPLES),
+        tx2gene=rules.prepare_reference.output.tx2gene,
+        mapping=rules.candidate_mapping_sensitivity.output.summary,
+        config="analysis/config/discovery.yaml",
+    output:
+        genes="results/robustness/genes/frozen_gene_robustness.tsv",
+        summary="results/robustness/genes/robustness_summary.tsv",
+    threads: 4
+    resources:
+        mem_mb=14000
+    shell:
+        """
+        Rscript analysis/scripts/12_internal_gene_robustness.R \
+          --counts {input.counts} --primary-genes {input.primary} \
+          --frozen-genes {input.frozen} --metadata {input.metadata} \
+          --decisions {input.decisions} --salmon-root {SALMON_DIR} \
+          --tx2gene {input.tx2gene} --mapping-sensitivity {input.mapping} \
+          --config {input.config} \
+          --outdir results/robustness/genes
+        """
+
+
+rule internal_pathway_robustness:
+    input:
+        counts=rules.merge_featurecounts.output.counts,
+        metadata=SAMPLE_TABLE,
+        decisions=rules.collect_discovery_qc.output.decisions,
+        primary=rules.primary_discovery.output.genes,
+        gene_qc=rules.uniform_gene_mappability.output.qc,
+        frozen=rules.freeze_discovery.output.pathways,
+        gmt=PATHWAY_GMT,
+        config="analysis/config/discovery.yaml",
+        operational="analysis/config/operational_qc.yaml",
+    output:
+        pathways="results/robustness/pathways/frozen_pathway_robustness.tsv",
+        summary="results/robustness/pathways/pathway_robustness_summary.md",
+    threads: 4
+    resources:
+        mem_mb=12000
+    shell:
+        """
+        Rscript analysis/scripts/13_internal_pathway_robustness.R \
+          --counts {input.counts} --metadata {input.metadata} \
+          --decisions {input.decisions} --primary-genes {input.primary} \
+          --gene-qc {input.gene_qc} --frozen-pathways {input.frozen} \
+          --gmt {input.gmt} --config {input.config} \
+          --operational-config {input.operational} \
+          --outdir results/robustness/pathways
+        """
+
+
+rule freeze_internal_robustness:
+    input:
+        discovery=rules.freeze_discovery.output.checksums,
+        mapping=rules.candidate_mapping_sensitivity.output.summary,
+        mapping_per_sample=rules.candidate_mapping_sensitivity.output.per_sample,
+        genes=rules.internal_gene_robustness.output.genes,
+        gene_summary=rules.internal_gene_robustness.output.summary,
+        pathways=rules.internal_pathway_robustness.output.pathways,
+        pathway_summary=rules.internal_pathway_robustness.output.summary,
+    output:
+        "results/robustness/internal_results.sha256"
+    threads: 1
+    resources:
+        mem_mb=500
+    shell:
+        """
+        sha256sum {input.discovery} {input.mapping} {input.mapping_per_sample} \
+          {input.genes} {input.gene_summary} {input.pathways} \
+          {input.pathway_summary} > {output}
+        sha256sum -c {output}
+        """

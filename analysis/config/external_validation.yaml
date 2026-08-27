@@ -1,0 +1,74 @@
+{
+  "version": "1.0.0",
+  "frozen_at": "2026-08-18T22:45:00-04:00",
+  "outcomes_viewed": false,
+  "direction_standardization": "positive cultivar-interaction effects always mean a stronger infection response in the source study's resistant comparator",
+  "expression_filter": {
+    "minimum_count": 10,
+    "minimum_libraries": 3
+  },
+  "gene_support": {
+    "bh_q_max": 0.05,
+    "absolute_log2fc_min": 0.5849625007211562,
+    "confidence_level": 0.95,
+    "require_ci_excludes_zero": true,
+    "multiplicity_family": "all measurable frozen genes within each prespecified primary contrast"
+  },
+  "signature": {
+    "gene_scale": "gene-wise z score of study-specific DESeq2 VST expression",
+    "score": "sum(frozen_apeglm_weight * z_expression) / sum(abs(frozen_apeglm_weight))",
+    "minimum_measurable_fraction": 0.80,
+    "weights_may_be_reestimated": false
+  },
+  "pathways": {
+    "primary_method": "camera",
+    "sensitivity_methods": ["fgseaMultilevel", "roast"],
+    "bh_q_max": 0.05,
+    "leading_edge_deletion_q_max": 0.10,
+    "matched_random_sets": 1000,
+    "matched_random_percentile_min": 0.95,
+    "matching_variables": ["mean normalized expression", "union-exon length"],
+    "quantile_bins_each": 5
+  },
+  "studies": {
+    "PRJNA450886": {
+      "role": "primary_cross_context",
+      "model": "~ cultivar * treatment * time",
+      "cultivar_levels": ["Guiwei", "Heiye"],
+      "treatment_levels": ["mock", "infected"],
+      "time_levels": ["24", "6", "48"],
+      "resistant_comparator": "Heiye",
+      "primary_contrast": "(Heiye infected - Heiye mock) - (Guiwei infected - Guiwei mock) at 24 h",
+      "secondary_contrasts": ["cultivar-by-infection at 6 h", "cultivar-by-infection at 48 h", "global three-way interaction"],
+      "direct_replication": false
+    },
+    "PRJNA922966": {
+      "role": "generic_infection_transfer",
+      "model": "~ tissue + treatment + tissue:treatment",
+      "tissue_levels": ["fruit", "leaf"],
+      "treatment_levels": ["mock", "infected"],
+      "primary_contrast": "infection effect in Feizixiao leaf",
+      "secondary_contrasts": ["infection effect in Feizixiao fruit", "leaf-minus-fruit infection interaction"],
+      "can_promote_gene_to_tier_a": false,
+      "direct_replication": false
+    },
+    "PRJNA1090613": {
+      "role": "exploratory_only",
+      "model": "~ cultivar + treatment + cultivar:treatment",
+      "cultivar_levels": ["Guiwei", "SFZ_unresolved"],
+      "treatment_levels": ["mock", "infected"],
+      "primary_contrast": "unstandardized unresolved-SFZ-group-minus-Guiwei infection interaction",
+      "can_promote_gene_to_tier_a": false,
+      "direct_replication": false,
+      "limitations": ["sampling time unresolved", "SFZ identity/resistance phenotype unresolved", "biological-unit independence unresolved"]
+    }
+  },
+  "status_rules": {
+    "replicated": "reserved for a matched cultivar/tissue/time estimand; no currently eligible external study qualifies",
+    "cross_context_supported": "primary PRJNA450886 contrast has expected direction, frozen-family q below threshold, effect threshold, confidence interval excluding zero, and model/reference/mappability pass",
+    "contradictory": "primary PRJNA450886 contrast has opposite direction and otherwise meets q, effect, confidence-interval, and QC gates",
+    "unsupported": "measurable primary PRJNA450886 result meets neither supported nor contradictory rule",
+    "not_testable": "target is absent, inadequately expressed, or fails model/reference/mappability QC"
+  },
+  "fallback": "If the frozen gene signature is empty, write explicit not-applicable outputs and evaluate only frozen pathways. If no external target passes, report failed transfer without candidate substitution."
+}

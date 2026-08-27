@@ -1,3 +1,0 @@
-window_bp	frozen_genes	valid_candidate_promoters	minimum_required	motif_gate_status	reason
-1000	486	367	3	PASS	minimum_frozen_genes_met
-2000	486	367	3	PASS	minimum_frozen_genes_met

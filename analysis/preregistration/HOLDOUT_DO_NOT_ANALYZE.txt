@@ -1,0 +1,15 @@
+EXTERNAL OUTCOME FIREWALL
+
+Do not open, summarize, model, or visualize external expression outcomes until:
+
+1. results/discovery/frozen_genes.tsv exists;
+2. results/discovery/frozen_pathways.tsv exists;
+3. results/discovery/frozen_signature.tsv exists;
+4. results/discovery/frozen_dtu.tsv exists (possibly header-only after a failed gate);
+5. results/discovery/frozen_results.sha256 verifies; and
+6. results/discovery/external_unlock.tsv records the freeze checksum and time.
+
+Metadata, run manifests, file sizes, checksums, and design/provenance evidence may
+be inspected before unlock. GSE262200 is exploratory even after unlock unless a
+documented amendment resolves all eligibility fields without using outcomes.
+

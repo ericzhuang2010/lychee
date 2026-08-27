@@ -1,7 +1,0 @@
-pathway	NGenes	PropDown	PropUp	Direction	PValue	FDR	PValue.Mixed	FDR.Mixed
-R-OSA-9645850.1|Activation of pre-replication complex	22	0	0.454545454545455	Up	0.1722	0.18255	0.1699	0.20595
-R-OSA-9640882.1|Assembly of pre-replication complex	14	0	0.5	Up	0.1505	0.18255	0.1687	0.20595
-R-OSA-9675824.1|DNA replication Initiation	12	0	0.5	Up	0.1826	0.1826	0.2048	0.20595
-R-OSA-6787011.1|Jasmonic acid signaling	15	0.4	0	Down	0.0665	0.18255	0.0809	0.20595
-R-OSA-9675782.1|Maturation	10	0	0.5	Up	0.1412	0.18255	0.206	0.206
-R-OSA-8933811.1|Circadian rhythm	12	0	0.416666666666667	Up	0.0021	0.0123	0.0118	0.0705

@@ -1,3 +1,0 @@
-sample_id	run	mate	path	bytes	expected_md5	observed_md5	status
-GI_48hpi_2	SRR8297717	1	data/active_external/PRJNA450886/fastq/GI_48hpi_2_R1.fastq.gz	948116030	6182b5677f6431a0124e93f89e4b0b4e	6182b5677f6431a0124e93f89e4b0b4e	DOWNLOADED
-GI_48hpi_2	SRR8297717	2	data/active_external/PRJNA450886/fastq/GI_48hpi_2_R2.fastq.gz	893065023	e272d120f5e15f67163d388005837a9f	e272d120f5e15f67163d388005837a9f	DOWNLOADED

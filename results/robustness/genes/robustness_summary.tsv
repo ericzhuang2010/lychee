@@ -1,8 +1,0 @@
-metric	value	status
-featurecounts_filtered_genes	19445	INFO
-salmon_filtered_genes	19499	INFO
-common_finite_signed_statistics	18060	INFO
-signed_statistic_spearman	0.896338492876405	PASS
-signed_statistic_spearman_threshold	0.85	LOCKED
-frozen_genes	206	INFO
-robust_frozen_genes	16	INFO

@@ -1,3 +1,0 @@
-metric	observed	threshold	status
-included_salmon_mapping_rate	0.487128611621448	0.6	FAIL
-measurable_frozen_transcript_events	166	1	PASS

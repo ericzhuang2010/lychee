@@ -1,0 +1,66 @@
+{
+  "version": "1.0.0",
+  "frozen_at": "2026-08-18T21:55:00-04:00",
+  "outcomes_viewed": false,
+  "mappability": {
+    "tool": "GenMap",
+    "kmer_length": 100,
+    "maximum_mismatches": 2,
+    "minimum_unique_exonic_fraction": 0.80,
+    "minimum_scored_exonic_bases": 100,
+    "unique_score": 1.0,
+    "unique_score_tolerance": 1e-09,
+    "require_no_exonic_overlap_with_other_gene": true,
+    "coordinate_rule": "union of all annotated exons per gene",
+    "scope": "uniformly computed for every annotated host gene before candidate status is frozen"
+  },
+  "pathway_discovery": {
+    "bh_q_max": 0.05,
+    "score": "signed DESeq2 Wald interaction statistic",
+    "positive_direction": "stronger infection response in Yurong1 than Guiwei",
+    "fgsea_eps": 0,
+    "fgsea_simple_permutations": 10000
+  },
+  "matched_random_pathways": {
+    "sets": 1000,
+    "matching_variables": ["mean normalized expression", "union-exon length"],
+    "quantile_bins_each": 5,
+    "score": "absolute mean signed Wald interaction statistic",
+    "pass_percentile": 0.95,
+    "seed": 20260718
+  },
+  "internal_pathway_robustness": {
+    "camera_q_max": 0.10,
+    "roast_q_max": 0.10,
+    "leading_edge_deletion_q_max": 0.10,
+    "require_camera_roast_direction_agreement": true,
+    "require_matched_random_percentile": 0.95
+  },
+  "mapping_sensitivity": {
+    "leading_loci_only": true,
+    "report_per_sample_exonic_breadth_depth_and_mismatch_burden": true,
+    "minimum_alignments_per_cultivar_for_bias_call": 100,
+    "minimum_absolute_cultivar_mismatch_rate_difference": 0.02,
+    "minimum_cultivar_mismatch_rate_ratio": 2.0,
+    "minimum_breadth_loss_in_higher_mismatch_cultivar": 0.20,
+    "severe_multimapping_fraction": 0.20,
+    "multimapping_failure_requires_both_cultivars": true,
+    "low_coverage_action": "report as pass_without_observed_bias_call; uniform sequence mappability remains evaluable",
+    "reference_bias_action": "retire any locus with a severe composite mismatch-plus-breadth or bilateral multimapping flag; variant-aware or reference-swap results remain a separate sensitivity layer"
+  },
+  "dtu": {
+    "minimum_gene_count": 10,
+    "minimum_gene_count_samples": 3,
+    "minimum_transcript_count": 10,
+    "minimum_transcript_count_samples": 3,
+    "minimum_transcript_proportion": 0.05,
+    "minimum_transcript_proportion_samples": 3,
+    "minimum_retained_transcripts_per_gene": 2,
+    "remove_every_member_of_exact_sequence_duplicate_clusters": true,
+    "require_bootstrap_replicates": 30,
+    "drimseq_test": "cultivarYurong1:treatmentinfected coefficient",
+    "stageR_method": "dtu",
+    "dexseq_sensitivity_q_max": 0.10,
+    "expected_direction": "interaction difference in mean transcript proportion: (Yurong1 infected - mock) - (Guiwei infected - mock)"
+  }
+}

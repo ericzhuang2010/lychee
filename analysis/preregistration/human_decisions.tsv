@@ -1,0 +1,10 @@
+decision	locked_choice	rationale	approval_basis	date
+discovery_hypothesis	Genome-wide Guiwei-Yurong1 cultivar-by-infection interaction at 24 h	Central recommendation in the requested execution plan	User instruction to execute the revised plan using its recommended central discovery	2026-08-18
+fallback	Empty gene signature plus prespecified Plant Reactome pathway analysis if no gene passes	Avoids post hoc top-N selection	User instruction plus explicit plan recommendation	2026-08-18
+dataset_roles	Roles in analysis/config/dataset_roles.tsv	Preserves discovery/validation firewall	User instruction plus explicit plan recommendation	2026-08-18
+GSE262200	exploratory only	Time, phenotype, and biological-unit independence unresolved in public metadata	Eligibility gate in requested plan	2026-08-18
+sample_exclusions	Technical failures only; preserve all-sample sensitivity	Prevents outcome-driven exclusion	Recommended preregistered rule	2026-08-18
+primary_pathways	Plant Reactome snapshot with reciprocal-best rice orthology	Open, versionable plant pathway resource	Plan recommendation and legacy manuscript continuity	2026-08-18
+novelty_gate	Novel only as a genome-wide multiplicity-controlled GSE201243 interaction test	Exact-accession search found family/selected-gene work but no genome-wide interaction significance analysis	Prospective literature audit	2026-08-18
+evidence_tiers	Deterministic Tier A/B/C/Exploratory/Retired rules; Tier A may be empty	Prevents subjective scoring	Explicit plan recommendation	2026-08-18
+

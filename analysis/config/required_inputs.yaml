@@ -1,0 +1,219 @@
+{
+  "resources": {
+    "minimum_free_bytes": 161061273600,
+    "minimum_cpus": 16,
+    "preferred_ram_bytes": 68719476736
+  },
+  "files": [
+    {
+      "id": "manuscript_pdf",
+      "path": "docs/paper/lychee_plants_revised_vixra_format.pdf",
+      "stage": 0,
+      "required": true,
+      "type": "pdf",
+      "minimum_bytes": 1
+    },
+    {
+      "id": "manuscript_docx",
+      "path": "docs/paper/lychee_plants_revised_vixra_format.docx",
+      "stage": 0,
+      "required": true,
+      "type": "zip",
+      "minimum_bytes": 1
+    },
+    {
+      "id": "review_feedback",
+      "path": "docs/paper/review_feedback.txt",
+      "stage": 0,
+      "required": true,
+      "type": "text",
+      "minimum_bytes": 1
+    },
+    {
+      "id": "legacy_s1",
+      "path": "data/source/zenodo/Supplementary_Table_S1_Rationale.docx",
+      "stage": 0,
+      "required": true,
+      "type": "zip",
+      "minimum_bytes": 1,
+      "md5": "c279b41356f513327d31b04043aede42"
+    },
+    {
+      "id": "legacy_s2",
+      "path": "data/source/zenodo/Supplementary_File_S2_reproducible_workflow.zip",
+      "stage": 0,
+      "required": true,
+      "type": "zip",
+      "minimum_bytes": 1,
+      "md5": "03973a02743f5e140cb5ae8638ff5ba5"
+    },
+    {
+      "id": "legacy_s3",
+      "path": "data/source/legacy/Supplementary_File_S3_GSE262200_workflow.zip",
+      "stage": 0,
+      "required": false,
+      "type": "zip",
+      "reconstruction_route": "Reconstruct only after discovery freeze from the revised external-analysis scripts; GSE262200 is exploratory."
+    },
+    {
+      "id": "host_genome_gz",
+      "path": "data/reference/host/Lchinesis_genome.Chr.fasta.gz",
+      "stage": 2,
+      "required": true,
+      "type": "gzip",
+      "minimum_bytes": 100000000,
+      "sha256": "693bf47aaa915a9c5145d9c3e39dfed9ba7b181a64654bc25e978096da9583d7"
+    },
+    {
+      "id": "host_gff_gz",
+      "path": "data/reference/host/Lchinesis_genome.Chr.gff3.gz",
+      "stage": 2,
+      "required": true,
+      "type": "gzip",
+      "minimum_bytes": 1000000,
+      "sha256": "9be8da5a658edff29bce57a76c8cf0d760375aa95c8434af277d7d12aab4d10a"
+    },
+    {
+      "id": "host_cds_gz",
+      "path": "data/reference/host/Lchinesis_genome.Chr.cds.gz",
+      "stage": 2,
+      "required": true,
+      "type": "gzip",
+      "minimum_bytes": 1000000,
+      "sha256": "a582c95d19be8ca579b0995c3692458f4aef007e403b19382f056b50ff975fb9"
+    },
+    {
+      "id": "host_peptide_gz",
+      "path": "data/reference/host/Lchinesis_genome.Chr.pep.gz",
+      "stage": 2,
+      "required": true,
+      "type": "gzip",
+      "minimum_bytes": 1000000,
+      "sha256": "96248fe5cf89364417a16bc5dd605600dd9a7a09c81131305b5126e0d73676e6"
+    },
+    {
+      "id": "pathogen_genome_gz",
+      "path": "data/reference/pathogen/GWHAOTU00000000.genome.fasta.gz",
+      "stage": 2,
+      "required": true,
+      "type": "gzip",
+      "minimum_bytes": 1000000,
+      "sha256": "fd6b34aa637336ed5720a74a1f6705ff412e96359fdbc43dfcfed1beccb322d1"
+    },
+    {
+      "id": "plant_reactome_snapshot",
+      "path": "data/reference/pathways/plant_reactome_gene_ids_by_pathway_and_species_2026-08-18.tsv",
+      "stage": 2,
+      "required": true,
+      "type": "text",
+      "minimum_bytes": 1000000,
+      "sha256": "47d61507bec680717ad2a8069ffb67efa6a7b52af162f483678a2ba49d5572a2"
+    },
+    {
+      "id": "oryza_uniprot_snapshot",
+      "path": "data/reference/pathways/uniprot_oryza_sativa_2026-08-18.fasta.gz",
+      "stage": 2,
+      "required": true,
+      "type": "gzip",
+      "minimum_bytes": 1000000,
+      "sha256": "297bc14a42a18f0dec747d1eb2c74d8d4e332571a8f3ed6b78b0a47c2a861257"
+    },
+    {
+      "id": "oryza_reference_proteome",
+      "path": "data/reference/pathways/uniprot_UP000059680_2026-08-18.fasta.gz",
+      "stage": 2,
+      "required": true,
+      "type": "gzip",
+      "minimum_bytes": 1000000,
+      "sha256": "a3e9b63a2953927d21b17f96fa8ee360ac5bae0954129c9b74a3867435325ffd"
+    },
+    {
+      "id": "frozen_pathway_collection",
+      "path": "data/reference/pathways/frozen_plant_reactome_UP000059680/plant_reactome_litchi.gmt",
+      "stage": 2,
+      "required": true,
+      "type": "text",
+      "minimum_bytes": 1000,
+      "sha256": "758faee2ebde41f0ddf1ec2ebf08183ecc79eb5c06d96dcef715000c6fa28680"
+    },
+    {
+      "id": "environment_explicit_lock",
+      "path": "analysis/envs/lychee-discovery-linux-64.lock",
+      "stage": 2,
+      "required": true,
+      "type": "text",
+      "minimum_bytes": 1000,
+      "sha256": "d65e1490df585bc5daf957b82f65e5b69139e1b2437e3757f912d632a42003c5"
+    },
+    {
+      "id": "ihw_official_source",
+      "path": "analysis/envs/sources/IHW_1.30.0.tar.gz",
+      "stage": 2,
+      "required": true,
+      "type": "gzip",
+      "minimum_bytes": 100000,
+      "sha256": "0b31c7b5794414c546ca255d1e2d0ddc4f56ad8b1a41189b04dceaf4281a3dde"
+    },
+    {
+      "id": "combined_reference_qc",
+      "path": "data/reference/combined/reference_qc.tsv",
+      "stage": 2,
+      "required": true,
+      "type": "text",
+      "minimum_bytes": 100
+    },
+    {
+      "id": "operational_qc_config",
+      "path": "analysis/config/operational_qc.yaml",
+      "stage": 2,
+      "required": true,
+      "type": "text",
+      "minimum_bytes": 1000,
+      "sha256": "619ab8560b120c4aaa1180040ad5fa60280c7b424992705f45e0eaf38061328b"
+    },
+    {
+      "id": "mappability_bundle_manifest",
+      "path": "data/reference/mappability/mappability_bundle.sha256",
+      "stage": 2,
+      "required": true,
+      "type": "text",
+      "minimum_bytes": 1000,
+      "sha256": "8eb02578686109551b385343e10a8d760a04da18ff5fc71504d0b4cfaa604a95"
+    },
+    {
+      "id": "uniform_gene_mappability_qc",
+      "path": "results/qc/PRJNA830488/uniform_gene_mappability.tsv",
+      "stage": 2,
+      "required": true,
+      "type": "text",
+      "minimum_bytes": 1000000,
+      "sha256": "dff5a7b4cb8ead84adbd9b072cba26ce96fcd1ed52aff7e9342c570cdc1908df"
+    }
+  ],
+  "urls": [
+    {
+      "id": "zenodo_s2_record",
+      "url": "https://zenodo.org/records/20007391",
+      "stage": 0,
+      "required": true
+    },
+    {
+      "id": "ena_discovery_manifest",
+      "url": "https://www.ebi.ac.uk/ena/portal/api/filereport?accession=PRJNA830488&result=read_run&format=tsv",
+      "stage": 0,
+      "required": true
+    },
+    {
+      "id": "host_reference_record",
+      "url": "https://data.mendeley.com/datasets/kggzfwpdr9/1",
+      "stage": 2,
+      "required": true
+    },
+    {
+      "id": "pathogen_reference_record",
+      "url": "https://ngdc.cncb.ac.cn/gwh/api/public/assembly/GWHAOTU00000000",
+      "stage": 2,
+      "required": true
+    }
+  ]
+}

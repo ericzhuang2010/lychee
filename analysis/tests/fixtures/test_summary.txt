@@ -1,0 +1,5 @@
+PASS
+strong_interactions_fdr_lt_0.05=16/16
+max_signal_fdr=1.28692e-14
+median_null_fdr=0.974233
+confounded_metadata_rejected=true
