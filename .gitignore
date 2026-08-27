@@ -84,6 +84,7 @@
 /results/supplement/S10_motif_background_tests.tsv
 
 # Temporary/editor artifacts
+.cursor/
 __pycache__/
 *.pyc
 *.orig
