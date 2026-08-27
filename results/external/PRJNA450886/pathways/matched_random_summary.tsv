@@ -1,0 +1,6 @@
+pathway	matched_gene_count	observed_score	random_score_95th_percentile	empirical_percentile	matched_random_status
+R-OSA-9645850.1|Activation of pre-replication complex	19	0.0623966111266745	0.600366497389212	0.165	COMPUTED
+R-OSA-9640882.1|Assembly of pre-replication complex	13	0.318870249975375	0.682851280099282	0.637	COMPUTED
+R-OSA-9675824.1|DNA replication Initiation	12	0.183379247847606	0.714156953674942	0.374	COMPUTED
+R-OSA-6787011.1|Jasmonic acid signaling	15	0.977587204389623	0.856627109483702	0.971	COMPUTED
+R-OSA-8933811.1|Circadian rhythm	12	1.02314378443174	0.988653298748784	0.958	COMPUTED

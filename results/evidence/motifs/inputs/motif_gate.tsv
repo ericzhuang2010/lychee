@@ -1,0 +1,3 @@
+window_bp	frozen_genes	valid_candidate_promoters	minimum_required	motif_gate_status	reason
+1000	206	206	3	PASS	minimum_frozen_genes_met
+2000	206	206	3	PASS	minimum_frozen_genes_met

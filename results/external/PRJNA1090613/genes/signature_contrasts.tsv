@@ -1,0 +1,2 @@
+contrast	estimand	estimate	standard_error	confidence_lower	confidence_upper	statistic	degrees_freedom	p	q	study	study_role	measurable_fraction	frozen_gene_count	measurable_gene_count	direction_agrees
+exploratory_interaction	unstandardized unresolved-SFZ-group-minus-Guiwei infection interaction	-0.0923833652948069	0.0223400003871815	-0.14389949856811	-0.0408672320215037	-4.13533409550949	8	0.00327433085405404	0.00327433085405404	PRJNA1090613	exploratory_only	0.946601941747573	206	195	NA

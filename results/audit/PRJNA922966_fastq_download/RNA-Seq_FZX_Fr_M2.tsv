@@ -1,0 +1,3 @@
+sample_id	run	mate	path	bytes	expected_md5	observed_md5	status
+RNA-Seq_FZX_Fr_M2	SRR23050940	1	data/active_external/PRJNA922966/fastq/RNA-Seq_FZX_Fr_M2_R1.fastq.gz	2607662992	8c794c2d2a93dcd1bec0ca4768cd679a	8c794c2d2a93dcd1bec0ca4768cd679a	DOWNLOADED
+RNA-Seq_FZX_Fr_M2	SRR23050940	2	data/active_external/PRJNA922966/fastq/RNA-Seq_FZX_Fr_M2_R2.fastq.gz	2669416687	1d90c049e675862d3194010e1ea4cc94	1d90c049e675862d3194010e1ea4cc94	DOWNLOADED

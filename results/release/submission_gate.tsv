@@ -1,0 +1,20 @@
+gate	status	detail	responsibility
+protocol_bundle_integrity	PASS	verified_files=4	automated
+discovery_freeze_integrity	PASS	verified_files=5	automated
+freeze_predates_external_unlock	PASS	freeze_mtime=2026-08-22T17:59:00.350959;unlock=2026-08-22T17:59:00	automated
+external_roles_integrity	PASS	verified_files=19	automated
+orthogonal_protocol_integrity	PASS	verified_files=30	automated
+internal_results_integrity	PASS	verified_files=7	automated
+primary_external_results_integrity	PASS	verified_files=10	automated
+final_evidence_integrity	PASS	verified_files=18	automated
+contradictory_results_public	PASS	results/candidates/contradictory_results.tsv	automated
+figures_regenerate_and_hash	PASS	verified_files=32	automated
+tables_supplements_integrity	PASS	verified_files=18	automated
+manuscript_exports_integrity	PASS	verified_files=7	automated
+title_matches_highest_evidence	PASS	expected phrase=context-specific; title=Genome-wide interaction reanalysis reveals context-specific lychee responses to Peronophythora litchii	automated
+statistical_independent_review	PENDING_HUMAN_REVIEW	interaction/FDR/estimands require an independent reviewer	repository owner
+bioinformatics_independent_review	PENDING_HUMAN_REVIEW	reference and quantification require an independent reviewer	repository owner
+independent_clean_reproduction	PENDING_HUMAN_REVIEW	primary discovery must be independently reproduced from a fresh checkout	independent reviewer
+novelty_review	PENDING_HUMAN_REVIEW	accession-linked novelty review requires domain review	repository owner
+repository_release_url	PENDING_OWNER_ACTION	publish a versioned repository release	repository owner
+archival_release_DOI	PENDING_OWNER_ACTION	archive the published release and record its DOI	repository owner

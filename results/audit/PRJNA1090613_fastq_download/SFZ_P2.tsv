@@ -1,0 +1,3 @@
+sample_id	run	mate	path	bytes	expected_md5	observed_md5	status
+SFZ_P2	SRR28413506	1	data/active_external/PRJNA1090613/fastq/SFZ_P2_R1.fastq.gz	1497454879	b25ed2f821210b523735ea810d8c21c4	b25ed2f821210b523735ea810d8c21c4	DOWNLOADED
+SFZ_P2	SRR28413506	2	data/active_external/PRJNA1090613/fastq/SFZ_P2_R2.fastq.gz	1516363346	4c9f46f9c87906176c5db23f92c1c4d7	4c9f46f9c87906176c5db23f92c1c4d7	DOWNLOADED

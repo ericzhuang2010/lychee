@@ -1,0 +1,7 @@
+sentence_id	evidence_layer	statement	source	status
+R1	discovery	206 genes and 6 pathways were frozen.	results/discovery/frozen_results.sha256	SUPPORTED
+R2	robustness	16 genes and 1 pathways passed all internal gates.	results/robustness/internal_results.sha256	SUPPORTED
+R3	external	2 genes and 0 pathways had primary cross-context support.	results/external/PRJNA450886/external_results.sha256	SUPPORTED_CROSS_CONTEXT_NOT_DIRECT_REPLICATION
+R4	orthogonal	0 frozen candidate motifs transported externally.	results/external/PRJNA450886/motifs/transport/external_motif_transport.sha256	SUPPORTED_CANDIDATE_MOTIF_NOT_FUNCTIONAL
+R5	interpretation	Final tier counts were A=0, B=12, C=0, retired=65.	results/candidates/final_evidence_matrix.sha256	SUPPORTED_DETERMINISTIC_RULE
+A1	release	Repository release URL and archival DOI are pending owner publication.	results/release/submission_gate.tsv	PENDING_EXTERNAL_ACTION

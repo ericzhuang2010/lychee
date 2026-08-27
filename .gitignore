@@ -1,1 +1,44 @@
-.cursor/
+# Large or reproducible inputs
+/data/
+data/active_discovery/
+data/active_external/
+data/active_holdout/
+data/reference/combined/
+data/reference/indexes/
+data/reference/host/*.fa
+data/reference/host/*.fasta
+data/reference/host/*.gff3
+data/reference/host/*.gtf
+data/reference/host/*.cds
+data/reference/host/*.pep
+data/reference/pathogen/*.fa
+data/reference/pathogen/*.fasta
+data/reference/pathways/*.fasta.gz
+data/reference/pathways/*.fa
+data/reference/pathways/*.fasta
+data/reference/pathways/*.headers
+data/reference/pathways/diamond/
+data/reference/pathways/diamond_UP000059680/
+data/reference/mappability/*.bed
+data/reference/mappability/*.bedgraph
+
+analysis/
+
+# Local environments and workflow state
+.conda/
+.tools/
+.snakemake/
+.Rhistory
+
+# Large intermediate results
+results/alignment/
+results/quantification/
+results/qc/raw/
+results/qc/trimmed/
+results/qc/multiqc_data/
+
+# Temporary/editor artifacts
+__pycache__/
+*.pyc
+*.tmp
+*.swp

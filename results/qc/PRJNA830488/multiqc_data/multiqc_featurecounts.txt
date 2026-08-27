@@ -1,0 +1,13 @@
+Sample	Total	Assigned	Unassigned_Unmapped	Unassigned_Read_Type	Unassigned_Singleton	Unassigned_MappingQuality	Unassigned_Chimera	Unassigned_FragmentLength	Unassigned_Duplicate	Unassigned_MultiMapping	Unassigned_Secondary	Unassigned_NonSplit	Unassigned_NoFeatures	Unassigned_Overlapping_Length	Unassigned_Ambiguity	percent_assigned
+results/alignment/PRJNA830488/GW_M1/Aligned.sortedByCoord.out.bam	26290035	16799980	1764955	0	0	0	0	0	0	4262518	0	0	1298222	0	2164360	63.902463423879055
+results/alignment/PRJNA830488/GW_M2/Aligned.sortedByCoord.out.bam	30240629	19085061	1983871	0	0	0	0	0	0	5100992	0	0	1520609	0	2550096	63.11066148789431
+results/alignment/PRJNA830488/GW_M3/Aligned.sortedByCoord.out.bam	30534870	19093583	1916013	0	0	0	0	0	0	5535027	0	0	1522597	0	2467650	62.530421776807955
+results/alignment/PRJNA830488/GW_P1/Aligned.sortedByCoord.out.bam	30751513	19399991	2132661	0	2	0	0	0	0	5151358	0	0	1528214	0	2539287	63.08629757501688
+results/alignment/PRJNA830488/GW_P2/Aligned.sortedByCoord.out.bam	28431264	17201054	1899123	0	0	0	0	0	0	5623809	0	0	1485109	0	2222169	60.50048988324966
+results/alignment/PRJNA830488/GW_P3/Aligned.sortedByCoord.out.bam	25738408	16669398	1656290	0	4	0	0	0	0	3943645	0	0	1301695	0	2167376	64.76468163842924
+results/alignment/PRJNA830488/YR_M1/Aligned.sortedByCoord.out.bam	25454160	16206496	1704829	0	0	0	0	0	0	4181871	0	0	1310835	0	2050129	63.669341278596505
+results/alignment/PRJNA830488/YR_M2/Aligned.sortedByCoord.out.bam	25912655	16702575	1699396	0	2	0	0	0	0	4032739	0	0	1342785	0	2135158	64.45721212280255
+results/alignment/PRJNA830488/YR_M3/Aligned.sortedByCoord.out.bam	25925406	16753450	1721490	0	0	0	0	0	0	3996344	0	0	1296216	0	2157906	64.6217459429565
+results/alignment/PRJNA830488/YR_P1/Aligned.sortedByCoord.out.bam	25524381	15619858	1938657	0	0	0	0	0	0	4599199	0	0	1359708	0	2006959	61.19583468057462
+results/alignment/PRJNA830488/YR_P2/Aligned.sortedByCoord.out.bam	25745709	16238795	1802650	0	0	0	0	0	0	4239537	0	0	1352132	0	2112595	63.0737922191228
+results/alignment/PRJNA830488/YR_P3/Aligned.sortedByCoord.out.bam	23812697	14993724	1756832	0	0	0	0	0	0	3968152	0	0	1142395	0	1951594	62.9652491693822

@@ -1,0 +1,3 @@
+sample_id	run	mate	path	bytes	expected_md5	observed_md5	status
+GW_P3	SRR28413510	1	data/active_external/PRJNA1090613/fastq/GW_P3_R1.fastq.gz	1275175154	b285e76c5903d2d325e09a14529d298b	b285e76c5903d2d325e09a14529d298b	DOWNLOADED
+GW_P3	SRR28413510	2	data/active_external/PRJNA1090613/fastq/GW_P3_R2.fastq.gz	1287949286	80f11129bb55ad42971c9489ec0ce350	80f11129bb55ad42971c9489ec0ce350	DOWNLOADED

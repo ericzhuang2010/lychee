@@ -1,0 +1,3 @@
+metric	observed	handling
+gene_screening_pvalue_na	661	excluded_from_stageR_screening_and_confirmation
+transcript_confirmation_pvalue_na	2230	retained_as_na_and_not_discovered

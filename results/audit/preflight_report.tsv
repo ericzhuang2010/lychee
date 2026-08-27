@@ -1,0 +1,12 @@
+category	id	target	status	required	observed	expected	detail
+resource	free_disk_bytes	/home/ericzhuang2010/VscodeProjects/lychee	PASS	true	399210721280	>=161061273600	
+resource	cpu_count	/home/ericzhuang2010/VscodeProjects/lychee	PASS	true	16	>=16	
+resource	ram_bytes	/proc/meminfo	WARN	false	16648536064	preferred>=68719476736	Low RAM is nonblocking only with one alignment and capped STAR sorting.
+file	manuscript_pdf	/home/ericzhuang2010/VscodeProjects/lychee/docs/paper/lychee_plants_revised_vixra_format.pdf	PASS	true	1930883	type=pdf; bytes>=1	b'%PDF-1.3'
+file	manuscript_docx	/home/ericzhuang2010/VscodeProjects/lychee/docs/paper/lychee_plants_revised_vixra_format.docx	PASS	true	1339853	type=zip; bytes>=1	b'PK\x03\x04\x14\x00\x06\x00'
+file	review_feedback	/home/ericzhuang2010/VscodeProjects/lychee/docs/paper/review_feedback.txt	PASS	true	3588	type=text; bytes>=1	utf-8
+file	legacy_s1	/home/ericzhuang2010/VscodeProjects/lychee/data/source/zenodo/Supplementary_Table_S1_Rationale.docx	PASS	true	39598	type=zip; bytes>=1	b'PK\x03\x04\x14\x00\x00\x00'; md5=c279b41356f513327d31b04043aede42
+file	legacy_s2	/home/ericzhuang2010/VscodeProjects/lychee/data/source/zenodo/Supplementary_File_S2_reproducible_workflow.zip	PASS	true	7206	type=zip; bytes>=1	b'PK\x03\x04\n\x00\x00\x00'; md5=03973a02743f5e140cb5ae8638ff5ba5
+file	legacy_s3	/home/ericzhuang2010/VscodeProjects/lychee/data/source/legacy/Supplementary_File_S3_GSE262200_workflow.zip	ROUTE	false	missing	zip	Reconstruct only after discovery freeze from the revised external-analysis scripts; GSE262200 is exploratory.
+url	zenodo_s2_record	https://zenodo.org/records/20007391	PASS	true	HTTP 200	HTTP 2xx/3xx	
+url	ena_discovery_manifest	https://www.ebi.ac.uk/ena/portal/api/filereport?accession=PRJNA830488&result=read_run&format=tsv	PASS	true	HTTP 200	HTTP 2xx/3xx	

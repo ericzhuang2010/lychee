@@ -1,0 +1,5 @@
+metric	value	status
+registry_rows	5	PASS
+independent_rows	2	INFO
+same_current_accession_rows	2	INFO
+unresolved_independence_rows	1	WARN

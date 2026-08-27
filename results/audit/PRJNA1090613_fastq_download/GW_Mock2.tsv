@@ -1,0 +1,3 @@
+sample_id	run	mate	path	bytes	expected_md5	observed_md5	status
+GW_Mock2	SRR28413515	1	data/active_external/PRJNA1090613/fastq/GW_Mock2_R1.fastq.gz	1425036643	2daa723058a8a260bb26e04be8d5e9bf	2daa723058a8a260bb26e04be8d5e9bf	DOWNLOADED
+GW_Mock2	SRR28413515	2	data/active_external/PRJNA1090613/fastq/GW_Mock2_R2.fastq.gz	1448667227	6f83e27d16b6601f067a3f741d4ff757	6f83e27d16b6601f067a3f741d4ff757	DOWNLOADED

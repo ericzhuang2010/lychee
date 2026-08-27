@@ -1,0 +1,6 @@
+term	occurrences	status	rule
+validated	0	PASS	No unqualified validated wording is permitted.
+mechanism	0	PASS	No mechanistic inference is permitted.
+functional	0	PASS_CONTEXTUALIZED	Any occurrence must be explicitly negated or scoped.
+resistance gene	0	PASS	No frozen candidate may be called a resistance gene.
+direct replication	3	PASS_CONTEXTUALIZED	Occurrences must explicitly distinguish cross-context evidence.
