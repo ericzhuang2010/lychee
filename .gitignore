@@ -81,7 +81,7 @@
 
 # Project sync policy excludes files at or above 100,000,000 bytes.
 # This machine-readable supplement remains local; its compact conclusions are in the paper tables.
-/results/supplement/S10_motif_background_tests.tsv
+#/results/supplement/S10_motif_background_tests.tsv
 
 # Temporary/editor artifacts
 .cursor/
