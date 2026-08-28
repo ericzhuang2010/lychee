@@ -21,6 +21,8 @@ import numpy as np
 from matplotlib.lines import Line2D
 from matplotlib.patches import Circle, FancyBboxPatch
 
+from h7_split_figures import generate_h7_figures
+
 
 ROOT = Path(__file__).resolve().parents[3]
 OUT = Path(__file__).resolve().parent / "figures"
@@ -154,10 +156,14 @@ def figure1_cohorts_qc() -> None:
     source = read_tsv(
         "results/figures/source_data/Figure2_discovery_qc_interaction_source_data.tsv"
     )
-    pca = [row for row in source if row["panel"] == "A_PCA"]
+    pca = read_tsv("results/figures/source_data/UnifiedFigure1_PCA_source_data.tsv")
     mapping = [row for row in source if row["panel"] == "B_mapping"]
     assert len(pca) == 12 and len(mapping) == 12
     assert Counter(row["technical_gate"] for row in mapping) == {"INCLUDE": 12}
+    pc1_variance = number(pca[0], "PC1_variance_percent")
+    pc2_variance = number(pca[0], "PC2_variance_percent")
+    assert all(math.isclose(number(row, "PC1_variance_percent"), pc1_variance) for row in pca)
+    assert all(math.isclose(number(row, "PC2_variance_percent"), pc2_variance) for row in pca)
 
     fig = plt.figure(figsize=(8.2, 7.2), constrained_layout=True)
     grid = fig.add_gridspec(2, 2, height_ratios=[1, 1.18])
@@ -250,8 +256,8 @@ def figure1_cohorts_qc() -> None:
         )
     ax_c.axhline(0, color=LIGHT_GRAY, lw=0.6, zorder=0)
     ax_c.axvline(0, color=LIGHT_GRAY, lw=0.6, zorder=0)
-    ax_c.set_xlabel("PC1")
-    ax_c.set_ylabel("PC2")
+    ax_c.set_xlabel(f"PC1 ({pc1_variance:.1f}% variance)")
+    ax_c.set_ylabel(f"PC2 ({pc2_variance:.1f}% variance)")
     legend = [
         Line2D([0], [0], marker="o", color="none", markerfacecolor=BLUE,
                markeredgecolor=DARK, label="Guiwei", markersize=6),
@@ -626,7 +632,7 @@ def figure4_pathways_signatures() -> None:
         ("PRJNA922966", "secondary_tissue_interaction"): "Leaf − fruit infection interaction (secondary)",
         ("PRJNA1090613", "exploratory_interaction"): "Guiwei / SFZ interaction (exploratory metadata)",
     }
-    ordered_keys = list(label_map)
+    ordered_keys = [key for key in label_map if key[0] != "PRJNA1090613"]
     by_key = {(row["study"], row["contrast"]): row for row in signatures}
     ordered = [by_key[key] for key in ordered_keys]
     y = np.arange(len(ordered))[::-1]
@@ -656,15 +662,14 @@ def figure4_pathways_signatures() -> None:
         )
         ax_b.text(0.47, yi, f"q={number(row, 'q'):.3g}", va="center", fontsize=6.8)
     ax_b.axvline(0, color=DARK, linestyle="--", lw=0.8)
-    ax_b.axhline(3.5, color=LIGHT_GRAY, lw=0.7)
-    ax_b.axhline(0.5, color=LIGHT_GRAY, lw=0.7)
+    ax_b.axhline(2.5, color=LIGHT_GRAY, lw=0.7)
     ax_b.set_yticks(y, [label_map[key] for key in ordered_keys])
     ax_b.set_xlabel("Signed 206-gene score estimate (95% CI)")
     ax_b.set_xlim(-0.5, 0.57)
     ax_b.text(
         0.5,
         -0.16,
-        "Filled points: q < 0.05  •  exploratory estimate is not confirmatory",
+        "Filled points: q < 0.05  •  exploratory PRJNA1090613 estimate moved to Figure S3",
         transform=ax_b.transAxes,
         ha="center",
         va="top",
@@ -872,8 +877,8 @@ def main() -> None:
     figure2_discovery_legacy()
     figure3_gene_convergence()
     figure4_pathways_signatures()
-    figure5_dtu_orthogonal()
-    print(f"Wrote five figures as PDF and PNG to {OUT}")
+    generate_h7_figures(ROOT, OUT)
+    print(f"Wrote six main figures plus Figure S3 as PDF and PNG to {OUT}")
 
 
 if __name__ == "__main__":

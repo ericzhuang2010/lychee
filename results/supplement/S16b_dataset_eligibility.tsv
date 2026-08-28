@@ -1,0 +1,9 @@
+bioproject	geo	decision	analysis_role	reason	independent_cohort	limitations
+PRJNA830488	GSE201243	include	discovery	Guiwei and Yurong1 leaves; mock and P. litchii; 24 h; three deposited libraries per cell.	yes	Source trees, pooling, harvest units, and extraction independence are unreported.
+PRJNA450886	not linked as a GSE	include	primary cross-context evaluation	Guiwei and Heiye fruit pericarp; mock and P. litchii; 6, 24, and 48 h; cultivar interaction estimable.	yes	Different tissue and resistant comparator; pooling/source-unit independence unreported.
+PRJNA922966	GSE222651	include	generic infection/tissue transfer	Feizixiao leaf and fruit mRNA; mock and P. litchii; 24 h.	yes	One cultivar; cannot test a cultivar-by-infection interaction.
+PRJNA922965	GSE222650	include	orthogonal small-RNA modality	Paired small-RNA arm of the GSE222651 biological cohort.	no	Same biological cohort as PRJNA922966; not an independent replication.
+PRJNA1090613	GSE262200	include with quarantine	exploratory only	Guiwei and SFZ leaves; mock and P. litchii; cultivar interaction computationally estimable.	yes	Sampling time, SFZ phenotype/identity, and source-unit independence unresolved.
+PRJNA1157370	not identified	exclude	none	Different pathogen: Colletotrichum gloeosporioides rather than P. litchii.	yes	Outside the pathogen-specific eligibility question.
+PRJNA268587	GSE63658	exclude	none	Fruit senescence/storage small-RNA and degradome study; no P. litchii inoculation comparison.	yes	Retrieved only because its text mentions pathogen-infection defense.
+PRJNA922965;PRJNA922966	GSE222652	collapse	super-series container	Super-series combining GSE222650 and GSE222651; not an additional cohort.	no	Avoid double-counting the mRNA and small-RNA records as a third study.

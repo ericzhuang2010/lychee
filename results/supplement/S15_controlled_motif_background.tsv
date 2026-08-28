@@ -1,0 +1,22 @@
+element	motif	motif_provenance	published_observed_total_fixed	canonical_promoter_recount	recount_matches_published	background_strategy	background_sets	background_mean	background_sd	empirical_p	bh_q	enriched_q_lt_0_05
+ABRE	ACGTG	explicitly stated in exploratory manuscript	45	37	False	reported_randomized_GC	100000	38.44	nan	0.16402	0.22963	False
+ABRE	ACGTG	explicitly stated in exploratory manuscript	45	37	False	randomized_GC_rerun	100000	38.44611	6.688633884892525	0.17943820561794382	0.2512134878651214	False
+ABRE	ACGTG	explicitly stated in exploratory manuscript	45	37	False	expression_GC_matched_genomic	100	30.18	6.34429673093094	0.019801980198019802	0.034653465346534656	True
+ARE	AAACCA	explicitly stated in exploratory manuscript	46	46	True	reported_randomized_GC	100000	24.61	nan	0.00011	0.00026	True
+ARE	AAACCA	explicitly stated in exploratory manuscript	46	46	True	randomized_GC_rerun	100000	24.56638	4.943247723165462	5.999940000599994e-05	0.00013999860001399987	True
+ARE	AAACCA	explicitly stated in exploratory manuscript	46	46	True	expression_GC_matched_genomic	100	39.34	6.903695394570223	0.18811881188118812	0.24257425742574257	False
+AT-rich sequence	TAAAATACT	explicitly stated in exploratory manuscript	3	2	False	reported_randomized_GC	100000	1.71	nan	0.24643	0.2875	False
+AT-rich sequence	TAAAATACT	explicitly stated in exploratory manuscript	3	2	False	randomized_GC_rerun	100000	1.7116	1.3119156418102926	0.24731752682473176	0.28853711462885373	False
+AT-rich sequence	TAAAATACT	explicitly stated in exploratory manuscript	3	2	False	expression_GC_matched_genomic	100	1.56	1.1038957643663003	0.2079207920792079	0.24257425742574257	False
+MBS	CAACTG	explicitly stated in exploratory manuscript	9	8	False	reported_randomized_GC	100000	12.68	nan	0.88396	0.88396	False
+MBS	CAACTG	explicitly stated in exploratory manuscript	9	8	False	randomized_GC_rerun	100000	12.69704	3.549718473824711	0.8865611343886561	0.8865611343886561	False
+MBS	CAACTG	explicitly stated in exploratory manuscript	9	8	False	expression_GC_matched_genomic	100	11.94	3.5952269143486015	0.7920792079207921	0.7920792079207921	False
+MeJA-responsive	CGTCA	CGTCA plus reverse-complement TGACG stated in manuscript	54	24	False	reported_randomized_GC	100000	38.44	nan	0.01026	0.01795	True
+MeJA-responsive	CGTCA	CGTCA plus reverse-complement TGACG stated in manuscript	54	24	False	randomized_GC_rerun	100000	38.44533	6.196358215891928	0.01024989750102499	0.01793732062679373	True
+MeJA-responsive	CGTCA	CGTCA plus reverse-complement TGACG stated in manuscript	54	24	False	expression_GC_matched_genomic	100	22.7	4.99393571638582	0.009900990099009901	0.023102310231023104	True
+TCA-element	CCATCTTTTT	standard PlantCARE variant; exact original input TSV was not archived	9	1	False	reported_randomized_GC	100000	0.19	nan	1e-05	3e-05	True
+TCA-element	CCATCTTTTT	standard PlantCARE variant; exact original input TSV was not archived	9	1	False	randomized_GC_rerun	100000	0.15109	0.3882825254028249	9.99990000099999e-06	3.499965000349997e-05	True
+TCA-element	CCATCTTTTT	standard PlantCARE variant; exact original input TSV was not archived	9	1	False	expression_GC_matched_genomic	100	0.22	0.48367281703584913	0.009900990099009901	0.023102310231023104	True
+TC-rich repeats	GTTTTCTTAC	explicitly stated in exploratory manuscript	10	0	False	reported_randomized_GC	100000	0.15	nan	1e-05	3e-05	True
+TC-rich repeats	GTTTTCTTAC	explicitly stated in exploratory manuscript	10	0	False	randomized_GC_rerun	100000	0.14874	0.38605427439548934	9.99990000099999e-06	3.499965000349997e-05	True
+TC-rich repeats	GTTTTCTTAC	explicitly stated in exploratory manuscript	10	0	False	expression_GC_matched_genomic	100	0.07	0.2564323999762428	0.009900990099009901	0.023102310231023104	True

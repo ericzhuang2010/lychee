@@ -419,9 +419,9 @@ def main() -> None:
         properties = document.DocumentProperties
         properties.Title = title
         properties.Author = "Eric Zhuang"
-        properties.Subject = "Genome-wide lychee discovery and cross-context validation"
+        properties.Subject = "Genome-wide lychee analysis and cross-context external evaluation"
         properties.Description = (
-            "Validated discovery/validation manuscript integrated into the legacy viXra formatting shell."
+            "Revised genome-wide analysis and external-evaluation manuscript integrated into the legacy viXra formatting shell."
         )
 
         builder.paragraph(
@@ -454,7 +454,7 @@ def main() -> None:
                     if heading == "Introduction" and abstract_seen:
                         builder.paragraph(
                             "Keywords: lychee; Litchi chinensis; Peronophythora litchii; "
-                            "RNA-seq; genome-wide interaction; cross-context validation; "
+                            "RNA-seq; genome-wide interaction; cross-context evaluation; "
                             "transcript usage; reproducibility",
                             "Body Text Indent1",
                             align=BLOCK,
@@ -508,9 +508,13 @@ def main() -> None:
             font_size=7.2,
         )
 
-        metrics = read_tsv(
-            ROOT / "docs/paper/discovery_validation_manuscript/manuscript_metrics.tsv"
-        )
+        metrics_path = ROOT / "docs/paper/discovery_validation_manuscript/manuscript_metrics.tsv"
+        if not metrics_path.is_file():
+            metrics_path = (
+                ROOT
+                / "docs/paper/discovery_validation_manuscript (deprecated)/manuscript_metrics.tsv"
+            )
+        metrics = read_tsv(metrics_path)
         metric_rows = [["Metric", "Value"]]
         metric_rows.extend([[row["metric"].replace("_", " "), row["value"]] for row in metrics])
         builder.table("Table 2. Key validated computational outcomes.", metric_rows, font_size=8.5)

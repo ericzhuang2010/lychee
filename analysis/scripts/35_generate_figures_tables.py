@@ -17,6 +17,8 @@ from matplotlib.patches import FancyArrowPatch, FancyBboxPatch
 import numpy as np
 import pandas as pd
 
+from revision_figure_helpers import generate_revision_figures
+
 
 STUDIES = ("PRJNA450886", "PRJNA922966", "PRJNA1090613")
 TIER_COLORS = {
@@ -80,6 +82,23 @@ def save_figure(
     )
     combined.to_csv(source, sep="\t", index=False)
     outputs.append(source)
+    return outputs
+
+
+def save_supplementary_figure(
+    figure, basename: str, source: pd.DataFrame,
+    figure_dir: Path, source_dir: Path,
+) -> list[Path]:
+    """Save a supplementary figure with the same asserted source-data pattern."""
+    outputs = []
+    for extension in ("pdf", "svg", "tiff"):
+        path = figure_dir / f"{basename}.{extension}"
+        figure.savefig(path, dpi=300 if extension == "tiff" else None, bbox_inches="tight")
+        outputs.append(path)
+    plt.close(figure)
+    source_path = source_dir / f"{basename}_source_data.tsv"
+    source.to_csv(source_path, sep="\t", index=False)
+    outputs.append(source_path)
     return outputs
 
 
@@ -659,6 +678,11 @@ def main() -> None:
     parser.add_argument("--figure-dir", type=Path, default=Path("results/figures"))
     parser.add_argument("--table-dir", type=Path, default=Path("results/tables"))
     parser.add_argument("--supplement-dir", type=Path, default=Path("results/supplement"))
+    parser.add_argument(
+        "--revision-only",
+        action="store_true",
+        help="Generate only reviewer-response H4/H6 figures and source data.",
+    )
     args = parser.parse_args()
     root = args.root.resolve()
     figure_dir = (root / args.figure_dir).resolve()
@@ -668,9 +692,15 @@ def main() -> None:
     for directory in (figure_dir, source_dir, table_dir, supplement_dir):
         directory.mkdir(parents=True, exist_ok=True)
 
+    if args.revision_only:
+        outputs = generate_revision_figures(root, figure_dir, source_dir)
+        print(f"revision assets: {len(outputs)} figure/source/manifest artifacts")
+        return
+
     figure_outputs = []
     for function in (figure1, figure2, figure3, figure4, figure5, figure6, figure7, figure8):
         figure_outputs.extend(function(root, figure_dir, source_dir))
+    figure_outputs.extend(generate_revision_figures(root, figure_dir, source_dir))
     table_outputs = generate_tables(root, table_dir, supplement_dir)
     figure_manifest = figure_dir / "figures.sha256"
     table_manifest = table_dir / "tables_supplements.sha256"
