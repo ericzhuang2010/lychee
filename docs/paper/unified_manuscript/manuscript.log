@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.141592653-2.6-0.999998 (TeX Live 2026) (preloaded format=xelatex 2026.3.22)  28 AUG 2026 10:59
+This is XeTeX, Version 3.141592653-2.6-0.999998 (TeX Live 2026) (preloaded format=xelatex 2026.3.22)  1 SEP 2026 21:59
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -559,24 +559,19 @@ Underfull \hbox (badness 1024) in paragraph at lines 152--153
 ck, was the resistant-minus-susceptible cultivar-by-
  []
 
-[8] [9] [10]
 File: figures/figure4_pathways_signatures.pdf Graphic file (type pdf)
 <use figures/figure4_pathways_signatures.pdf>
+[8] [9] [10] [11]
 File: figures/figure5_transcript_usage.pdf Graphic file (type pdf)
 <use figures/figure5_transcript_usage.pdf>
 File: figures/figure6_orthogonal_tiers.pdf Graphic file (type pdf)
 <use figures/figure6_orthogonal_tiers.pdf>
- [11] [12] [13] [14] [15] [16] [17] [18]
+ [12] [13] [14] [15] [16] [17] [18]
 Package microtype Info: Loading generic protrusion settings for font family
 (microtype)             `lmtt' (encoding: TU).
 (microtype)             For optimal results, create family-specific settings.
 (microtype)             See the microtype manual for details.
  [19] [20] [21]
-Underfull \hbox (badness 1248) in paragraph at lines 318--319
-\TU/TimesNewRoman(0)/m/n/10.95 nal), PRJNA922966 (GSE222651, generic transfer),
- PRJNA922965 (GSE222650, small RNA), and
- []
-
 File: ../../../results/figures/FigureS1_replicate_level_counts.pdf Graphic file
  (type pdf)
 <use ../../../results/figures/FigureS1_replicate_level_counts.pdf>
@@ -585,7 +580,8 @@ df)
 <use ../../../results/figures/FigureS2_power_analysis.pdf>
 File: figures/figureS3_exploratory_signature.pdf Graphic file (type pdf)
 <use figures/figureS3_exploratory_signature.pdf>
-[22] [23] [24] [25
+ [22]
+[23] [24] [25
 
 ] [26] [27] (./manuscript.aux)
  ***********
@@ -598,7 +594,7 @@ Package rerunfilecheck Info: File `manuscript.out' has not changed.
 Here is how much of TeX's memory you used:
  14714 strings out of 468168
  293805 string characters out of 5432815
- 792912 words of memory out of 5000000
+ 794797 words of memory out of 5000000
  43278 multiletter control sequences out of 15000+600000
  632917 words of font info for 90 fonts, out of 8000000 for 9000
  1348 hyphenation exceptions out of 8191

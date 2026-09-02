@@ -2,10 +2,8 @@
 
 Associated manuscript:
 
-> Cultivar-dependent transcriptional responses of lychee (*Litchi chinensis*)
-> to *Peronophythora litchii*: from exploratory candidate discovery to a
-> prospectively registered genome-wide analysis with cross-context external
-> evaluation
+> Cultivar-dependent transcriptional responses of lychee to
+> *Peronophythora litchii*: a registered genome-wide analysis
 
 Author: Eric Zhuang  
 Package date: 2026-09-01
@@ -13,8 +11,8 @@ Package date: 2026-09-01
 This package is the supplement-only companion to `manuscript.pdf`. The associated
 PDF is not duplicated in the ZIP. The exact PDF used to assemble this package has:
 
-- size: 560,408 bytes
-- SHA-256: `07dd844c8f7c2626717960009190190f7766a638f1105e3c1773efc4c3f05b42`
+- size: 559,759 bytes
+- SHA-256: `85182eab6889ad0193cb24efadc0246bfd72671f8d37db735b1de1aa582f3838`
 
 ## Contents
 

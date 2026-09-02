@@ -1,4 +1,4 @@
-# Cultivar-dependent transcriptional responses of lychee (*Litchi chinensis*) to *Peronophythora litchii*: from exploratory candidate discovery to a prospectively registered genome-wide analysis with cross-context external evaluation
+# Cultivar-dependent transcriptional responses of lychee to *Peronophythora litchii*: a registered genome-wide analysis
 
 **Eric Zhuang**
 
@@ -222,7 +222,7 @@ Tier A required discovery, complete internal robustness, primary cross-context s
 
 ## Data and code availability
 
-All analyzed data are public: PRJNA830488/GSE201243 (discovery), PRJNA450886 (primary external), PRJNA922966/GSE222651 (generic transfer), PRJNA922965/GSE222650 (small RNA), and PRJNA1090613/GSE262200 (exploratory). The registered protocol, amendment log, complete result tables (all discovery statistics, robustness manifests, external tests, pathway/signature tests, transcript-usage results, annotation and orthogonal evidence, and the contradictory-results file), and the workflow code accompany this repository; a permanently archived release with a DOI, matching the submitted manuscript, will accompany the revised submission.
+All analyzed data are public: PRJNA830488/GSE201243 (discovery), PRJNA450886 (primary external), PRJNA922966/GSE222651 (generic transfer), PRJNA922965/GSE222650 (small RNA), and PRJNA1090613/GSE262200 (exploratory). The registered protocol, amendment log, complete result tables (all discovery statistics, robustness manifests, external tests, pathway/signature tests, transcript-usage results, annotation and orthogonal evidence, and the contradictory-results file), and the workflow code accompany this repository. Supplementary Tables S1–S18, Figures S1–S3, and tab-separated figure source data are permanently archived under CC BY 4.0 on Zenodo ([doi:10.5281/zenodo.22240717](https://doi.org/10.5281/zenodo.22240717)).
 
 ## Supplementary information
 
