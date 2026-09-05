@@ -68,7 +68,7 @@ not an upload file.
 - Added a complete title page with author, affiliation, and contact email.
 - Reduced the keyword list from seven to the journal's maximum of six.
 - Added distinct Acknowledgments, Funding, Author Contributions, Conflict of Interest,
-  Data and Code Availability, Accession Numbers, and Supplemental Data sections.
+  Data Availability, Accession Numbers, and Supplemental Data sections.
 - Kept tables in the Word manuscript, moved all main-figure legends to a separate legend
   section, and supplied the six main figures as separate vector PDFs.
 - Combined Figures S1-S3 with complete legends into one three-page PDF under 10 MB.

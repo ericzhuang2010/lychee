@@ -36,7 +36,6 @@ AFFILIATION = "NYU Langone Health, New York, NY, USA"
 EMAIL = "eric.zhuang@nyulangone.org"
 ORCID = "0009-0001-9050-0214"
 ZENODO_DOI = "https://doi.org/10.5281/zenodo.22240717"
-CODE_URL = "https://github.com/ericzhuang2010/lychee"
 
 FIGURES = [
     (
@@ -464,13 +463,11 @@ def add_declarations_and_data(document: Document) -> None:
             "The author declares no conflicts of interest.",
         ),
         (
-            "Data and Code Availability",
+            "Data Availability",
             "All analyzed sequencing data are public under PRJNA830488/GSE201243, "
             "PRJNA450886, PRJNA922966/GSE222651, PRJNA922965/GSE222650, and "
             "PRJNA1090613/GSE262200. Supplementary Tables S1-S18, Figures S1-S3, and "
-            f"tab-separated figure source data are archived under CC BY 4.0 at {ZENODO_DOI}. "
-            f"The registered protocol, workflow code, and computational environment files are "
-            f"available at {CODE_URL}.",
+            f"tab-separated figure source data are archived under CC BY 4.0 at {ZENODO_DOI}.",
         ),
         (
             "Accession Numbers",
@@ -644,7 +641,7 @@ def build_cover_letter() -> Path:
         (
             "All underlying sequencing data are publicly accessioned. The complete supplementary "
             f"tables, supplementary figures, and figure source data are archived at {ZENODO_DOI}, "
-            f"and the workflow code is available at {CODE_URL}."
+            "with accession details provided in the manuscript."
         ),
         (
             "Thank you for considering this manuscript. I believe its emphasis on sound inference, "

@@ -47,4 +47,4 @@ The author declares no conflicts of interest.
 
 ## Data availability
 
-All analyzed sequencing data are public under PRJNA830488/GSE201243, PRJNA450886, PRJNA922966/GSE222651, PRJNA922965/GSE222650, and PRJNA1090613/GSE262200. Supplementary Tables S1-S18, Figures S1-S3, and tab-separated figure source data are archived under CC BY 4.0 at <https://doi.org/10.5281/zenodo.22240717>. The registered protocol, workflow code, and computational environment files are available at <https://github.com/ericzhuang2010/lychee>.
+All analyzed sequencing data are public under PRJNA830488/GSE201243, PRJNA450886, PRJNA922966/GSE222651, PRJNA922965/GSE222650, and PRJNA1090613/GSE262200. Supplementary Tables S1-S18, Figures S1-S3, and tab-separated figure source data are archived under CC BY 4.0 at <https://doi.org/10.5281/zenodo.22240717>.
