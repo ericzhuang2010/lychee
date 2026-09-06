@@ -57,7 +57,7 @@ This study reanalysed publicly available sequencing datasets and involved no new
 
 ## Data accessibility
 
-All analysed sequencing data are public under PRJNA830488/GSE201243, PRJNA450886, PRJNA922966/GSE222651, PRJNA922965/GSE222650 and PRJNA1090613/GSE262200. Supplementary Tables S1–S18, Figures S1–S3 and tab-separated figure source data are archived under CC BY 4.0 at <https://doi.org/10.5281/zenodo.22240717>. The data and supporting materials required to reproduce the reported results are included in that archive.
+All analysed sequencing data are public under PRJNA830488/GSE201243, PRJNA450886, PRJNA922966/GSE222651, PRJNA922965/GSE222650 and PRJNA1090613/GSE262200. Supplementary Tables S1–S18, Figures S1–S3 and tab-separated figure source data are archived under CC BY 4.0 at <https://doi.org/10.5281/zenodo.22240717>. The analysis source code, Snakemake workflows, configuration files, tests and environment specifications are supplied as electronic supplementary material in `RSOS_analysis_code.zip`. The data, code and supporting materials required to reproduce the reported results are therefore available to editors and reviewers with this submission.
 
 ## Use of artificial intelligence
 
@@ -76,6 +76,9 @@ Figures S1–S3: replicate-level normalized counts, conditional parametric power
 
 **RSOS supplementary tables and source data**  
 Complete electronic supplementary material containing Tables S1–S18, Figures S1–S3, tab-separated source data for the main and supplementary analytical figures, a README and an internal integrity manifest.
+
+**RSOS analysis code**  
+Analysis source code supplied for editorial and peer-review verification, including Snakemake workflows, Python and R scripts, configuration files, metadata, synthetic fixtures, regression tests and environment specifications. The archive includes a README and SHA-256 integrity manifest; large public sequencing reads and reference resources are identified in the manuscript rather than redistributed.
 
 ## Optional media summary (62 words)
 

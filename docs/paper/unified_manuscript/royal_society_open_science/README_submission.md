@@ -17,10 +17,11 @@ Upload these files in ScholarOne:
 3. `figures/Figure_1_study_design_and_QC.png` through `figures/Figure_6_orthogonal_evidence_and_tiers.png` — separate main figures. All are approximately 300 DPI and exceed 1,000 pixels in each dimension.
 4. `supporting_information/RSOS_supporting_figures.pdf` — reviewer-friendly PDF containing Figures S1–S3.
 5. `supporting_information/RSOS_supplementary_tables_and_source_data.zip` — complete supplementary archive containing Tables S1–S18, Figures S1–S3, figure source data, the supplement README and its internal manifest.
+6. `supporting_information/RSOS_analysis_code.zip` — analysis source code, Snakemake workflows, configuration files, tests, metadata and environment specifications, with its own README and integrity manifest.
 
 Do **not** upload `README_submission.md`, `submission_metadata.md`, `prepare_submission.py` or `UPLOAD_FILE_MANIFEST_SHA256.tsv`; these are preparation aids.
 
-The supplementary PDF and ZIP deliberately overlap for Figures S1–S3: the PDF is the readable figure file, while the ZIP is the complete reproducibility archive. Describe that relationship in the file descriptions supplied in `submission_metadata.md`.
+The supplementary-figure PDF and supplementary-data ZIP deliberately overlap for Figures S1–S3: the PDF is the readable figure file, while the ZIP is the complete data archive. The separate code ZIP fulfils the journal's requirement that analysis code be available to editors and reviewers at submission. Use the file descriptions supplied in `submission_metadata.md`.
 
 ## Current journal requirements used
 
@@ -32,7 +33,7 @@ The supplementary PDF and ZIP deliberately overlap for Figures S1–S3: the PDF 
 - Initial figures may be embedded or separate. Final figures must be separate, at least 300 DPI, and supplied as PNG, EPS, TIFF or JPEG. The package uses separate 300-DPI PNG files.
 - The submitting author must provide an ORCID in the portal.
 - The portal collects a cover letter, funding, ethics, competing-interests, data-accessibility and CRediT-contribution statements.
-- Data and code needed to support the paper must be public. “Available on request” is not accepted; the manuscript instead gives public accessions and a permanent Zenodo DOI.
+- Data and code needed to support the paper must be available at submission and public on publication. “Available on request” is not accepted; the manuscript gives public accessions and a permanent Zenodo DOI, and the submission includes a code archive as electronic supplementary material.
 - Royal Society Open Science requires transparent peer review if the article is accepted; anonymous review reports, decision letters and author responses are published with the article.
 - The journal is gold open access under a CC BY licence.
 
@@ -50,7 +51,7 @@ There is no submission fee. If the paper is accepted, the listed Royal Society O
 - [ ] Review the CRediT roles and remove any role that does not accurately describe the work.
 - [ ] Review the ethics statement and confirm that no new human, animal or field-sampling approval was required.
 - [ ] Review the AI-use statement. It discloses the language-editing and journal-formatting assistance used to prepare this package, as required by current Royal Society policy.
-- [ ] Confirm that the Zenodo DOI resolves publicly and that its archive is the version intended for peer review.
+- [ ] Confirm that the Zenodo DOI resolves publicly and that its archive is the version intended for peer review. It was successfully resolved during package preparation on 5 September 2026.
 - [ ] Add preferred/non-preferred reviewers only after checking expertise, recent collaboration, institutional overlap and other conflicts. Do not invent reviewer details.
 - [ ] Confirm that the manuscript is not under simultaneous consideration and approve the mandatory transparent-review and open-access declarations.
 - [ ] Decide whether to request a waiver or seek institutional APC support.
@@ -63,7 +64,7 @@ There is no submission fee. If the paper is accepted, the listed Royal Society O
 - Royal Society author guidelines: <https://www.royalsociety.org/journals/authors/author-guidelines/>
 - Open-access charges and waiver information: <https://www.royalsociety.org/journals/open-access/>
 - Read & Publish eligibility: <https://www.royalsociety.org/journals/open-access/read-publish-agreements/>
-- Data-sharing policy: <https://www.royalsociety.org/journals/ethics-policies/data-sharing/>
+- Data-sharing policy: <https://www.royalsociety.org/journals/ethics-policies/data-sharing-mining/>
 - AI policy: <https://www.royalsociety.org/journals/ethics-policies/artificial-intelligence/>
 - Editorial office: `openscience@royalsociety.org`
 

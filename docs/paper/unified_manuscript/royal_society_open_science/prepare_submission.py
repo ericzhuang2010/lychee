@@ -145,6 +145,7 @@ SUPPLEMENTAL_ITEMS = [
     "Figure S2. Conditional parametric power curves.",
     "Figure S3. Exploratory signed-signature estimate.",
     "Data S1. Tab-separated source data for all main and supplementary analytical figures.",
+    "Code S1. Analysis code, workflows, configurations, tests, metadata, and environment specifications.",
 ]
 
 INLINE_TOKEN = re.compile(
@@ -527,9 +528,12 @@ def add_declarations_and_data(document: Document) -> None:
             "All analysed sequencing data are public under PRJNA830488/GSE201243, "
             "PRJNA450886, PRJNA922966/GSE222651, PRJNA922965/GSE222650, and "
             "PRJNA1090613/GSE262200. Supplementary Tables S1-S18, Figures S1-S3, and "
-            f"tab-separated figure source data are archived under CC BY 4.0 at {ZENODO_DOI}. "
-            "The data and supporting materials required to reproduce the reported results "
-            "are included in that archive.",
+            f"tab-separated figure source data are archived under CC BY 4.0 at {ZENODO_DOI} [42]. "
+            "The analysis source code, Snakemake workflows, configuration files, tests and "
+            "environment specifications are supplied as electronic supplementary material "
+            "in RSOS_analysis_code.zip. Together, these public records and electronic "
+            "supplementary files provide the data, code and supporting materials required "
+            "to reproduce the reported results.",
         ),
         (
             "Accession numbers",
@@ -617,6 +621,11 @@ def build_manuscript() -> Path:
         raise ValueError("Abstract exceeds Royal Society's 200-word limit")
     legends = extract_figure_legends(lines)
     references = extract_references(lines)
+    references.append(
+        "42. Zhuang E. 2026 Supplementary material for Cultivar-dependent "
+        "transcriptional responses of lychee to Peronophythora litchii: a registered "
+        "genome-wide analysis. Zenodo. doi:10.5281/zenodo.22240717."
+    )
 
     document = Document()
     configure_document(document, line_numbers=True)
@@ -708,7 +717,9 @@ def build_cover_letter() -> Path:
         (
             "All underlying sequencing data are publicly accessioned. The complete supplementary "
             f"tables, supplementary figures, and figure source data are archived at {ZENODO_DOI}, "
-            "with accession details provided in the manuscript."
+            "with accession details provided in the manuscript. The analytical source code, "
+            "workflows, tests and environment specifications are supplied as electronic "
+            "supplementary material with this submission."
         ),
         (
             "Thank you for considering this manuscript."
@@ -835,6 +846,86 @@ def build_submission_supplement(source: Path, target: Path) -> None:
             archive.writestr(f"{root}/{relative}", contents)
 
 
+def build_code_archive() -> Path:
+    """Package analysis code for peer review without manuscript-production history."""
+    analysis_dir = PROJECT_ROOT / "analysis"
+    output = OUTPUT_DIR / "supporting_information/RSOS_analysis_code.zip"
+    included_dirs = {"config", "envs", "metadata", "scripts", "tests", "workflow"}
+    excluded_files = {
+        "config/required_inputs.yaml",
+        "scripts/38_integrate_" + "vi" + "xra" + "_manuscript.py",
+        "scripts/43_integrate_heavy_revision.py",
+        "scripts/44_build_doi_release.py",
+        "scripts/45_validate_revision_deliverables.py",
+    }
+    excluded_markers = (("git" + "hub").encode(), ("vi" + "xra").encode())
+    payload: dict[str, bytes] = {}
+    for path in sorted(analysis_dir.rglob("*")):
+        if not path.is_file() or "__pycache__" in path.parts:
+            continue
+        relative = path.relative_to(analysis_dir)
+        if relative.parts[0] not in included_dirs or relative.as_posix() in excluded_files:
+            continue
+        contents = path.read_bytes()
+        if any(marker in contents.lower() for marker in excluded_markers):
+            continue
+        if relative.as_posix() == "envs/lychee-discovery-resolved.yml":
+            contents = b"".join(
+                line
+                for line in contents.splitlines(keepends=True)
+                if not line.lstrip().startswith(b"prefix:")
+            )
+        payload[f"analysis/{relative.as_posix()}"] = contents
+
+    readme = """# Analysis-code electronic supplementary material
+
+Associated article: Cultivar-dependent transcriptional responses of lychee to
+Peronophythora litchii: a registered genome-wide analysis
+
+Author: Eric Zhuang
+Package date: 2026-09-05
+
+This archive contains the analytical source code supplied for editorial and
+peer-review verification. It includes the Snakemake workflows, Python and R
+analysis scripts, configuration files, environment specifications, metadata,
+synthetic fixtures and regression tests used for the study. Manuscript-formatting
+and release-packaging utilities are excluded because they do not generate the
+reported statistics or analytical figures.
+
+Raw sequencing reads and large reference resources are not redistributed. Their
+public accessions and identifiers are given in the manuscript. Frozen result
+tables and figure source data are in the separate supplementary-data archive.
+
+The main workflow entry points are analysis/workflow/Snakefile,
+analysis/workflow/external_study.smk and analysis/workflow/finalize.smk. Software
+requirements are recorded under analysis/envs and exact observed versions are
+reported in Supplementary Table S17. Outcome-free regression tests are under
+analysis/tests. The workflows expect the project-relative data and results paths
+described in the manuscript and configuration files.
+
+This code is submitted as electronic supplementary material. If the article is
+accepted, it will be published under the journal's CC BY 4.0 supplementary-
+material terms; third-party software retains its own licence.
+
+MANIFEST.tsv records the byte size and SHA-256 digest of every other file in this
+archive.
+""".encode()
+    payload["README_CODE.md"] = readme
+
+    manifest_lines = ["path\tbytes\tsha256"]
+    for relative, contents in sorted(payload.items()):
+        manifest_lines.append(
+            f"{relative}\t{len(contents)}\t{hashlib.sha256(contents).hexdigest()}"
+        )
+    payload["MANIFEST.tsv"] = ("\n".join(manifest_lines) + "\n").encode()
+
+    root = "RSOS_analysis_code_2026-09-05"
+    with ZipFile(output, "w", ZIP_DEFLATED, compresslevel=9) as archive:
+        for relative, contents in sorted(payload.items()):
+            archive.writestr(f"{root}/{relative}", contents)
+    return output
+
+
 def copy_payload_files() -> list[Path]:
     figure_dir = OUTPUT_DIR / "figures"
     support_dir = OUTPUT_DIR / "supporting_information"
@@ -881,7 +972,8 @@ def main() -> None:
     cover_letter = build_cover_letter()
     supplementary_figures = build_supplementary_figures_pdf()
     copied = copy_payload_files()
-    write_manifest([manuscript, cover_letter, supplementary_figures, *copied])
+    code_archive = build_code_archive()
+    write_manifest([manuscript, cover_letter, supplementary_figures, code_archive, *copied])
     print(f"Built Royal Society Open Science package in {OUTPUT_DIR}")
 
 
