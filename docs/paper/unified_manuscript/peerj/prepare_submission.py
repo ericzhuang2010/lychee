@@ -7,16 +7,18 @@ import hashlib
 import importlib.util
 import re
 import shutil
+import subprocess
+from io import BytesIO
 from pathlib import Path
 from zipfile import ZIP_DEFLATED, ZipFile
 
 from docx import Document
 from docx.enum.section import WD_ORIENT
 from docx.enum.table import WD_CELL_VERTICAL_ALIGNMENT, WD_TABLE_ALIGNMENT
-from docx.enum.text import WD_ALIGN_PARAGRAPH, WD_LINE_SPACING
+from docx.enum.text import WD_ALIGN_PARAGRAPH
 from docx.oxml import OxmlElement
 from docx.oxml.ns import qn
-from docx.shared import Inches, Pt, RGBColor
+from docx.shared import Inches, Pt
 from PIL import Image
 
 
@@ -25,6 +27,7 @@ MANUSCRIPT_DIR = OUTPUT_DIR.parent
 SOURCE_MD = MANUSCRIPT_DIR / "manuscript.md"
 SOURCE_SUPPLEMENT = MANUSCRIPT_DIR / "lychee_unified_manuscript_supplement.zip"
 RSOS_SCRIPT = MANUSCRIPT_DIR / "royal_society_open_science" / "prepare_submission.py"
+PEERJ_TEMPLATE = OUTPUT_DIR / "PeerJ-research-manuscript-template.docx"
 
 TITLE = (
     "Cultivar-dependent transcriptional responses of lychee to "
@@ -32,6 +35,9 @@ TITLE = (
 )
 AUTHOR = "Eric Zhuang"
 AFFILIATION = "NYU Langone Health, New York, NY, USA"
+# Replace this with the author's full street address and ZIP/postal code before
+# submission if PeerJ requires every item shown in the template prompt.
+CORRESPONDENCE_ADDRESS = AFFILIATION
 EMAIL = "eric.zhuang@nyulangone.org"
 ORCID = "0009-0001-9050-0214"
 ZENODO_DOI = "https://doi.org/10.5281/zenodo.22240717"
@@ -124,77 +130,95 @@ def manuscript_text(value: str) -> str:
     return value
 
 
-def configure_manuscript(document: Document) -> None:
-    shared.configure_document(document, line_numbers=True)
-    section = document.sections[0]
-    section.page_width = Inches(8.5)
-    section.page_height = Inches(11)
-    section.top_margin = Inches(1)
-    section.bottom_margin = Inches(1)
-    section.left_margin = Inches(1)
-    section.right_margin = Inches(1)
+def clear_template_placeholders(document: Document) -> None:
+    """Remove the sample body while preserving template styles and section settings."""
+    body = document._element.body
+    section_properties = body.sectPr
+    for child in list(body):
+        if child is not section_properties:
+            body.remove(child)
 
-    normal = document.styles["Normal"]
-    normal.font.name = "Times New Roman"
-    normal.font.size = Pt(12)
-    normal._element.rPr.rFonts.set(qn("w:eastAsia"), "Times New Roman")
-    normal.paragraph_format.alignment = WD_ALIGN_PARAGRAPH.LEFT
-    normal.paragraph_format.line_spacing_rule = WD_LINE_SPACING.DOUBLE
-    normal.paragraph_format.space_after = Pt(0)
 
-    for style_name in ("Title", "Heading 1", "Heading 2"):
-        style = document.styles[style_name]
-        style.font.color.rgb = RGBColor(0, 0, 0)
-        style.paragraph_format.alignment = WD_ALIGN_PARAGRAPH.LEFT
+def template_paragraph(document: Document):
+    paragraph = document.add_paragraph(style="normal")
+    paragraph.paragraph_format.alignment = WD_ALIGN_PARAGRAPH.LEFT
+    paragraph.paragraph_format.space_after = Pt(0)
+    return paragraph
+
+
+def format_runs(paragraph, *, size: float = 12, bold: bool | None = None) -> None:
+    for run in paragraph.runs:
+        run.font.name = "Times"
+        run._element.get_or_add_rPr().rFonts.set(qn("w:ascii"), "Times")
+        run._element.get_or_add_rPr().rFonts.set(qn("w:hAnsi"), "Times")
+        run._element.get_or_add_rPr().rFonts.set(qn("w:cs"), "Times New Roman")
+        run.font.size = Pt(size)
+        if bold is not None:
+            run.bold = bold
+
+
+def add_template_heading(document: Document, value: str, *, level: int = 1):
+    paragraph = template_paragraph(document)
+    paragraph.paragraph_format.space_before = Pt(12 if level == 1 else 8)
+    paragraph.paragraph_format.space_after = Pt(0)
+    shared.set_keep_with_next(paragraph)
+    run = paragraph.add_run(value)
+    run.bold = True
+    format_runs(paragraph, size=14 if level == 1 else 12, bold=True)
+    return paragraph
 
 
 def add_author_cover_page(document: Document) -> None:
-    title = document.add_paragraph(style="Title")
-    title.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    title = template_paragraph(document)
+    title.paragraph_format.space_after = Pt(0)
     shared.add_inline(
         title,
         "Cultivar-dependent transcriptional responses of lychee to "
         "*Peronophythora litchii*: a registered genome-wide analysis",
     )
+    format_runs(title, size=18, bold=True)
 
-    author = document.add_paragraph()
-    author.alignment = WD_ALIGN_PARAGRAPH.CENTER
-    author.paragraph_format.line_spacing = 1.15
-    author.add_run(f"{AUTHOR}¹").bold = True
+    template_paragraph(document)
+    author = template_paragraph(document)
+    author.add_run(AUTHOR)
+    affiliation_number = author.add_run("1")
+    affiliation_number.font.superscript = True
+    format_runs(author)
 
-    affiliation = document.add_paragraph()
-    affiliation.alignment = WD_ALIGN_PARAGRAPH.CENTER
-    affiliation.paragraph_format.line_spacing = 1.15
-    affiliation.add_run(f"¹ {AFFILIATION}")
+    template_paragraph(document)
+    affiliation = template_paragraph(document)
+    affiliation.add_run("1").font.superscript = True
+    affiliation.add_run(f" {AFFILIATION}")
+    format_runs(affiliation)
 
-    document.add_paragraph()
-    corresponding = document.add_paragraph()
-    corresponding.paragraph_format.line_spacing = 1.15
+    template_paragraph(document)
+    corresponding = template_paragraph(document)
     corresponding.add_run("Corresponding Author:").bold = True
-    document.add_paragraph(f"{AUTHOR}¹")
-    document.add_paragraph(f"Email address: {EMAIL}")
-    document.add_paragraph(f"ORCID iD: {ORCID}")
+    format_runs(corresponding)
 
-    document.add_paragraph()
-    admin = document.add_paragraph()
-    admin.paragraph_format.line_spacing = 1.15
-    admin.add_run("Submission Admin:").bold = True
-    document.add_paragraph(AUTHOR)
-    document.add_paragraph(f"Email address: {EMAIL}")
+    correspondent = template_paragraph(document)
+    correspondent.add_run(AUTHOR)
+    correspondent.add_run("1").font.superscript = True
+    format_runs(correspondent)
 
-    article_type = document.add_paragraph()
-    article_type.paragraph_format.space_before = Pt(12)
-    article_type.add_run("Article type: ").bold = True
-    article_type.add_run("Research Article")
+    address = template_paragraph(document)
+    address.add_run(CORRESPONDENCE_ADDRESS)
+    format_runs(address)
+
+    email = template_paragraph(document)
+    email.add_run(f"Email address: {EMAIL}")
+    format_runs(email)
+
+    template_paragraph(document)
 
 def add_structured_abstract(document: Document) -> None:
-    heading = document.add_paragraph("Abstract", style="Heading 1")
-    heading.paragraph_format.page_break_before = True
+    add_template_heading(document, "Abstract")
     rendered = []
     for label, body in ABSTRACT_SECTIONS:
-        paragraph = document.add_paragraph()
+        paragraph = template_paragraph(document)
         paragraph.add_run(f"{label}. ").bold = True
         shared.add_inline(paragraph, body)
+        format_runs(paragraph)
         rendered.append(f"{label}. {plain_markdown(body)}")
 
     abstract_text = "\n".join(rendered)
@@ -204,16 +228,6 @@ def add_structured_abstract(document: Document) -> None:
             f"Structured abstract exceeds PeerJ limit: {word_count} words, "
             f"{len(abstract_text)} characters"
         )
-
-    keywords = document.add_paragraph()
-    keywords.paragraph_format.line_spacing = 1.15
-    keywords.add_run("Keywords: ").bold = True
-    shared.add_inline(
-        keywords,
-        "*Litchi chinensis*; *Peronophythora litchii*; plant-pathogen interaction; "
-        "RNA sequencing; cultivar-dependent response; preregistered analysis",
-    )
-
 
 def strip_heading_number(value: str) -> str:
     return re.sub(r"^\d+(?:\.\d+)*\.?\s+", "", value)
@@ -241,19 +255,16 @@ def add_body_lines(document: Document, lines: list[str]) -> None:
 
         heading = HEADING_RE.match(stripped)
         if heading:
-            paragraph = document.add_paragraph(style="Heading 2")
-            shared.add_inline(paragraph, strip_heading_number(heading.group(2)))
+            add_template_heading(
+                document,
+                plain_markdown(strip_heading_number(heading.group(2))),
+                level=2,
+            )
             index += 1
             continue
 
         image = IMAGE_RE.match(stripped)
         if image:
-            number = re.match(r"Figure\s+(\d+)\.", image.group("caption"))
-            if number:
-                document.add_paragraph(
-                    f"[Insert Figure {number.group(1)} near here]",
-                    style="Figure Callout",
-                )
             index += 1
             continue
 
@@ -267,10 +278,6 @@ def add_body_lines(document: Document, lines: list[str]) -> None:
             _, index = shared.parse_table(lines, index)
             if pending_table is None:
                 raise ValueError("Found a Markdown table without a numbered caption")
-            document.add_paragraph(
-                f"[Insert Table {pending_table} near here]",
-                style="Figure Callout",
-            )
             pending_table = None
             continue
 
@@ -289,12 +296,13 @@ def add_body_lines(document: Document, lines: list[str]) -> None:
                 break
             paragraph_lines.append(candidate)
             index += 1
-        paragraph = document.add_paragraph()
+        paragraph = template_paragraph(document)
         shared.add_inline(paragraph, manuscript_text(" ".join(paragraph_lines)))
+        format_runs(paragraph)
 
 
 def add_section(document: Document, title: str, lines: list[str]) -> None:
-    document.add_paragraph(title, style="Heading 1")
+    add_template_heading(document, title)
     add_body_lines(document, lines)
 
 
@@ -317,9 +325,9 @@ def extract_references(lines: list[str]) -> list[str]:
     return references
 
 
-def add_declarations(document: Document) -> None:
-    document.add_paragraph("Acknowledgments", style="Heading 1")
-    acknowledgment = document.add_paragraph()
+def add_acknowledgements(document: Document) -> None:
+    add_template_heading(document, "Acknowledgements")
+    acknowledgment = template_paragraph(document)
     shared.add_inline(
         acknowledgment,
         "The author has no personal acknowledgments to declare. OpenAI Codex "
@@ -332,82 +340,25 @@ def add_declarations(document: Document) -> None:
         "manuscript, including the accuracy of its references. The pre-edit and edited "
         "versions have been retained and can be supplied to the Editor on request.",
     )
-
-    document.add_paragraph("Additional Information and Declarations", style="Heading 1")
-    declarations = [
-        ("Funding", "This work received no external funding."),
-        ("Competing Interests", "The author declares no conflicts of interest."),
-        (
-            "Author Contributions",
-            "Eric Zhuang: conceptualization, data curation, formal analysis, "
-            "investigation, methodology, project administration, software, validation, "
-            "visualization, writing—original draft, and writing—review and editing. "
-            "The author approved the submitted version and is accountable for the work.",
-        ),
-        (
-            "Ethics",
-            "This study reanalyzed publicly available sequencing datasets and involved "
-            "no new experiments with humans, human tissue, animals, or field sampling; "
-            "ethical approval was not required.",
-        ),
-        (
-            "Data Availability",
-            "All analyzed sequencing data are public under PRJNA830488/GSE201243, "
-            "PRJNA450886, PRJNA922966/GSE222651, PRJNA922965/GSE222650, and "
-            "PRJNA1090613/GSE262200. Supplementary Tables S1–S18, Figures S1–S3, "
-            f"and tab-separated figure source data are archived at {ZENODO_DOI} [42]. "
-            "The supplementary tables, figures, and source data, together with the exact "
-            "analysis code, Snakemake workflows, scripts, configurations, tests, metadata, "
-            "and environment specifications used for this study, are supplied as "
-            "Supplemental Data S1.",
-        ),
-    ]
-    for heading, body in declarations:
-        paragraph = document.add_paragraph()
-        paragraph.add_run(f"{heading}. ").bold = True
-        shared.add_inline(paragraph, body)
-
-    document.add_paragraph("Supplemental Information", style="Heading 1")
-    paragraph = document.add_paragraph()
-    shared.add_inline(
-        paragraph,
-        "Supplemental Data S1 contains Supplementary Tables S1–S18, Figures S1–S3, "
-        "tab-separated source data for the main and supplementary analytical figures, "
-        "and the complete analysis code and reproducibility materials. The archive includes "
-        "a README and a SHA-256 integrity manifest.",
-    )
+    format_runs(acknowledgment)
 
 
 def add_references(document: Document, references: list[str]) -> None:
-    heading = document.add_paragraph("References", style="Heading 1")
-    heading.paragraph_format.page_break_before = True
+    add_template_heading(document, "References")
     for reference in references:
-        paragraph = document.add_paragraph()
+        paragraph = template_paragraph(document)
         paragraph.paragraph_format.left_indent = Inches(0.25)
         paragraph.paragraph_format.first_line_indent = Inches(-0.25)
-        paragraph.paragraph_format.line_spacing = 1.15
-        paragraph.paragraph_format.space_after = Pt(4)
         shared.add_inline(paragraph, reference)
-
-
-def add_figure_legends(document: Document, lines: list[str]) -> None:
-    legends = shared.extract_figure_legends(lines)
-    heading = document.add_paragraph("Figure Legends", style="Heading 1")
-    heading.paragraph_format.page_break_before = True
-    for number in range(1, 7):
-        paragraph = document.add_paragraph()
-        paragraph.paragraph_format.line_spacing = 1.15
-        paragraph.paragraph_format.space_after = Pt(8)
-        prefix = f"Figure {number}."
-        caption = legends[number]
-        paragraph.add_run(prefix).bold = True
-        paragraph.add_run(caption[len(prefix) :])
+        format_runs(paragraph)
 
 
 def build_manuscript() -> Path:
     lines = SOURCE_MD.read_text(encoding="utf-8").splitlines()
-    document = Document()
-    configure_manuscript(document)
+    if not PEERJ_TEMPLATE.is_file():
+        raise FileNotFoundError(PEERJ_TEMPLATE)
+    document = Document(PEERJ_TEMPLATE)
+    clear_template_placeholders(document)
 
     properties = document.core_properties
     properties.title = TITLE
@@ -442,16 +393,10 @@ def build_manuscript() -> Path:
         "Conclusions",
         section_bounds(lines, "## 4. Conclusions", "## 5. Materials and Methods"),
     )
-    add_declarations(document)
+    add_acknowledgements(document)
 
     references = extract_references(lines)
-    references.append(
-        "42. Zhuang E. 2026. Supplementary material for Cultivar-dependent "
-        "transcriptional responses of lychee to Peronophythora litchii: a registered "
-        "genome-wide analysis. Zenodo. DOI: 10.5281/zenodo.22240717."
-    )
     add_references(document, references)
-    add_figure_legends(document, lines)
 
     output = OUTPUT_DIR / "PeerJ_manuscript.docx"
     document.save(output)
@@ -553,6 +498,96 @@ def build_tables() -> list[Path]:
     return [build_table_file(number, *tables[number]) for number in sorted(tables)]
 
 
+def normalize_odt_page_layout(path: Path) -> None:
+    """Retain the DOCX table page geometry after textutil conversion."""
+    with ZipFile(path) as archive:
+        members = [
+            (member, archive.read(member.filename)) for member in archive.infolist()
+        ]
+
+    updated_members: list[tuple[object, bytes]] = []
+    updated_layout = False
+    for member, contents in members:
+        if member.filename == "styles.xml":
+            xml = contents.decode("utf-8")
+            layout_match = re.search(
+                r"<style:page-layout-properties\b[^>]*/>",
+                xml,
+            )
+            if layout_match is None:
+                raise RuntimeError(f"Could not find ODT page layout in {path}")
+            layout = layout_match.group(0)
+            replacements = {
+                "fo:page-width": "11in",
+                "fo:page-height": "8.5in",
+                "fo:margin-top": "1in",
+                "fo:margin-bottom": "1in",
+                "fo:margin-left": "1in",
+                "fo:margin-right": "1in",
+            }
+            for attribute, value in replacements.items():
+                layout, count = re.subn(
+                    rf'{re.escape(attribute)}="[^"]+"',
+                    f'{attribute}="{value}"',
+                    layout,
+                )
+                if count != 1:
+                    raise RuntimeError(
+                        f"Expected one {attribute} attribute in {path}, found {count}"
+                    )
+            xml = (
+                xml[: layout_match.start()]
+                + layout
+                + xml[layout_match.end() :]
+            )
+            contents = xml.encode("utf-8")
+            updated_layout = True
+        updated_members.append((member, contents))
+
+    if not updated_layout:
+        raise RuntimeError(f"Did not update ODT page layout in {path}")
+
+    buffer = BytesIO()
+    with ZipFile(buffer, "w") as archive:
+        for member, contents in updated_members:
+            archive.writestr(member, contents)
+    path.write_bytes(buffer.getvalue())
+
+
+def build_odt_tables(docx_tables: list[Path]) -> list[Path]:
+    """Create PeerJ-compatible editable ODT alternatives with macOS textutil."""
+    converter = shutil.which("textutil")
+    if converter is None:
+        raise RuntimeError(
+            "ODT table generation requires macOS textutil; retain the DOCX tables "
+            "or convert them with LibreOffice on another platform."
+        )
+
+    output_dir = OUTPUT_DIR / "tables_odt"
+    output_dir.mkdir(parents=True, exist_ok=True)
+    outputs: list[Path] = []
+    for number, source in enumerate(docx_tables, start=1):
+        target = output_dir / f"Table{number}.odt"
+        subprocess.run(
+            [
+                converter,
+                "-convert",
+                "odt",
+                "-output",
+                str(target),
+                str(source),
+            ],
+            check=True,
+            capture_output=True,
+            text=True,
+        )
+        if not target.is_file():
+            raise RuntimeError(f"ODT conversion did not create {target}")
+        normalize_odt_page_layout(target)
+        outputs.append(target)
+    return outputs
+
+
 def copy_figures() -> list[Path]:
     output_dir = OUTPUT_DIR / "figures"
     output_dir.mkdir(parents=True, exist_ok=True)
@@ -650,7 +685,8 @@ def write_manifest(paths: list[Path]) -> Path:
 
 def main() -> None:
     manuscript = build_manuscript()
-    tables = build_tables()
+    docx_tables = build_tables()
+    tables = build_odt_tables(docx_tables)
     figures = copy_figures()
     supplement = build_supplement()
     manifest = write_manifest([manuscript, *tables, *figures, supplement])

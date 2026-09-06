@@ -16,21 +16,22 @@ Upload these 12 files:
 
 1. `PeerJ_manuscript.docx` — manuscript; select the main-manuscript designation.
 2. `figures/Figure_1.png` through `figures/Figure_6.png` — six separate main figures, in order.
-3. `tables/Table_1.docx` through `tables/Table_4.docx` — four separate editable tables, in order.
+3. `tables_odt/Table1.odt` through `tables_odt/Table4.odt` — four separate editable tables, in order. These are the alternate ODT upload set selected after the portal rejected DOCX in the attempted upload control.
 4. `supplemental_information/PeerJ_supplemental_data_S1.zip` — select the Supplemental Data/Supplemental Information designation and publish with the article.
 
-Do not upload `README_submission.md`, `submission_metadata.md`, `prepare_submission.py`, or `UPLOAD_FILE_MANIFEST_SHA256.tsv`; these are preparation aids.
+Do not upload `PeerJ-research-manuscript-template.docx`, `README_submission.md`, `submission_metadata.md`, `prepare_submission.py`, or `UPLOAD_FILE_MANIFEST_SHA256.tsv`; these are preparation aids. The `tables/Table_1.docx` through `Table_4.docx` files are retained as the preferred-format originals and fallback copies. Upload either the ODT set or the DOCX set, never both.
 
 PeerJ currently says that no cover letter is needed, so none is included. The source `manuscript.pdf` is also not part of the upload package because PeerJ prefers an editable DOCX main manuscript and requests figures and tables as separate files.
 
 ## What was adapted for PeerJ
 
-- The manuscript is US Letter with 2.5-cm margins, 12-point Times New Roman, continuous line numbers, a PeerJ-style author cover page, and left-aligned text.
+- The manuscript is built directly from `PeerJ-research-manuscript-template.docx`, preserving its US Letter page, 2.5-cm margins, 12-point Times body text, 1.15 line spacing, continuous line numbers, blank header/footer, and manually formatted heading conventions.
 - The abstract is structured as Background, Methods, Results, and Conclusions and is below PeerJ's limits of 500 words and 3,000 characters.
+- Keywords remain in `submission_metadata.md` for entry in the submission portal because the supplied manuscript template proceeds directly from the abstract to the Introduction.
 - The section order is Introduction, Materials & Methods, Results, Discussion, and Conclusions.
-- Main figures and editable main tables are separate upload files; the manuscript contains placement callouts and a figure-legends section.
+- Main figures and editable main tables are separate upload files. Both preferred DOCX and alternative ODT table sets are generated; the upload manifest currently selects ODT. The manuscript cites the tables in ascending numerical order but does not contain figures, tables, or placement callouts. Figure titles and legends are supplied in `submission_metadata.md` for entry during upload.
 - The supplement is a single compressed, machine-readable archive below the 30-MB individual-file limit. It contains all supplementary tables, supplementary figures, figure source data, analysis code, workflows, configurations, tests, and environment specifications.
-- The acknowledgments include the current PeerJ-required details for generative-AI-assisted language editing.
+- The Acknowledgements include the current PeerJ-required details for generative-AI-assisted language editing.
 
 ## Important PeerJ scope risk
 
@@ -41,6 +42,7 @@ The manuscript clearly asks a new question and uses several independent public c
 ## Final author checks
 
 - [ ] Confirm that `NYU Langone Health, New York, NY, USA` is the complete affiliation; add a department or division if appropriate.
+- [ ] Replace `CORRESPONDENCE_ADDRESS` in `prepare_submission.py` with the full street address and ZIP/postal code requested by the template, then rebuild. The current source files provide only the institutional affiliation, city, state, and country.
 - [ ] Confirm the email `eric.zhuang@nyulangone.org` and ORCID `0009-0001-9050-0214`.
 - [ ] Choose Research Article and the Bioinformatics and Genomics section.
 - [ ] Select subject areas in this order where available: Plant Science, Genomics, Bioinformatics, Agricultural Science, Molecular Biology.
@@ -73,4 +75,4 @@ From this directory, run:
 python3 prepare_submission.py
 ```
 
-This rebuilds the manuscript, four table files, six figure files, supplemental archive, and SHA-256 upload manifest. `UPLOAD_FILE_MANIFEST_SHA256.tsv` lists exactly the files intended for upload.
+This rebuilds the manuscript from the PeerJ template, along with four DOCX source tables and four ODT upload alternatives, six figure files, the supplemental archive, and the SHA-256 upload manifest. ODT conversion uses the macOS `textutil` utility. `UPLOAD_FILE_MANIFEST_SHA256.tsv` lists exactly the files intended for upload.
