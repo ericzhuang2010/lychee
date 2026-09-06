@@ -814,6 +814,30 @@ def build_supplementary_figures_pdf() -> Path:
 def build_submission_supplement(source: Path, target: Path) -> None:
     """Create a journal-facing supplement and refresh its internal manifest."""
     excluded_markers = (("git" + "hub").encode(), ("vi" + "xra").encode())
+    data_readme = """# Data and figure electronic supplementary material
+
+Associated article: Cultivar-dependent transcriptional responses of lychee to
+Peronophythora litchii: a registered genome-wide analysis
+
+Author: Eric Zhuang
+Package date: 2026-09-05
+
+This archive contains Supplementary Tables S1-S18 as UTF-8 tab-delimited files,
+Figures S1-S3 in PDF and 300-DPI PNG formats, and tab-delimited source data for
+the main and supplementary analytical figures. S16 is divided into S16a and
+S16b. A separate electronic supplementary archive contains the analysis code,
+workflows, configurations, tests and environment specifications.
+
+Raw sequencing reads are not redistributed. The analysed public accessions are
+PRJNA830488/GSE201243, PRJNA450886, PRJNA922966/GSE222651,
+PRJNA922965/GSE222650 and PRJNA1090613/GSE262200.
+
+Supplementary Table S10 is intentionally large because it records every tested
+motif-background comparison. MANIFEST.tsv records the byte size and SHA-256
+digest of every other file in this archive. All content is supplied under CC BY
+4.0, consistent with the associated Zenodo record and the journal's electronic-
+supplementary-material terms.
+""".encode()
     payload: dict[str, bytes] = {}
     with ZipFile(source) as archive:
         source_root = archive.namelist()[0].split("/", 1)[0]
@@ -824,6 +848,8 @@ def build_submission_supplement(source: Path, target: Path) -> None:
             if relative == "MANIFEST.tsv":
                 continue
             contents = archive.read(member)
+            if relative == "README.md":
+                contents = data_readme
             if any(marker in contents.lower() for marker in excluded_markers):
                 lines = contents.splitlines(keepends=True)
                 contents = b"".join(
