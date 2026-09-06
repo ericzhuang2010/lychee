@@ -57,7 +57,7 @@ This study reanalysed publicly available sequencing datasets and involved no new
 
 ## Data accessibility
 
-All analysed sequencing data are public under PRJNA830488/GSE201243, PRJNA450886, PRJNA922966/GSE222651, PRJNA922965/GSE222650 and PRJNA1090613/GSE262200. Supplementary Tables S1–S18, Figures S1–S3 and tab-separated figure source data are archived under CC BY 4.0 at <https://doi.org/10.5281/zenodo.22240717>. The analysis source code, Snakemake workflows, configuration files, tests and environment specifications are supplied as electronic supplementary material in `RSOS_analysis_code.zip`. The data, code and supporting materials required to reproduce the reported results are therefore available to editors and reviewers with this submission.
+All analysed sequencing data are public under PRJNA830488/GSE201243, PRJNA450886, PRJNA922966/GSE222651, PRJNA922965/GSE222650 and PRJNA1090613/GSE262200. Supplementary Tables S1–S18, Figures S1–S3 and tab-separated figure source data are archived under CC BY 4.0 at <https://doi.org/10.5281/zenodo.22240717>. The analysis source code, Snakemake workflows, configuration files, tests and environment specifications are supplied within the electronic supplementary file `RSOS_supporting_information.zip`. The data, code and supporting materials required to reproduce the reported results are therefore available to editors and reviewers with this submission.
 
 ## Use of artificial intelligence
 
@@ -71,14 +71,8 @@ Generative AI (OpenAI Codex) was used to assist with language editing and journa
 
 ## Suggested supplementary-file titles and descriptions
 
-**RSOS supporting figures**  
-Figures S1–S3: replicate-level normalized counts, conditional parametric power curves and the quarantined exploratory signed-signature estimate. This PDF is supplied for convenient reading; identical figure assets are included in the complete supplementary archive.
-
-**RSOS supplementary tables and source data**  
-Complete electronic supplementary material containing Tables S1–S18, Figures S1–S3, tab-separated source data for the main and supplementary analytical figures, a README and an internal integrity manifest.
-
-**RSOS analysis code**  
-Analysis source code supplied for editorial and peer-review verification, including Snakemake workflows, Python and R scripts, configuration files, metadata, synthetic fixtures, regression tests and environment specifications. The archive includes a README and SHA-256 integrity manifest; large public sequencing reads and reference resources are identified in the manuscript rather than redistributed.
+**RSOS supporting information**  
+Single reviewer-focused archive containing a PDF of Figures S1–S3, twelve key tab-delimited result tables, and the analysis source-code archive with Snakemake workflows, Python and R scripts, configurations, metadata, synthetic fixtures, regression tests and environment specifications. The complete set of supplementary tables, individual figure files and figure source data is archived on Zenodo. A README and SHA-256 integrity manifest are included.
 
 ## Optional media summary (62 words)
 

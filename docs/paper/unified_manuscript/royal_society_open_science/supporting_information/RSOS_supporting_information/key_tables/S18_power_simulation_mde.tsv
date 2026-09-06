@@ -1,0 +1,11 @@
+design	expression_quartile	mde_80_log2fc	mde_80_fold_change	status
+Discovery: genome-wide BH	Overall	2.44320913461538	5.43850128144775	linearly interpolated
+Discovery: genome-wide BH	Q1	NA	NA	>4
+Discovery: genome-wide BH	Q2	1.91289641819942	3.76564348492297	linearly interpolated
+Discovery: genome-wide BH	Q3	1.28593897889873	2.43840704963331	linearly interpolated
+Discovery: genome-wide BH	Q4	1.19084632254773	2.28286622789633	linearly interpolated
+External: candidate-family BH	Overall	2.11363636363636	4.32780760147567	linearly interpolated
+External: candidate-family BH	Q1	NA	NA	>4
+External: candidate-family BH	Q2	1.33870967741936	2.52925005662403	linearly interpolated
+External: candidate-family BH	Q3	1.01875	2.02616266266105	linearly interpolated
+External: candidate-family BH	Q4	0.970099667774086	1.95897592524731	linearly interpolated

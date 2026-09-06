@@ -8,6 +8,7 @@ import re
 import shutil
 from datetime import date
 from pathlib import Path
+from tempfile import TemporaryDirectory
 from zipfile import ZIP_DEFLATED, ZipFile
 
 from docx import Document
@@ -24,6 +25,7 @@ from PIL import Image, ImageDraw, ImageFont
 OUTPUT_DIR = Path(__file__).resolve().parent
 MANUSCRIPT_DIR = OUTPUT_DIR.parent
 PROJECT_ROOT = OUTPUT_DIR.parents[3]
+ZENODO_DIR = OUTPUT_DIR / "zenodo_deposit"
 SOURCE_MD = MANUSCRIPT_DIR / "manuscript.md"
 SOURCE_SUPPLEMENT = MANUSCRIPT_DIR / "lychee_unified_manuscript_supplement.zip"
 
@@ -531,7 +533,7 @@ def add_declarations_and_data(document: Document) -> None:
             f"tab-separated figure source data are archived under CC BY 4.0 at {ZENODO_DOI} [42]. "
             "The analysis source code, Snakemake workflows, configuration files, tests and "
             "environment specifications are supplied as electronic supplementary material "
-            "in RSOS_analysis_code.zip. Together, these public records and electronic "
+            "within RSOS_supporting_information.zip. Together, these public records and electronic "
             "supplementary files provide the data, code and supporting materials required "
             "to reproduce the reported results.",
         ),
@@ -719,7 +721,8 @@ def build_cover_letter() -> Path:
             f"tables, supplementary figures, and figure source data are archived at {ZENODO_DOI}, "
             "with accession details provided in the manuscript. The analytical source code, "
             "workflows, tests and environment specifications are supplied as electronic "
-            "supplementary material with this submission."
+            "supplementary material within the single supporting-information ZIP supplied "
+            "with this submission."
         ),
         (
             "Thank you for considering this manuscript."
@@ -766,7 +769,7 @@ def wrapped_lines(draw: ImageDraw.ImageDraw, text: str, font, maximum_width: int
     return lines
 
 
-def build_supplementary_figures_pdf() -> Path:
+def build_supplementary_figures_pdf(output: Path) -> Path:
     page_width, page_height = 2550, 3300
     margin = 225
     title_font = ImageFont.truetype(
@@ -798,7 +801,6 @@ def build_supplementary_figures_pdf() -> Path:
             caption_y += line_height
         pages.append(page)
 
-    output = OUTPUT_DIR / "supporting_information/RSOS_supporting_figures.pdf"
     output.parent.mkdir(parents=True, exist_ok=True)
     pages[0].save(
         output,
@@ -872,10 +874,10 @@ supplementary-material terms.
             archive.writestr(f"{root}/{relative}", contents)
 
 
-def build_code_archive() -> Path:
+def build_code_archive(output: Path) -> Path:
     """Package analysis code for peer review without manuscript-production history."""
     analysis_dir = PROJECT_ROOT / "analysis"
-    output = OUTPUT_DIR / "supporting_information/RSOS_analysis_code.zip"
+    output.parent.mkdir(parents=True, exist_ok=True)
     included_dirs = {"config", "envs", "metadata", "scripts", "tests", "workflow"}
     excluded_files = {
         "config/required_inputs.yaml",
@@ -952,11 +954,145 @@ archive.
     return output
 
 
+def build_concise_supporting_archive(
+    comprehensive_data: Path,
+    code_archive: Path,
+    supporting_figures: Path,
+    output: Path,
+) -> Path:
+    """Build the single, reviewer-focused supplementary upload."""
+    selected_tables = [
+        "S1_biological_unit_registry.tsv",
+        "S2_per_library_QC.tsv",
+        "S3_all_discovery_statistics.tsv",
+        "S5_all_external_frozen_tests.tsv",
+        "S6_pathway_signature_tests.tsv",
+        "S7_DTU_results.tsv",
+        "S8_annotation_orthology.tsv",
+        "S9_small_RNA_results.tsv",
+        "S13_amendment_deviation_log.tsv",
+        "S14_legacy_within_cultivar_audit.tsv",
+        "S17_exact_tool_versions.tsv",
+        "S18_power_simulation_mde.tsv",
+    ]
+    payload: dict[str, bytes] = {
+        "figures/RSOS_supporting_figures.pdf": supporting_figures.read_bytes(),
+        "code/RSOS_analysis_code.zip": code_archive.read_bytes(),
+    }
+    with ZipFile(comprehensive_data) as archive:
+        root = archive.namelist()[0].split("/", 1)[0]
+        for name in selected_tables:
+            payload[f"key_tables/{name}"] = archive.read(
+                f"{root}/supplementary_tables/{name}"
+            )
+
+    readme = f"""# Royal Society Open Science supporting information
+
+Associated article: {TITLE}
+Author: {AUTHOR}
+
+This is the single reviewer-focused supplementary upload. It contains:
+
+- one PDF containing Figures S1-S3;
+- twelve key tab-delimited tables supporting the discovery, quality-control,
+  external-evaluation, pathway, transcript-usage, annotation, registration,
+  software-version and power-analysis results; and
+- the complete analysis-code archive, including workflows, configurations,
+  tests and environment specifications.
+
+The full set of Supplementary Tables S1-S18, individual supplementary-figure
+files and all figure source data is permanently archived under CC BY 4.0 at
+{ZENODO_DOI}. Public raw sequencing data are identified by accession in the
+manuscript. MANIFEST.tsv records the byte size and SHA-256 digest of every other
+file in this archive.
+""".encode()
+    payload["README.md"] = readme
+
+    manifest_lines = ["path\tbytes\tsha256"]
+    for relative, contents in sorted(payload.items()):
+        manifest_lines.append(
+            f"{relative}\t{len(contents)}\t{hashlib.sha256(contents).hexdigest()}"
+        )
+    payload["MANIFEST.tsv"] = ("\n".join(manifest_lines) + "\n").encode()
+
+    output.parent.mkdir(parents=True, exist_ok=True)
+    root = "RSOS_supporting_information"
+    with ZipFile(output, "w", ZIP_DEFLATED, compresslevel=9) as archive:
+        for relative, contents in sorted(payload.items()):
+            archive.writestr(f"{root}/{relative}", contents)
+    return output
+
+
+def build_complete_zenodo_archive(
+    comprehensive_data: Path,
+    code_archive: Path,
+    output: Path,
+) -> Path:
+    """Combine complete data, figure sources, and analysis code into one Zenodo ZIP."""
+    payload: dict[str, bytes] = {}
+    with ZipFile(comprehensive_data) as archive:
+        root = archive.namelist()[0].split("/", 1)[0]
+        for member in archive.infolist():
+            if member.is_dir():
+                continue
+            relative = member.filename.removeprefix(root + "/")
+            if relative in {"README.md", "MANIFEST.tsv"}:
+                continue
+            payload[f"data/{relative}"] = archive.read(member)
+
+    with ZipFile(code_archive) as archive:
+        root = archive.namelist()[0].split("/", 1)[0]
+        for member in archive.infolist():
+            if member.is_dir():
+                continue
+            relative = member.filename.removeprefix(root + "/")
+            if relative in {"README_CODE.md", "MANIFEST.tsv"}:
+                continue
+            payload[f"code/{relative}"] = archive.read(member)
+
+    readme = f"""# Complete reproducibility archive
+
+Associated article: {TITLE}
+Author: {AUTHOR}
+Package date: 2026-09-05
+
+This single archive contains the complete electronic research materials for the
+article:
+
+- data/supplementary_tables: Supplementary Tables S1-S18;
+- data/supplementary_figures: Figures S1-S3 in PDF and 300-DPI PNG formats;
+- data/figure_source_data: tab-delimited source data for the main and
+  supplementary analytical figures; and
+- code/analysis: Snakemake workflows, Python and R scripts, configurations,
+  metadata, synthetic fixtures, regression tests and environment specifications.
+
+Raw sequencing reads and large reference resources are not redistributed. Their
+public accessions and identifiers are given in the manuscript. All materials are
+supplied under CC BY 4.0; third-party software retains its own licence.
+
+MANIFEST.tsv records the byte size and SHA-256 digest of every other file in this
+archive.
+""".encode()
+    payload["README.md"] = readme
+
+    manifest_lines = ["path\tbytes\tsha256"]
+    for relative, contents in sorted(payload.items()):
+        manifest_lines.append(
+            f"{relative}\t{len(contents)}\t{hashlib.sha256(contents).hexdigest()}"
+        )
+    payload["MANIFEST.tsv"] = ("\n".join(manifest_lines) + "\n").encode()
+
+    output.parent.mkdir(parents=True, exist_ok=True)
+    root = "RSOS_complete_reproducibility_archive_2026-09-05"
+    with ZipFile(output, "w", ZIP_DEFLATED, compresslevel=9) as archive:
+        for relative, contents in sorted(payload.items()):
+            archive.writestr(f"{root}/{relative}", contents)
+    return output
+
+
 def copy_payload_files() -> list[Path]:
     figure_dir = OUTPUT_DIR / "figures"
-    support_dir = OUTPUT_DIR / "supporting_information"
     figure_dir.mkdir(parents=True, exist_ok=True)
-    support_dir.mkdir(parents=True, exist_ok=True)
     outputs: list[Path] = []
     for _, source_name, target_name in FIGURES:
         source = MANUSCRIPT_DIR / "figures" / source_name
@@ -970,9 +1106,6 @@ def copy_payload_files() -> list[Path]:
                     f"pixels={image.size}, dpi={dpi}"
                 )
         outputs.append(target)
-    supplement_target = support_dir / "RSOS_supplementary_tables_and_source_data.zip"
-    build_submission_supplement(SOURCE_SUPPLEMENT, supplement_target)
-    outputs.append(supplement_target)
     return outputs
 
 
@@ -984,22 +1117,71 @@ def sha256(path: Path) -> str:
     return digest.hexdigest()
 
 
-def write_manifest(paths: list[Path]) -> Path:
-    output = OUTPUT_DIR / "UPLOAD_FILE_MANIFEST_SHA256.tsv"
+def write_named_manifest(paths: list[Path], output: Path, relative_to: Path) -> Path:
     lines = ["sha256\tbytes\tfile"]
-    for path in sorted(paths, key=lambda item: str(item.relative_to(OUTPUT_DIR))):
-        lines.append(f"{sha256(path)}\t{path.stat().st_size}\t{path.relative_to(OUTPUT_DIR)}")
+    for path in sorted(paths, key=lambda item: str(item.relative_to(relative_to))):
+        lines.append(f"{sha256(path)}\t{path.stat().st_size}\t{path.relative_to(relative_to)}")
     output.write_text("\n".join(lines) + "\n", encoding="utf-8")
     return output
+
+
+def write_manifest(paths: list[Path]) -> Path:
+    return write_named_manifest(
+        paths,
+        OUTPUT_DIR / "UPLOAD_FILE_MANIFEST_SHA256.tsv",
+        OUTPUT_DIR,
+    )
 
 
 def main() -> None:
     manuscript = build_manuscript()
     cover_letter = build_cover_letter()
-    supplementary_figures = build_supplementary_figures_pdf()
-    copied = copy_payload_files()
-    code_archive = build_code_archive()
-    write_manifest([manuscript, cover_letter, supplementary_figures, code_archive, *copied])
+    figures = copy_payload_files()
+
+    support_dir = OUTPUT_DIR / "supporting_information"
+    support_dir.mkdir(parents=True, exist_ok=True)
+    ZENODO_DIR.mkdir(parents=True, exist_ok=True)
+    with TemporaryDirectory(prefix="rsos-build-", dir=OUTPUT_DIR) as temporary:
+        temporary_dir = Path(temporary)
+        comprehensive_data = temporary_dir / "RSOS_supplementary_tables_and_source_data.zip"
+        build_submission_supplement(SOURCE_SUPPLEMENT, comprehensive_data)
+        code_archive = build_code_archive(temporary_dir / "RSOS_analysis_code.zip")
+        supporting_figures = build_supplementary_figures_pdf(
+            temporary_dir / "RSOS_supporting_figures.pdf"
+        )
+        concise_support = build_concise_supporting_archive(
+            comprehensive_data,
+            code_archive,
+            supporting_figures,
+            support_dir / "RSOS_supporting_information.zip",
+        )
+        complete_zenodo = build_complete_zenodo_archive(
+            comprehensive_data,
+            code_archive,
+            ZENODO_DIR / "RSOS_complete_reproducibility_archive.zip",
+        )
+
+    for obsolete in (
+        ZENODO_DIR / "RSOS_supplementary_tables_and_source_data.zip",
+        ZENODO_DIR / "RSOS_analysis_code.zip",
+    ):
+        if obsolete.exists():
+            obsolete.unlink()
+    write_named_manifest(
+        [complete_zenodo],
+        ZENODO_DIR / "ZENODO_FILE_MANIFEST_SHA256.tsv",
+        ZENODO_DIR,
+    )
+
+    for obsolete in (
+        support_dir / "RSOS_supporting_figures.pdf",
+        support_dir / "RSOS_supplementary_tables_and_source_data.zip",
+        support_dir / "RSOS_analysis_code.zip",
+    ):
+        if obsolete.exists():
+            obsolete.unlink()
+
+    write_manifest([manuscript, cover_letter, concise_support, *figures])
     print(f"Built Royal Society Open Science package in {OUTPUT_DIR}")
 
 
