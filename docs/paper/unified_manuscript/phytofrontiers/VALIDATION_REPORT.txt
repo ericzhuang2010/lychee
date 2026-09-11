@@ -1,0 +1,35 @@
+PhytoFrontiers package validation
+Build date: 2026-09-10
+Title characters: 115 (limit: 150)
+Abstract words: 185 (limit: 250)
+Initial Main Document: single PDF with 12-point Arial, double spacing, line numbers, and page headers
+Main sections: Introduction; Materials and Methods; Results; Discussion
+Main tables: 4 tables embedded after Literature Cited
+Main figures: 6 figures embedded after the tables
+Figure captions: each placed on the same page as its figure
+Editable backup: Word manuscript with embedded tables, figures, and captions
+Production figures retained: six vector PDFs and six 300-dpi LZW TIFFs
+Supplement: 1 four-page e-Xtra PDF (cover plus Figures S1-S3)
+Literature Cited entries: 39 (author-year; alphabetized)
+Database accessions: stated in text rather than Literature Cited
+AI-use disclosure: present in Acknowledgments
+Cover-letter significance paragraph: 5 sentences
+Recommended initial-upload files:
+- PhytoFrontiers_initial_submission.pdf (460766 bytes)
+- PhytoFrontiers_cover_letter.docx (37744 bytes)
+- supporting_information/PhytoFrontiers_eXtra_figures.pdf (2032648 bytes)
+Retained revision/production aids (do not upload with the streamlined PDF):
+- PhytoFrontiers_manuscript.docx (1611470 bytes)
+- FIGURE_CAPTIONS.txt (2437 bytes)
+- figures/Figure_1_study_design_and_QC.pdf (31094 bytes)
+- figures/Figure_1_study_design_and_QC.tif (361300 bytes)
+- figures/Figure_2_discovery_and_legacy_audit.pdf (155996 bytes)
+- figures/Figure_2_discovery_and_legacy_audit.tif (561408 bytes)
+- figures/Figure_3_robustness_and_external_evaluation.pdf (32769 bytes)
+- figures/Figure_3_robustness_and_external_evaluation.tif (453694 bytes)
+- figures/Figure_4_pathway_and_signature_evaluation.pdf (27163 bytes)
+- figures/Figure_4_pathway_and_signature_evaluation.tif (371958 bytes)
+- figures/Figure_5_transcript_usage.pdf (26525 bytes)
+- figures/Figure_5_transcript_usage.tif (291884 bytes)
+- figures/Figure_6_orthogonal_evidence_and_tiers.pdf (26659 bytes)
+- figures/Figure_6_orthogonal_evidence_and_tiers.tif (297588 bytes)

@@ -1,0 +1,11 @@
+I think I used an old version of the paper for this one.
+
+Title: Registered genome-wide transcriptomic analysis of cultivar-dependent lychee responses to Peronophythora litchii
+
+Author: Eric Zhuang
+
+Affiliation: NYU Langone Health, New York, NY, USA
+
+Abstract (180 words):
+
+Objective: To identify cultivar-dependent transcriptional responses of lychee to Peronophythora litchii that survive genome-wide testing, robustness analysis, and external evaluation. Methodology: We combined reanalysis of public leaf RNA-seq data with a registered workflow fixing datasets, models, thresholds, and evidence terms. A negative-binomial cultivar-by-infection analysis tested 19,445 expressed genes, followed by quality control, independent edgeR analysis, sensitivity tests, and frozen evaluation in public external cohorts. Key Results: The interaction analysis yielded 262 statistical candidates; 206 passed quality control, 19 remained significant under edgeR, and 16 passed all registered robustness checks. In an independent pericarp time course, two genes received cross-context support and five showed significant opposite-direction effects; internally robust and externally supported sets did not overlap beyond chance expectation. None of 18 exploratory candidates met the later genome-wide criterion. Evidence integration retained 12 internally robust genes in a middle tier and none in the highest tier. Conclusion: Prominent candidates from small single-cohort transcriptomic studies may fail formal interaction testing and transport poorly across biological contexts. The reproducible workflow and explicit null and contradictory results provide a rigorous resource for experimental follow-up.

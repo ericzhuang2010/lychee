@@ -1,0 +1,8 @@
+Dear Eric,
+Thank you for submitting your manuscript - Cultivar-dependent transcriptional responses of lychee to Peronophythora litchii: a registered genome-wide analysis - to PeerJ.
+Bioinformatics studies that are based on the analysis of previously published datasets must answer a biologically or medically relevant question not considered in the original publication (if there is one) or reassess the data to arrive at a different conclusion AND comprehensively and robustly validate their interpretation using new experimental data (see https://peerj.com/about/policies-and-procedures/#discipline-standards). In addition, such studies must not duplicate other similar publications and must make a meaningful contribution to the literature.
+
+Unfortunately, your submission does not meet these requirements and so we will not be able to consider it.
+
+Warm regards,
+The PeerJ Team
