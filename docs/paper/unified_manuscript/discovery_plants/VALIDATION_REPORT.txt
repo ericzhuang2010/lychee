@@ -1,0 +1,16 @@
+Discover Plants submission validation
+Build date: 2026-09-11
+Source manuscript: /Users/rzhuang/Documents/VscodeProjects/lychee/docs/paper/unified_manuscript/manuscript_v2.tex
+Article type: Research
+Abstract words (LaTeX-aware approximate count): 223 (<250 required)
+Main manuscript compiled with pdflatex: PASS
+Flat LaTeX source ZIP compiled independently: PASS
+Supplementary Information PDF compiled with pdflatex: PASS
+Cover letter PDF compiled with pdflatex: PASS
+Word manuscript opened and structurally validated: PASS (6 figures; 4 tables; 162 paragraphs)
+Word supplementary information opened and structurally validated: PASS (3 figures; 14 paragraphs)
+Full supplement MD5 matches Zenodo record: PASS (a7dce65e381f77ca365820311704b736)
+LaTeX failure markers: PASS
+Main source ZIP entries: 9
+Upload files checksummed: 4
+Manual visual inspection remains required before submission.
