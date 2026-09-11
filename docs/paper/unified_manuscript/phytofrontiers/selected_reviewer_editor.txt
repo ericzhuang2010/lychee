@@ -1,0 +1,38 @@
+Recommended reviewer 1:
+Howard S. Judelson
+Professor and Plant Pathologist
+Department of Microbiology and Plant Pathology
+University of California, Riverside
+United States
+howard.judelson@ucr.edu
+Expertise: oomycete genetics and pathology; Phytophthora genomics, bioinformatics,
+gene expression, and transcriptional networks
+Reason: Can evaluate the biological interpretation and genome-wide RNA-sequencing
+analysis in an oomycete disease system.
+Official profile: https://howards-mini-2.dyn.ucr.edu/JudelsonResearch.html
+
+Recommended reviewer 2:
+Edgar Huitema
+Principal Investigator and Senior Lecturer
+Plant Sciences, Faculty of Life Sciences
+University of Dundee
+United Kingdom
+e.huitema@dundee.ac.uk
+Expertise: plant-oomycete interactions, Phytophthora capsici infection biology,
+stage-specific gene expression, and pathogen genomics
+Reason: Can evaluate cultivar/context-dependent host-pathogen interpretation and
+the use of transcriptomic evidence across infection contexts.
+Official profile: https://www.dundee.ac.uk/people/edgar-huitema
+
+Conflict-screening note:
+No public evidence of coauthorship with Eric Zhuang, institutional overlap, or
+participation in the source lychee studies was found as of 2026-09-10. Eric Zhuang
+must still confirm that there has been no unpublished collaboration, supervisory,
+financial, personal, or other relationship that could affect impartiality.
+
+
+
+Editor:
+Niklaus Grünwald
+USDA ARS
+Horticultural Crops Research Lab

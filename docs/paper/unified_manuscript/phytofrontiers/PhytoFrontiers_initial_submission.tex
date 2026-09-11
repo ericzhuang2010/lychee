@@ -1,0 +1,472 @@
+\documentclass[12pt,letterpaper]{article}
+\usepackage[margin=1in,headheight=15pt]{geometry}
+\usepackage{fontspec}
+\setmainfont{Arial}
+\setsansfont{Arial}
+\setmonofont{Arial}
+\usepackage{graphicx}
+\usepackage{array}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{caption}
+\usepackage{setspace}
+\usepackage{titlesec}
+\usepackage[switch]{lineno}
+\usepackage{fancyhdr}
+\usepackage[hidelinks]{hyperref}
+\usepackage{microtype}
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\small Zhuang}
+\chead{\small PhytoFrontiers}
+\rhead{\small Page \thepage}
+\renewcommand{\headrulewidth}{0pt}
+\captionsetup[table]{labelsep=period,justification=raggedright,singlelinecheck=false}
+\titleformat{\section}{\normalfont\normalsize\bfseries}{}{0pt}{}
+\titleformat{\subsection}{\normalfont\normalsize\bfseries}{}{0pt}{}
+\titlespacing*{\section}{0pt}{2.5ex plus 1ex minus .2ex}{1.3ex}
+\titlespacing*{\subsection}{0pt}{2.25ex plus 1ex minus .2ex}{1ex}
+\setlength{\parindent}{1.2em}
+\setlength{\parskip}{0pt}
+\emergencystretch=3em
+\raggedbottom
+\sloppy
+\doublespacing
+\modulolinenumbers[1]
+\begin{document}
+\linenumbers
+\thispagestyle{fancy}
+
+
+\begin{center}
+
+{\normalsize\bfseries Cultivar-dependent transcriptional responses of lychee to \textit{Peronophythora litchii}: a registered genome-wide analysis\par}
+
+\vspace{1.5em}
+
+\textbf{Eric Zhuang}\\
+
+NYU Langone Health, New York, NY, USA\\
+
+Corresponding author: Eric Zhuang\\
+
+Email: \href{mailto:eric.zhuang@nyulangone.org}{eric.zhuang@nyulangone.org}\\
+
+ORCID iD: 0009-0001-9050-0214\\
+
+Article type: Research\\
+
+Running title: Cultivar-dependent lychee responses
+
+\end{center}
+
+\section*{Abstract}
+
+Litchi downy blight, caused by the oomycete \textit{Peronophythora litchii}, is a major threat to lychee production. Public RNA-sequencing cohorts offer a resource for identifying cultivar-dependent infection responses but are readily overinterpreted when candidate selection and confirmation use the same data. We combined an exploratory reanalysis with a prospectively registered genome-wide discovery and external-evaluation workflow. A negative-binomial cultivar-by-infection analysis of 19,445 expressed genes yielded 262 statistical candidates; 206 passed mapping and gene-model quality control, 19 remained significant under an independent statistical framework, and 16 passed all registered robustness checks. In a prespecified cross-context evaluation using an independent pericarp time course, two genes were supported and five showed significant opposite-direction effects; the internally robust and externally supported sets did not overlap. None of 18 exploratory candidates met the subsequent genome-wide interaction criterion. Deterministic evidence integration produced no highest-confidence candidates, retained 12 internally robust genes in a middle tier, and retired 65 entities. These results show that prominent single-cohort candidates often fail formal interaction testing and cross-context evaluation. The openly archived workflow, complete results, and explicit null and contradictory findings provide a reproducible baseline for experimental validation.
+
+\noindent\textbf{Keywords:} downy blight; plant-oomycete interaction; RNA sequencing; transcriptomics; cross-context evaluation; preregistration
+
+\section*{Introduction}
+
+Lychee (\textit{Litchi chinensis} Sonn.) is a subtropical fruit crop of substantial economic importance in southern China, Southeast Asia, and a growing set of production regions worldwide (Morton 1987). Among its diseases, litchi downy blight, caused by the oomycete \textit{Peronophythora litchii} (historically also treated as \textit{Phytophthora litchii}; Sun et al. 2017), is particularly damaging: the pathogen attacks young leaves, inflorescences, and fruit, produces water-soaked brown lesions, and drives severe postharvest decay (Sun et al. 2017; Yi et al. 2010). Because chemical control is costly and resistance breeding depends on understanding how host genotypes differ in their response to infection, the molecular basis of cultivar-level variation in the response to \textit{P. litchii} is a question of both agronomic and biological interest.
+
+The resources needed to address this question computationally have accumulated rapidly. High-quality genome assemblies are available for lychee (Hu et al. 2022), and several groups have profiled the transcriptional response to \textit{P. litchii} infection. Sun et al. (2019) compared a susceptible and a resistant cultivar across a pericarp infection time course and reported that the two genotypes deploy distinct early response programs. Liu et al. (2023) described calcium-dependent protein kinase (LcCDPK) family members induced by \textit{P. litchii} inoculation, and Li et al. (2023) showed that the pathogen RXLR effector PlAvh202 promotes virulence by destabilizing a host ethylene-biosynthesis enzyme. A pathogen-side transcriptome catalogued the \textit{P. litchii} pathogenicity arsenal (Sun et al. 2017). In parallel, public repositories now hold RNA-seq series covering resistant and susceptible cultivars, leaf and fruit tissues, messenger and small RNA, and multiple time points. These series offer an opportunity, in principle, to distinguish genome-wide cultivar-dependent infection responses from responses common to all genotypes.
+
+Realizing that opportunity is statistically demanding. The quantity of interest is not differential expression within a cultivar but the cultivar-by-infection interaction: the difference between infection responses across genotypes. Interaction effects are estimated with less precision than main effects, the deposited designs are small (typically three libraries per cultivar–treatment cell), and a genome-wide search requires an explicit multiplicity family. Analyses that instead select a handful of strongly responding genes and then characterize them in the same cohort conflate selection with confirmation: large observed fold changes in a small experiment are a mixture of true signal and noise, and features chosen for extremity will regress toward null in any independent assessment. These concerns apply directly to the present pathosystem, in which most published candidate genes derive from single-cohort analyses without external evaluation.
+
+The first stage of the present work followed the same pattern. In an exploratory reanalysis of the GSE201243 leaf series (Guiwei and Yurong1, mock versus inoculated, 24 h post-inoculation), we identified 17 significant infection-responsive genes in Guiwei and 117 in Yurong1, prioritized 18 candidates with defense-plausible annotations (among them jacalin-like lectin, pathogenesis-related and thaumatin/osmotin-like proteins, a heat-shock protein, lipid-transfer proteins, and calcium-binding proteins), and found that a set of stress- and hormone-associated \textit{cis}-regulatory elements was enriched in their promoters relative to a randomized background. That analysis was framed as hypothesis-generating, and critical review of it converged on three substantive criticisms: the cultivar-by-treatment comparison was an effect-size contrast over pre-selected genes rather than a genome-wide interaction test with false-discovery-rate control; no independent dataset was used for validation; and promoter-element counting, even against a randomized background, is weak evidence of regulatory function. We regard all three criticisms as correct, and they motivated the confirmatory stage reported here.
+
+This paper therefore presents the complete arc of the project in one place. We prospectively registered a discovery and external-evaluation protocol that fixed dataset roles, models, thresholds, empty-result behavior, and the vocabulary used to describe evidence before any external outcome was opened. Because every cohort is public, this staged unlock is a computational safeguard enforced by the workflow rather than blinding in the experimental sense, and we document the registration chronology in the Methods. Within the prespecified discovery cohort we fitted a genome-wide negative-binomial interaction model, applied uniform mapping and gene-model quality control, and subjected the resulting candidates to a battery of internal robustness checks spanning independent quantification, an alternative statistical framework, filter sensitivity, and leave-one-library-out refits. We then evaluated the frozen candidates (throughout, \textit{frozen} denotes a computed result fixed at a recorded checkpoint and not modified afterward), a frozen pathway set, and a frozen signed expression signature in independent public cohorts whose roles (primary cross-context evaluation, generic transfer, orthogonal modality, or exploratory) were fixed in advance. Orthogonal evidence classes (sequence annotation, promoter motifs, small-RNA coherence, and accession-aware literature) were kept separate from expression support, and a deterministic tier system integrated all layers while explicitly permitting an empty top tier. Finally, we audited the 18 exploratory candidates from the first stage against the genome-wide analysis. The result is a candidate resource for lychee downy blight whose every claim carries its evidence class, together with a case study in how much, and how little, of a plausible exploratory analysis survives formal statistical scrutiny.
+
+\section*{Materials and Methods}
+
+\subsection*{Study design, registration, and evidence vocabulary}
+
+The confirmatory stage was governed by a time-stamped protocol, with amendments logged, distributed with the accompanying repository. The registration chronology is as follows. The exploratory stage was completed first, so the discovery dataset had already been analyzed, under different models, before registration. Protocol version 1.0.0 was frozen on 18 August 2026, with its SHA-256 hash (ef668486…) recorded alongside the protocol text, before any confirmatory expression outcome was computed. The amendment log records 20 outcome-blind amendments (clarifications, implementation corrections, and optimizations, all time-stamped before any discovery or external expression outcome was viewed) and 3 post-outcome amendments confined to technical quality control and manifest verification, each marked as such. The primary external study had been published previously (Sun et al. 2019), and its headline biological conclusions were known to the analyst before registration; dataset roles and all thresholds were nevertheless fixed before any external count matrix was processed. Because all cohorts are public, the staged external unlock is a workflow-enforced computational safeguard, not blinding in the experimental sense. The protocol fixed dataset roles (Table 1), statistical models, discovery and evaluation thresholds, conditional gates, empty-set behavior, and the vocabulary used throughout this paper: \textit{frozen} denotes a computed result fixed at a recorded checkpoint and never modified afterward; \textit{discovery} refers only to the registered genome-wide interaction analysis in PRJNA830488; \textit{robustness} refers only to predeclared sensitivity analyses within that cohort; \textit{cross-context support} denotes a passing frozen external test in a cohort that differs in tissue, comparator, or design, and is never described as replication; and \textit{orthogonal} evidence classes (annotation, motifs, small RNA, literature) are reported separately from expression support and cannot substitute for it. No external outcome could modify frozen discovery membership, signature weights, or thresholds.
+
+\subsection*{Exploratory-stage analyses (Stage 1)}
+
+The exploratory stage analyzed the 12 GSE201243 libraries with FastQC v0.11.9 quality control, Trimmomatic v0.39 trimming, TopHat v2.0.12/Bowtie2 v2.2.3 alignment to the SCAU\_Lch\_v2.0 assembly (GCA\_019925255.1), HTSeq v2.0.2 union-mode counting, and DESeq2 v1.42.0 per-cultivar Wald contrasts (design \textasciitilde{} treatment) with Benjamini–Hochberg adjustment at \textit{P} < 0.05 (Anders et al. 2015; Andrews 2010; Bolger et al. 2014; Kim et al. 2013; Love et al. 2014). Candidate prioritization combined significance, fold-change magnitude, and annotation plausibility; structural, conserved-motif, and promoter analyses used TBtools-II v2.096, MEME v5.5.5, and PlantCARE (Bailey and Elkan 1994; Chen et al. 2020; Lescot et al. 2002); and the promoter-background comparison tested observed \textit{cis}-element counts in the 18 candidate promoters against 100,000 randomized sets of eighteen 2-kb sequences with lychee-like GC content, scoring exact motifs and reverse complements, with one-sided empirical \textit{P}-values adjusted by Benjamini–Hochberg (Benjamini and Hochberg 1995). The selected-gene interaction contrast was computed as log2FC(Yurong1, infected versus mock) − log2FC(Guiwei, infected versus mock) over the prioritized genes and was explicitly labeled a prioritization effect size rather than a genome-wide test.
+
+\subsection*{Data provenance and eligibility}
+
+National Center for Biotechnology Information and Gene Expression Omnibus metadata for all five cohorts were reconciled into a biological-unit registry (Supplementary S1). The original repository preserved accession decisions but not the historical query log, so search coverage was reconstructed retrospectively on 27 August 2026 and is not represented as prospective provenance. A broad NCBI GEO series query returned six records and a corresponding BioProject query returned seven; a narrow SRA cross-check returned 42 experiment-level records. After collapsing the GSE222652 super-series, excluding PRJNA1157370 because it used \textit{Colletotrichum gloeosporioides}, and excluding PRJNA268587/GSE63658 because it studied fruit senescence/storage without \textit{P. litchii} inoculation, the five prespecified cohorts remained (Supplementary S16a–b). Because source-tree, pooling, harvest, and extraction independence were not reported for the discovery libraries, all inferential \textit{q}-values are conditional on deposited-library independence. The primary model required at least three included libraries in every cultivar-treatment cell.
+
+\subsection*{Confirmatory preprocessing and quality gates}
+
+Host (SCAU\_Lch\_v2.0) and pathogen references were combined with prefixed contig names to absorb pathogen-derived reads. Paired reads were checked with FastQC, trimmed with fastp (Chen et al. 2018), aligned with STAR two-pass mapping (Dobin et al. 2013), counted at the gene level with featureCounts (Liao et al. 2014), and independently quantified with Salmon (Patro et al. 2017). Libraries were excluded if fewer than 10 million read pairs survived trimming or fewer than 40\% of reads aligned uniquely; all 12 discovery libraries passed. GenMap-based exon-uniqueness scores (Pockrandt et al. 2020) and candidate-level observed-mapping checks were fixed before discovery and used for the uniform mapping and observed mapping-sensitivity gates.
+
+\subsection*{Genome-wide discovery model}
+
+DESeq2 (Love et al. 2014) fitted gene counts with the design \textasciitilde{} cultivar + treatment + cultivar:treatment (reference levels Guiwei, mock). The primary coefficient, cultivarYurong1:treatmentinfected, estimates the difference in infected-minus-mock response between Yurong1 and Guiwei. Genes required counts of at least 10 in at least three libraries; statistical candidates required genome-wide Benjamini–Hochberg \textit{q} < 0.05 and |log2FC| ≥ log2(1.5) (Benjamini and Hochberg 1995). The registered rule tests the point null of zero interaction and applies the effect threshold to the observed estimate. Post hoc sensitivity used DESeq2 with \texttt{lfcThreshold = log2(1.5)} and \texttt{altHypothesis = greaterAbs}, plus apeglm false-sign-or-small \textit{s}-values for the same threshold; neither analysis modified frozen membership. To align the legacy audit with its original estimand, separate post hoc DESeq2 models (\texttt{\textasciitilde{} treatment}) were fitted within Guiwei and Yurong1, using the same count matrix, 19,445-gene universe, and genome-wide Benjamini–Hochberg adjustment within each cultivar. Unshrunken maximum-likelihood estimates are reported throughout; apeglm-shrunken interaction estimates (Zhu et al. 2019) were used only to define the signed signature weights over the 206 frozen genes. Mappability and gene-model metrics were computed for all 19,445 tested genes; as a sensitivity check, recomputing the Benjamini–Hochberg adjustment over only the 13,602 QC-eligible genes rediscovered all 206 frozen candidates plus 12 additional genes, confirming that applying quality control after significance testing was conservative here.
+
+\subsection*{Pathway and transcript-usage discovery}
+
+Plant Reactome pathway memberships (Gupta et al. 2024) were transported to lychee through one-to-one reciprocal-best DIAMOND protein matches to \textit{Oryza} (Buchfink et al. 2015), and pathway discovery applied the frozen genome-wide interaction statistic to this fixed mapping with camera, roast, and fgsea testing plus leading-edge-deletion and expression/length-matched null gates for robustness (Korotkevich et al. 2021; Wu et al. 2010; Wu and Smyth 2012). Differential transcript usage used Salmon transcript abundances analyzed with DRIMSeq and DEXSeq under stageR stage-wise error control (Anders et al. 2012; Nowicka and Robinson 2016; Van den Berge et al. 2017); the conditional inferential gate for interpretable two-level error control was registered in advance, and no substitute analysis was permitted had it failed.
+
+\subsection*{Internal robustness gates}
+
+Each frozen gene was retested under Salmon-based gene-level quantification, edgeR quasi-likelihood interaction testing (Robinson et al. 2010), a counts-per-million expression filter, and all leave-one-library-out refits, with predeclared criteria combined conjunctively; no additive scoring was used. The Salmon gate required direction agreement and an absolute effect difference of at most 0.5 log2 units; the edgeR analysis used the identical design matrix and interaction coefficient with TMM normalization, robust dispersion estimation (estimateDisp and glmQLFit with robust settings), and glmQLFTest, with Benjamini–Hochberg adjustment computed genome-wide over all 19,445 genes and a gate of genome-wide \textit{q} < 0.10 plus direction agreement; the expression-filter gate refit the primary model after a counts-per-million filter; and the leave-one-library-out gate required direction agreement in all 12 refits and \textit{q} < 0.10 in at least 10 of 12. The observed mapping-sensitivity gate removed candidates whose effect depended on ambiguously mapped reads. Frozen pathways required agreement across camera, roast, leading-edge deletion, and the matched-null comparison.
+
+\subsection*{External frozen evaluation}
+
+PRJNA450886 was analyzed with the design \textasciitilde{} cultivar × treatment × time, with time encoded as a categorical factor and 24 h as the reference level, so that the cultivar-by-treatment coefficient estimates the 24-h interaction and the three-way terms give the 6-h and 48-h contrasts; the primary estimand was the resistant-minus-susceptible cultivar-by-infection interaction at 24 h, with 6-h and 48-h contrasts secondary. Frozen candidate tests used Benjamini–Hochberg adjustment across the full candidate-by-contrast family, an absolute effect threshold of log2(1.5), confidence intervals excluding zero, and discovery-direction agreement; opposite-direction passes were recorded as contradictory. PRJNA922966 was analyzed with \textasciitilde{} tissue + treatment + tissue:treatment for generic-transfer tests, and PRJNA1090613 outcomes were confined to exploratory status by protocol. The frozen signed signature was evaluated as a library-level score with the same family-wise adjustment.
+
+\subsection*{Annotation, motif, small-RNA, and literature classes}
+
+Representative proteins were chosen by longest coding sequence with lexicographic tie-breaking. Reviewed Swiss-Prot (release 2026\_02) DIAMOND matches (UniProt Consortium 2023), targeted InterPro/Pfam domain assignments (Jones et al. 2014), and one-to-one \textit{Oryza} orthology formed three separate annotation classes; the high-confidence label required at least two classes, at least 70\% supported coverage, and no architecture conflict. Promoter-motif analysis tested 927 JASPAR plant position-weight matrices (Rauluseviciute et al. 2024) in strand-aware 1-kb and 2-kb promoter windows against 100 expression- and GC-matched background sets, with AME as the primary test, FIMO as sensitivity (Grant et al. 2011; McLeay and Bailey 2010), robustness requiring passes in at least 80 of 100 backgrounds in both windows, and cognate transcription-factor expression required for attribution. The PmiREN bulk archive (Guo et al. 2020) was audited before small-RNA analysis; because it contained no exact \textit{Litchi} entries, the class was frozen as not testable and no study-derived reference was substituted. Published studies reusing any analyzed accession were registered as prior interpretation. For the post hoc controlled PlantCARE comparison, published observed totals across the 18 legacy promoters were fixed and tested against (i) 100,000 simulated sets of eighteen 2-kb sequences at 34\% GC and (ii) 100 genomic sets of eighteen promoters matched by mean-expression and promoter-GC quintiles with the same seeded minimum-distance rule used by the registered motif pipeline. The six reported motifs and one standard TCA variant, together with reverse complements, were counted and one-sided empirical \textit{P}-values were adjusted across seven classes. The missing archived observed-motif TSV and canonical-promoter recount discrepancies were retained as explicit provenance limitations (Supplementary S15).
+
+\subsection*{Simulation-based power analysis}
+
+Negative-binomial parametric simulations used DESeq2 maximum-a-posteriori gene dispersions and fitted sample means from the discovery counts and from the 24-h subset of PRJNA450886. Fitted cultivar and treatment main effects and size factors were retained, background-gene interaction coefficients were set to zero, and equal numbers of positive and negative effects were injected at 12 absolute log2FC values (0, 0.5, 0.75, 1, 1.25, 1.5, 1.75, 2, 2.5, 3, 3.5, 4). Each value had 100 simulations. Discovery injected 262 targets and applied Benjamini–Hochberg correction over 19,445 genes plus the registered effect filter. External simulation injected 2 targets among the 177 frozen genes passing the simulation count and dispersion validity filters and additionally required the prespecified sign and a 95\% interval excluding zero; the observed external table contained 184 measurable genes, seven of which were not fit-eligible for the simulation. Dispersions were treated as known during simulated Wald refits, making the curves conditional parametric power rather than a claim about population-level biological replication. Eighty-percent minimum detectable effects were linearly interpolated between grid points, with expression-quartile curves and Wilson intervals reported in Figure S2.
+
+\subsection*{Tier rules, software versions, and reproducibility}
+
+Tier A required discovery, complete internal robustness, primary cross-context support, clean mapping and annotation, and at least one attributable orthogonal class; Tier B required discovery and complete internal robustness with partial or non-testable primary external evidence; Tier C was reserved for a robust, externally supported pathway. Contradictory external direction or mapping/annotation failure retired an entity, and an empty Tier A was an allowed outcome. All stages ran under Snakemake 9.25.2 workflows (Mölder et al. 2021) enforcing staged discovery, a controlled external unlock, verified cleanup, and SHA-256 manifests over inputs and outputs. Confirmatory executables were FastQC 0.12.1, fastp 1.3.6, STAR 2.7.10b, featureCounts/Subread 2.1.1, Salmon 2.5.1, MEME Suite/AME/FIMO 5.5.9, and DIAMOND 2.2.5; GenMap 1.3.0 is recoverable from the pinned specification although its executable is absent from the reconstructed environment. Statistical work used R 4.3.3/Bioconductor 3.18 with DESeq2 1.42.0, apeglm 1.24.0, edgeR 4.0.16, DRIMSeq 1.30.0, DEXSeq 1.48.0, stageR 1.24.0, and BiocParallel 1.36.0 (Supplementary S17 records the evidence status of every version). The resolved environment, synthetic fixtures, per-figure source data, and amendment log are distributed with the repository. All six main figures are regenerated from frozen result tables by a script that recomputes and asserts every headline count.
+
+\section*{Results}
+
+\subsection*{A two-stage design with prespecified dataset roles}
+
+The study comprises an exploratory stage completed first and a confirmatory stage whose protocol was registered before its analyses began (Figure 1A; Table 1). Five public cohorts enter the confirmatory stage in fixed, non-interchangeable roles. PRJNA830488 (GSE201243), the leaf series for Guiwei and Yurong1 at 24 h, is the sole discovery cohort; it is also the dataset analyzed in the exploratory stage. PRJNA450886, a pericarp time course contrasting the susceptible cultivar Guiwei with the resistant cultivar Heiye at 6, 24, and 48 h (Sun et al. 2019), serves as the primary external evaluation. Because it differs from the discovery cohort in tissue, resistant comparator, and time structure, we describe positive outcomes in it as \textit{cross-context support} rather than replication. PRJNA922966 (Feizixiao leaf and fruit, mock versus infected) tests generic infection-response transfer but cannot address the cultivar interaction; PRJNA922965 provides small-RNA libraries as an orthogonal modality; and PRJNA1090613 (Guiwei versus SFZ leaf) is exploratory only, because its time and resistance metadata could not be resolved. Under the registered firewall, no external outcome could alter the frozen discovery membership, signature weights, or thresholds, and the protocol explicitly allowed the top evidence tier to be empty.
+
+\subsection*{Stage 1: exploratory candidate discovery in GSE201243}
+
+The exploratory stage analyzed the 12 discovery libraries with per-cultivar differential-expression contrasts (infected versus mock) and identified 17 significant genes in Guiwei (15 up-regulated, 2 down-regulated) and 117 in Yurong1 (39 up-regulated, 78 down-regulated) at Benjamini–Hochberg adjusted \textit{P} < 0.05, suggesting a broader transcriptional response in Yurong1. From these lists, 18 genes were prioritized by combining statistical significance in at least one cultivar, large infection-associated fold changes, and annotations plausibly related to defense: among them a jacalin-like lectin (LITCHI028104), a pathogenesis-related protein (LITCHI011394), osmotin/thaumatin-like proteins (LITCHI009301, LITCHI002793), an HSP70-family chaperone (LITCHI012388), lipid-transfer proteins (LITCHI019183, LITCHI018043), an EF-hand calcium-binding protein (LITCHI019519), and a phytosulfokine precursor (LITCHI007102). A selected-gene contrast of infection responses between cultivars nominated LITCHI019519, LITCHI001510, LITCHI028401, and LITCHI017676 as Guiwei-skewed and LITCHI028104 and LITCHI019183 as Yurong1-skewed candidates.
+
+The exploratory stage also examined 2-kb upstream promoter regions of the 18 candidates. Against 100,000 randomized GC-matched promoter sets, four \textit{cis}-element classes appeared enriched: anaerobic-response elements (ARE; 46 observed versus 24.6 expected, \textit{q} = 0.0003), methyl-jasmonate-responsive motifs (54 versus 38.4, \textit{q} = 0.018), TCA elements (9 versus 0.19, \textit{q} = 0.00003), and TC-rich repeats (10 versus 0.15, \textit{q} = 0.00003). ABRE and MYB-binding-site motifs, in contrast, were frequent but not enriched. All of these results were obtained by selecting and characterizing genes within a single cohort; they carry no genome-wide multiplicity control and no external evaluation, and we treat them below strictly as hypotheses submitted to the confirmatory stage.
+
+\subsection*{Discovery-cohort quality under the registered protocol}
+
+The confirmatory pipeline combined a joint host and pathogen reference, fastp trimming, STAR two-pass alignment, featureCounts gene counting, and independent Salmon quantification. Under this pipeline, all 12 discovery libraries passed the fixed technical gates of at least 10 million surviving read pairs and at least 40\% uniquely aligned reads (Figure 1B). Read survival after trimming ranged from 99.56\% to 99.66\%, unique-alignment rates from 84.44\% to 86.22\%, and Salmon mapping rates from 80.77\% to 82.56\%. Principal-component analysis of the transformed counts separated libraries by cultivar on the first component (54.2\% of variance) and by infection status on the second (16.1\%), with no library isolated from its replicate group (Figure 1C). Because source-tree, pooling, and extraction independence are not reported for the deposited libraries, all inferential statements below are conditional on deposited-library independence, a limitation we return to in the Discussion.
+
+\subsection*{Genome-wide cultivar-by-infection discovery}
+
+The primary discovery model fitted all expressed genes with the design \textasciitilde{} cultivar + treatment + cultivar:treatment, with Guiwei and mock as reference levels, so that the interaction coefficient estimates how much the infected-minus-mock response in Yurong1 exceeds that in Guiwei. Of 19,445 expressed genes, 262 met the registered discovery threshold of genome-wide Benjamini–Hochberg \textit{q} < 0.05 with an absolute interaction log2 fold change of at least log2(1.5) (Figure 2A); 277 genes met the significance criterion alone and 5,370 met the effect criterion alone. All interaction estimates reported and plotted here are unshrunken maximum-likelihood values; apeglm shrinkage was used only to define the frozen signature weights. Uniform quality control then removed 31 candidates for exon-level mappability failure and 25 for gene-model ambiguity, freezing 206 genes as statistical candidates (Figure 2C). Because these quality filters were applied after significance testing, we verified that the ordering is not load-bearing: restricting the testing universe to the 13,602 genes that pass uniform quality control and recomputing the Benjamini–Hochberg adjustment over that universe rediscovers all 206 frozen candidates and adds 12 further genes, so the frozen list is a conservative subset of the QC-first analysis. A post hoc composite-null sensitivity analysis asked the stricter question whether |β| exceeded log2(1.5), rather than testing β = 0 and filtering the estimate afterward. Eight of the 262 statistical candidates passed the DESeq2 composite-null test at \textit{q} < 0.05; the corresponding counts were 7 of 206 QC-retained candidates, 7 of 19 edgeR-gated candidates, and 7 of 16 fully robust candidates. An apeglm false-sign-or-small analysis was less severe, with \textit{s} < 0.05 for 149, 113, 18, and 15 genes in those four nested sets, respectively. These are post hoc sensitivity results, not a redefinition of the registered discovery set. Positive interaction effects (stronger infection response in Yurong1) and negative effects (stronger response in Guiwei) were both well represented. At the pathway level, six Plant Reactome pathways transported through one-to-one \textit{Oryza} orthology met the frozen discovery threshold: activation of the pre-replication complex, assembly of the pre-replication complex, DNA replication initiation, maturation, and circadian rhythm, all with positive enrichment, and jasmonic acid signaling with negative enrichment. Together with the genes, these six pathways, the apeglm-shrunken signed signature weights over the 206 genes, and the conditional transcript-usage results (Section 2.9) were frozen before any external data were opened.
+
+\subsection*{None of the 18 exploratory candidates met the genome-wide interaction criterion}
+
+Because the exploratory candidates were selected before any interaction \textit{P}-values existed, the registered protocol included a formal audit of all 18 against the genome-wide analysis (Figure 2B; Table 2). None met the genome-wide interaction threshold. We then performed the estimand-aligned follow-up requested in review: separate confirmatory DESeq2 infected-versus-mock fits within each cultivar, with Benjamini–Hochberg adjustment over the same 19,445-gene universe in each contrast (Supplementary S14). Thirteen of the 18 legacy genes were significant in Guiwei and 16 of 18 in Yurong1 at \textit{q} < 0.05; all 13 Guiwei genes and 15 of the 16 Yurong1 genes also exceeded |log2FC| ≥ log2(1.5). Thus most of the original within-cultivar response claims survive the confirmatory pipeline even though none supports a genome-wide cultivar-by-infection interaction. The strongest interaction-audit candidate, LITCHI001510, reached \textit{q} = 0.080; the EF-hand calcium-binding gene LITCHI019519, whose selected-gene contrast of −3.4 had appeared most dramatic in the exploratory stage, reached only \textit{q} = 0.106 despite a re-estimated interaction effect of −3.33; and the median genome-wide interaction \textit{q} across the 18 candidates was 0.47. Two candidates, the osmotin/thaumatin-like gene LITCHI009301 and LITCHI028401, additionally failed uniform exon-mappability control, meaning their interaction estimates cannot be attributed unambiguously to a single locus. The audit therefore does not show that these genes are biologically inert. It shows that within-cultivar responsiveness and cultivar-dependent response are distinct claims, and only the latter fails here.
+
+\subsection*{Sixteen genes and one pathway passed all internal robustness gates}
+
+Each of the 206 frozen genes was required to retain its interaction direction and significance under four predeclared perturbations of the analysis: independent Salmon-based quantification (196 of 206 passed), edgeR quasi-likelihood testing in place of the primary framework (19 passed), a counts-per-million expression filter (205 passed), and all twelve leave-one-library-out refits (125 passed). Eighteen genes passed all four gates jointly, and 16 remained after an additional observed mapping-sensitivity gate that excluded candidates whose effect depended on ambiguously mapped reads (Figure 3A). The alternative-framework gate was by far the most stringent, and the frozen genome-wide edgeR results explain why. The two frameworks agree almost perfectly on estimation: interaction effects correlate at Pearson \textit{r} = 0.995 across all 19,445 genes and \textit{r} = 0.999 across the 206 candidates, sign agreement among the candidates is 100\%, and every candidate has nominal edgeR \textit{P} < 0.05. The disagreement is confined to significance calibration. The registered gate required genome-wide edgeR \textit{q} < 0.10 with direction agreement, and edgeR's quasi-likelihood test with robust dispersion estimation admits only 24 genes genome-wide at that threshold (10 at \textit{q} < 0.05), against 262 for the primary Wald analysis at \textit{q} < 0.05. With three libraries per cell, the two dispersion-estimation strategies imply very different genome-wide significance sets even while agreeing on every point estimate. We therefore present the results as a hierarchy: 262 statistical candidates, 206 retained after quality control, 19 significant under both frameworks, and 16 passing the complete registered procedure; genes surviving both frameworks constitute the discovery set's stable core, and the wider 206-gene list should be read as one framework's candidates rather than as settled discoveries. Of the six frozen pathways, only circadian rhythm passed its four conjunctive gates (competitive and rotation-based testing, leading-edge deletion, and an expression- and length-matched null); the other five all failed the rotation-based self-contained test, and the maturation set additionally failed leading-edge deletion, indicating enrichment that was not stable across testing frameworks.
+
+\subsection*{The prespecified external evaluation supported two genes and contradicted five}
+
+The primary external estimand, fixed before unlock, was the resistant-minus-susceptible cultivar-by-infection interaction at 24 h in the PRJNA450886 pericarp time course, tested for each frozen candidate with Benjamini–Hochberg adjustment across the full candidate-by-contrast family, an effect threshold of log2(1.5), confidence intervals excluding zero, and required agreement with the discovery direction. Of the 206 frozen genes, 184 were measurable in the external cohort. Two met every criterion and are cross-context supported: LITCHI005518, annotated as an alpha-xylosidase involved in xyloglucan remodeling of the cell wall, and LITCHI001963, an uncharacterized gene with a one-to-one \textit{Oryza} ortholog. Five genes, including a beta-glucosidase and a Fe(II)/2-oxoglutarate-dependent dioxygenase, passed the magnitude and significance criteria with the \textit{opposite} direction and are recorded as contradictory; 177 were unsupported at the prespecified thresholds and 22 not testable (Figure 3C; Table 3). At the level of continuous estimates, discovery and external interaction effects across the 184 measurable candidates were uncorrelated (Pearson \textit{r} = −0.05, 95\% CI −0.19 to 0.10; Spearman ρ = −0.04), with sign concordance of 51.6\% (95 of 184), indistinguishable from chance.
+
+The two supported genes are not among the 16 internally robust genes, and none of the 16 internally robust genes achieved external support (Figure 3B). This non-overlap is, by itself, nearly uninformative: for sets of 16 and 2 genes drawn from 206 candidates, the expected overlap under independence is 0.16 genes and the probability of zero overlap is 0.85, so the disjoint sets neither demonstrate nor refute an association between internal stability and cross-context transport. The absence of continuous concordance reported above is the more informative observation. We emphasize that the external cohort differs in tissue (pericarp versus leaf), resistant comparator (Heiye versus Yurong1), and design (time course versus single time point), so absence of support is expected wherever a response is tissue- or genotype-specific, and support that is observed indicates transport across contexts rather than replication of the original experiment. Because Yurong1 and Heiye have not been placed on a common resistance scale relative to Guiwei, we interpret the primary external test as cross-cultivar response transport rather than validation of a resistance phenotype.
+
+\subsection*{Pathway and signature transport was weak and strongly context-dependent}
+
+None of the six frozen pathways, including the internally robust circadian-rhythm pathway, passed the external pathway gates in PRJNA450886 (Figure 4A). The frozen signed signature over the 206 discovery genes behaved in a strongly context-dependent way (Figure 4B). At the primary 24-h contrast the signature score was indistinguishable from zero (estimate 0.109, 95\% CI −0.079 to 0.297, \textit{q} = 0.349), and at 48 h it was significantly \textit{negative} (−0.240, 95\% CI −0.428 to −0.052, \textit{q} = 0.043), a sign reversal relative to discovery. In the generic-transfer study the signature tracked infection positively in leaf (0.107, \textit{q} = 0.0015) but negatively in fruit (−0.181, \textit{q} < 0.001), with a significant leaf-minus-fruit interaction (0.289, \textit{q} < 0.001). The signature therefore carries reproducible infection-associated information, but its sign and magnitude depend on tissue and time in ways that preclude its use as a context-free resistance marker. The exploratory cohort's estimate is reported separately in Figure S3 for completeness and is not confirmatory.
+
+\subsection*{Conditional transcript-usage discovery remained internal}
+
+Differential transcript usage was analyzed under a conditional gate registered in advance: stage-wise testing had to yield interpretable gene- and transcript-level error control, and no post hoc substitute was permitted if the gate failed. The gate passed, and 225 transcript-usage events across 152 genes were frozen from 15,790 tested transcripts (Figure 5A). External follow-up preserved the role separation of the cohorts (Figure 5B): in the primary cross-context study, 125 events were measurable but unsupported at the prespecified thresholds and 100 were not testable; in the generic-transfer study, annotation incompatibilities left all 225 untestable; and in the exploratory cohort, 4 events were supported and 5 contradictory; we report these outcomes descriptively and do not count them as primary external support, because that cohort's metadata could not be standardized. Transcript-level rewiring between cultivars therefore remains an internally supported, externally unconfirmed layer of the resource.
+
+\subsection*{Orthogonal evidence: informative nulls and reference-ecosystem gaps}
+
+The registered orthogonal evidence classes returned uniformly negative or non-testable results, and we report them as such rather than converting them into support. Computational annotation assigned family-level functional labels to 150 of the 206 candidates and left 56 unannotated, but no candidate met the registered high-confidence rule requiring two independent evidence classes with at least 70\% supported coverage and no architecture conflict, largely because precomputed InterPro domain architectures were unavailable for all 206 proteins in this non-model species (Figure 6A). Registered promoter-motif discovery tested 927 JASPAR plant position-weight matrices in strand-aware 1-kb and 2-kb windows against 100 expression- and GC-matched genomic background sets. No motif passed in more than 4 of 100 backgrounds against a required 80, and none passed FIMO sensitivity (Figure 6B). Small-RNA coherence was not testable because the frozen PmiREN reference contained no exact \textit{Litchi} entries.
+
+A separate post hoc controlled comparison held the published 18-promoter totals, six explicitly reported exact-element strings plus one standard PlantCARE TCA-element variant, scoring rule, and multiplicity correction fixed while changing only the background (Supplementary S15). The 100,000-set randomized-GC rerun closely reproduced the exploratory result. Against 100 expression- and GC-matched genomic promoter sets, ARE lost significance, ABRE gained it, and MeJA-responsive, TCA, and TC-rich classes remained significant: four of seven classes passed under either strategy, but the identity of one class changed. Background construction therefore affected the result but did not by itself explain the exploratory/registered discrepancy. This comparison is provenance-limited: the archived exploratory package omitted the observed-motif input TSV, and exact recounting from the current canonical 18 promoters reproduced the published total only for ARE. Accordingly, it cannot rescue a functional regulatory claim or establish which foreground representation generated the other published totals. Published studies reusing any analyzed accession, including the primary external study itself (Sun et al. 2019), remain registered as prior interpretation rather than independent support.
+
+\subsection*{Deterministic integration: an empty top tier, twelve Tier B genes, and visible retirements}
+
+The registered tier rules integrate all evidence layers without discretion. Tier A required discovery, complete internal robustness, primary cross-context support, clean mapping and annotation, and at least one attributable orthogonal class; Tier B required discovery and full internal robustness with partial or non-testable external evidence; Tier C was reserved for a robust, externally supported pathway. Applied to the 268 frozen entities (262 statistical gene candidates and 6 pathways), the rules assigned no entity to Tier A or Tier C, 12 genes to Tier B, 191 entities to exploratory status, and 65 to retirement (Figure 6C). The retirements comprise the 56 statistical candidates removed by uniform mapping or gene-model control, the 5 genes contradicted for cross-context directional transport, and 4 candidates with candidate-level observed-mapping or annotation failures. These categories differ in kind, and the released tables preserve the distinction: mapping and annotation failures undermine the discovery itself, whereas an opposite direction in a different tissue and cultivar contrast may reflect genuine context specificity rather than an invalid discovery in the original context. Four internally robust genes, including a probable RPP8-like disease-resistance protein, were measurable but unsupported at the prespecified thresholds in the primary external evaluation and were therefore held at exploratory status rather than promoted. The two cross-context-supported genes likewise remain exploratory because they failed internal robustness. All contradictory and failed outcomes are released alongside the positive ones. We also note that Tier A was difficult to reach by construction in the current reference ecosystem: with the small-RNA class structurally untestable, no motif able to pass the family-wise rule, accession-linked literature excluded as independent support, and the two-class annotation rule unattainable without precomputed domain architectures, the orthogonal-class requirement could not realistically be satisfied by any gene. The empty top tier therefore reflects this structural constraint as much as the expression evidence itself.
+
+The 12 Tier B genes are listed in Table 4. Nine were measurable in the primary external cohort, and all nine were direction-consistent with discovery, although none met the full support criteria. Figure S1 exposes the normalized count of every individual discovery library for these 12 genes, the 2 cross-context-supported genes, and legacy highlights LITCHI001510 and LITCHI019519; every cultivar-treatment cell contains all three deposited replicates. Their annotations cluster around carbohydrate and cell-wall metabolism (a phosphomannomutase/phosphoglucomutase, a chloroplastic 1,4-alpha-glucan-branching enzyme, an ERD6-like sugar transporter, a serine carboxypeptidase), membrane transport (a WAT1-related protein), lipid signaling (a DIR1-like lipid-transfer protein, the \textit{Arabidopsis} ortholog of which is required for systemic acquired resistance), programmed-cell-death regulation (a BAG-family chaperone regulator), specialized metabolism (cytochrome P450 81Q32), RNA metabolism (ribonuclease J, exonuclease 1), chromatin-associated regulation (a homeobox-DDT protein), and one entirely unannotated gene.
+
+\subsection*{Parametric simulations quantify the interaction effects detectable with three libraries per cell}
+
+The post hoc power analysis simulated negative-binomial counts from the fitted gene-wise means and dispersions while preserving the four-cell discovery design and the 24-h four-cell external design (Figure S2; Supplementary S18). At each of 12 absolute interaction effects from 0 to 4 log2 units, 100 simulations were run sequentially. Genome-wide discovery used 19,445 tests with 262 injected targets per simulation, matching the observed statistical-candidate prevalence; the external analysis adjusted within the 177 frozen genes that passed the simulation's count and dispersion validity filters, with 2 injected targets matching the number of directionally supported genes. Seven additional genes were measurable in the observed 184-gene external contrast but were not fit-eligible for simulation, so the simulated multiplicity family is reported explicitly rather than equated with the observed family. The overall interpolated effect required for 80\% detection was 2.44 log2FC (5.4-fold) in discovery and 2.11 log2FC (4.3-fold) in the external candidate-family analysis. At a true |interaction log2FC| of 1.5, overall detection probabilities were 62.7\% and 74.0\%, respectively. These values are conditional on fitted dispersions treated as known, deposited-library independence, and the simulated non-null prevalence; they quantify the low-power regime but cannot distinguish context dependence from absence of effect for any particular unsupported gene.
+
+\section*{Discussion}
+
+The central finding of this unified analysis is methodological and biological at once: in the lychee–\textit{P. litchii} pathosystem, the genes that look most impressive in a single-cohort exploratory analysis and the genes that survive formal genome-wide inference are almost entirely different sets. The 18 exploratory candidates were chosen for large fold changes and defense-plausible annotations, yet none reached genome-wide significance for the cultivar-by-infection interaction, and two could not even be attributed unambiguously to a single locus. Conversely, the 16 genes that passed every internal robustness gate, and the 12 that reached Tier B, are dominated not by canonical pathogenesis-related families but by carbohydrate and cell-wall metabolism, transport, lipid signaling, and RNA metabolism, including one gene with no annotation at all. Neither observation would have been visible without running both stages, and together they quantify a selection effect that is likely to operate in any small-replicate transcriptomic study of this kind. One qualification applies throughout: the audit changed not only the statistical machinery but, for many of the 18 genes, the scientific question, from within-cultivar responsiveness to cultivar-dependent response, so the comparison measures survival under a stricter and partly different criterion rather than direct refutation of the original claims.
+
+Why did the exploratory candidates fail the interaction audit? Three mechanisms, all anticipated by the reviewers of the exploratory report, are sufficient to explain the outcome. First, selection on observed fold change in a three-replicate contrast preferentially captures genes with high sampling variance, and their apparent effects regress when the full uncertainty is modeled: LITCHI019519's selected-gene contrast of −3.4 looked decisive, but its genome-wide interaction test carried a standard error of 1.14 and a \textit{q}-value of 0.106. Second, per-cultivar differential expression followed by informal comparison is not an interaction test; genes can differ dramatically in within-cultivar significance while their responses do not differ significantly between cultivars. Third, two candidates failed uniform-mappability control, a failure mode invisible to any analysis that trusts a single quantification path. None of this implies the exploratory candidates are biologically irrelevant; several retain large direction-consistent estimates and remain reasonable targets for quantitative PCR. Their evidentiary status, however, is now stated correctly: unconfirmed hypotheses, not validated markers.
+
+The annotations of the genes that survive scrutiny suggest a recognizable, although still hypothetical, theme. Annotations related to cell-wall and sugar metabolism appear at every supported evidence level: among the Tier B genes, a phosphomannomutase/phosphoglucomutase, a starch-branching enzyme, an ERD6-like sugar transporter, and a serine carboxypeptidase; and among the two cross-context-supported genes, an alpha-xylosidase acting on xyloglucan. We emphasize that this is a qualitative clustering of family-level annotations over small gene sets, assembled from different genes at different evidence levels, and not a formal over-representation result; no enrichment test was performed, and several annotations are provisional. The pattern is nonetheless consistent with the emphasis on sugar metabolism and cell-wall reinforcement in prior comparisons of resistant and susceptible lychee cultivars (Sun et al. 2019), and with the general role of apoplastic sugar status and wall remodeling in oomycete resistance. The Tier B set also contains a DIR1-like lipid-transfer protein, whose \textit{Arabidopsis} counterpart is a mobile signal in systemic acquired resistance, and a BAG-family chaperone regulator; BAG proteins act as HSP70 co-chaperones within the chaperone networks that shape plant immune responses and immune-associated cell death (Berka et al. 2022). The strong negative discovery enrichment of jasmonic acid signaling, although it did not survive external evaluation, is likewise a plausible axis of cultivar difference given the jasmonate-associated promoter elements suggested in the exploratory stage and the known antagonism between jasmonate and salicylate defense programs. We advance all of these as prioritized, testable hypotheses; the tier system exists precisely to prevent us from advancing them as more.
+
+The external evaluation delivers a second structural lesson. The internally robust and externally supported sets did not overlap, but this disjunction carries almost no information on its own: with 16 and 2 genes selected from 206 candidates, the expected overlap under independence is 0.16 and zero overlap occurs with probability 0.85. The informative observations are continuous ones: discovery and external interaction effects were uncorrelated across the 184 measurable candidates, the frozen signature reversed sign between 24 h and 48 h in the external time course, and the same signature tracked infection in opposite directions in leaf and fruit of the transfer cohort. The straightforward reading is that the cultivar-dependent component of the early infection response is substantially tissue- and time-specific, so that a candidate's failure to transport from leaf at 24 h to pericarp at 48 h is expected behavior rather than evidence against the discovery. This has a practical corollary for breeding applications: expression-based resistance markers derived from one tissue and time point should not be assumed portable, and marker development for this pathosystem will require validation in the tissue and developmental window where deployment is intended.
+
+The orthogonal layers contribute mainly disciplined null results, and we consider their inclusion one of the more useful aspects of the resource. The post hoc controlled PlantCARE comparison now isolates the background rule as far as the archived inputs permit. It shows that genomic expression/GC matching changes which class passes (ARE is replaced by ABRE) but does not eliminate the MeJA, TCA, or TC-rich signals when the published foreground totals are held fixed. Background choice is therefore not a sufficient explanation for the failure of the registered JASPAR analysis; the changed foreground, motif representation, scoring, and robustness rule remain consequential. Because the original observed-motif TSV was not archived and most published totals cannot be reproduced from the current canonical promoters, the controlled result is a provenance audit rather than evidence of regulatory function. The annotation and small-RNA outcomes likewise expose reference-ecosystem gaps (no precomputed InterPro architectures and no \textit{Litchi} entries in the frozen miRNA reference) that bound what any computational study of this species can currently claim.
+
+Several limitations qualify all of the above. The deposited designs are small, with three libraries per cell, and the independence of those libraries at the level of source trees, pooling, and extraction is unreported, so our \textit{q}-values are conditional on deposited-library independence. The public metadata also leave the inoculation protocol underspecified, including the inoculum form (mycelia, sporangia, or zoospores), the developmental stage of the sampled leaves, and whether the tissue was wounded before inoculation, so all conclusions are additionally conditional on the depositors' experimental design. All quantification depends on a single reference assembly, and although uniform and observed mapping checks removed the clearest failure modes, residual reference bias cannot be excluded. The primary external cohort is deliberately heterogeneous with respect to the discovery cohort, which makes support conservative and non-support ambiguous; no genuinely independent replication cohort (same tissue, same time, different biological material) exists in the public record for this design. Unsupported external outcomes additionally conflate limited power, context dependence, and true absence of effect. The simulations quantify the first component: conditional 80\% minimum detectable effects were 2.44 log2FC (5.4-fold) for genome-wide discovery and 2.11 log2FC (4.3-fold) for candidate-family external evaluation, with still poorer performance among low-expression genes. These conditional curves do not identify which unsupported genes are context-specific or truly null. And the entire study is computational: no candidate, including the Tier B set, has been perturbed experimentally. The natural next steps are quantitative PCR of the Tier B genes in independently infected material of both discovery cultivars, functional tests of the alpha-xylosidase and DIR1-like candidates, and, for any regulatory hypothesis, direct assays such as promoter–reporter or chromatin-binding experiments rather than further motif counting.
+
+\subsection*{Conclusions}
+
+By carrying a single pathosystem from exploratory candidate discovery through a prospectively registered genome-wide discovery framework with prespecified cross-context external evaluation, this study establishes which claims about cultivar-dependent responses of lychee to \textit{P. litchii} the current public data can and cannot support. It can support a set of 206 QC-retained genome-wide statistical interaction candidates, of which 19 are significant under both statistical frameworks, a stable core of 16 internally robust genes, 12 Tier B candidates whose annotations include cell-wall, sugar-metabolism, lipid-signaling, and RNA-metabolism functions, and 2 genes with cross-context support in an independent tissue and cultivar contrast. It cannot support the original 18 exploratory candidates as validated markers, any pathway- or signature-level claim of context-free transport, or any regulatory-element claim under matched-background testing. All frozen results, including nulls, contradictions, and retirements, are released with the analysis code and checksummed source data, so that the next stage of experimental validation can begin from an honest baseline.
+
+\section*{Acknowledgments}
+
+OpenAI Codex was used to assist with language editing and journal-specific document formatting. It was not used to generate data, conduct analyses, or generate scientific concepts, results, or interpretations. The author reviewed and accepts responsibility for all content.
+
+\section*{Funding}
+
+This work received no external funding.
+
+\section*{Author Contributions}
+
+E.Z. conceived the study, curated the data, developed the methodology and software, performed the analyses and validation, prepared the visualizations, and wrote and revised the manuscript.
+
+\section*{Conflict of Interest}
+
+The author declares no conflicts of interest.
+
+\section*{Ethics Statement}
+
+This study reanalyzed publicly available sequencing datasets and involved no new experiments with humans, human tissue, animals, or field sampling; ethical approval was not required.
+
+\section*{Data and Code Availability}
+
+All analyzed sequencing data are public under PRJNA830488/GSE201243, PRJNA450886, PRJNA922966/GSE222651, PRJNA922965/GSE222650, and PRJNA1090613/GSE262200. The registered protocol, complete result tables, supplementary figures, figure source data, analysis code, workflows, configurations, tests, and environment specifications are archived at \url{https://doi.org/10.5281/zenodo.22436625}.
+
+\section*{Supplemental Materials}
+
+The e-Xtra PDF contains Figures S1 to S3. Complete machine-readable Tables S1 to S18, figure source data, the registered protocol, and analysis code are permanently archived at \url{https://doi.org/10.5281/zenodo.22436625}.
+
+\clearpage\section*{Literature Cited}
+
+\noindent\hangindent=1.5em Anders, S., Pyl, P. T., and Huber, W. 2015. HTSeq—a Python framework to work with high-throughput sequencing data. Bioinformatics 31:166-169. \url{https://doi.org/10.1093/bioinformatics/btu638}.\par
+
+\noindent\hangindent=1.5em Anders, S., Reyes, A., and Huber, W. 2012. Detecting differential usage of exons from RNA-seq data. Genome Res. 22:2008-2017. \url{https://doi.org/10.1101/gr.133744.111}.\par
+
+\noindent\hangindent=1.5em Andrews, S. 2010. FastQC: A quality control tool for high throughput sequence data. Babraham Bioinformatics, Cambridge, United Kingdom. \url{https://www.bioinformatics.babraham.ac.uk/projects/fastqc/}.\par
+
+\noindent\hangindent=1.5em Bailey, T. L., and Elkan, C. 1994. Fitting a mixture model by expectation maximization to discover motifs in biopolymers. Pages 28-36 in: Proceedings of the Second International Conference on Intelligent Systems for Molecular Biology. AAAI Press, Menlo Park, CA.\par
+
+\noindent\hangindent=1.5em Benjamini, Y., and Hochberg, Y. 1995. Controlling the false discovery rate: A practical and powerful approach to multiple testing. J. R. Stat. Soc. Ser. B 57:289-300.\par
+
+\noindent\hangindent=1.5em Berka, M., Kopecká, R., Berková, V., Brzobohatý, B., and Černý, M. 2022. Regulation of heat shock proteins 70 and their role in plant immunity. J. Exp. Bot. 73:1894-1909. \url{https://doi.org/10.1093/jxb/erab549}.\par
+
+\noindent\hangindent=1.5em Bolger, A. M., Lohse, M., and Usadel, B. 2014. Trimmomatic: A flexible trimmer for Illumina sequence data. Bioinformatics 30:2114-2120. \url{https://doi.org/10.1093/bioinformatics/btu170}.\par
+
+\noindent\hangindent=1.5em Buchfink, B., Xie, C., and Huson, D. H. 2015. Fast and sensitive protein alignment using DIAMOND. Nat. Methods 12:59-60. \url{https://doi.org/10.1038/nmeth.3176}.\par
+
+\noindent\hangindent=1.5em Chen, C., Chen, H., Zhang, Y., Thomas, H. R., Frank, M. H., He, Y., and Xia, R. 2020. TBtools: An integrative toolkit developed for interactive analyses of big biological data. Mol. Plant 13:1194-1202. \url{https://doi.org/10.1016/j.molp.2020.06.009}.\par
+
+\noindent\hangindent=1.5em Chen, S., Zhou, Y., Chen, Y., and Gu, J. 2018. fastp: An ultra-fast all-in-one FASTQ preprocessor. Bioinformatics 34:i884-i890. \url{https://doi.org/10.1093/bioinformatics/bty560}.\par
+
+\noindent\hangindent=1.5em Dobin, A., Davis, C. A., Schlesinger, F., Drenkow, J., Zaleski, C., Jha, S., Batut, P., Chaisson, M., and Gingeras, T. R. 2013. STAR: Ultrafast universal RNA-seq aligner. Bioinformatics 29:15-21. \url{https://doi.org/10.1093/bioinformatics/bts635}.\par
+
+\noindent\hangindent=1.5em Grant, C. E., Bailey, T. L., and Noble, W. S. 2011. FIMO: Scanning for occurrences of a given motif. Bioinformatics 27:1017-1018. \url{https://doi.org/10.1093/bioinformatics/btr064}.\par
+
+\noindent\hangindent=1.5em Guo, Z., Kuang, Z., Wang, Y., Zhao, Y., Tao, Y., Cheng, C., Yang, J., Lu, X., Hao, C., Wang, T., Cao, X., Wei, J., Li, L., and Yang, X. 2020. PmiREN: A comprehensive encyclopedia of plant miRNAs. Nucleic Acids Res. 48:D1114-D1121. \url{https://doi.org/10.1093/nar/gkz894}.\par
+
+\noindent\hangindent=1.5em Gupta, P., Elser, J., Hooks, E., D'Eustachio, P., Jaiswal, P., and Naithani, S. 2024. Plant Reactome Knowledgebase: Empowering plant pathway exploration and OMICS data analysis. Nucleic Acids Res. 52:D1538-D1547. \url{https://doi.org/10.1093/nar/gkad1052}.\par
+
+\noindent\hangindent=1.5em Hu, G., Feng, J., Xiang, X., Wang, J., Salojärvi, J., Liu, C., Wu, Z., Zhang, J., Liang, X., Jiang, Z., Liu, W., Ou, L., Li, J., Fan, G., Mai, Y., Chen, C., Zhang, X., Zheng, J., Zhang, Y., Peng, H., Yao, L., Wai, C. M., Luo, X., Fu, J., Tang, H., Lan, T., Lai, B., Sun, J., Wei, Y., Li, H., Chen, J., Huang, X., Yan, Q., Liu, X., McHale, L. K., Rolling, W., Guyot, R., Sankoff, D., Zheng, C., Albert, V. A., Ming, R., Chen, H., Xia, R., and Li, J. 2022. Two divergent haplotypes from a highly heterozygous lychee genome suggest independent domestication events for early and late-maturing cultivars. Nat. Genet. 54:73-83. \url{https://doi.org/10.1038/s41588-021-00971-3}.\par
+
+\noindent\hangindent=1.5em Jones, P., Binns, D., Chang, H.-Y., Fraser, M., Li, W., McAnulla, C., McWilliam, H., Maslen, J., Mitchell, A., Nuka, G., Pesseat, S., Quinn, A. F., Sangrador-Vegas, A., Scheremetjew, M., Yong, S.-Y., Lopez, R., and Hunter, S. 2014. InterProScan 5: Genome-scale protein function classification. Bioinformatics 30:1236-1240. \url{https://doi.org/10.1093/bioinformatics/btu031}.\par
+
+\noindent\hangindent=1.5em Kim, D., Pertea, G., Trapnell, C., Pimentel, H., Kelley, R., and Salzberg, S. L. 2013. TopHat2: Accurate alignment of transcriptomes in the presence of insertions, deletions and gene fusions. Genome Biol. 14:R36. \url{https://doi.org/10.1186/gb-2013-14-4-r36}.\par
+
+\noindent\hangindent=1.5em Korotkevich, G., Sukhov, V., Budin, N., Shpak, B., Artyomov, M. N., and Sergushichev, A. 2021. Fast gene set enrichment analysis. bioRxiv 060012. \url{https://doi.org/10.1101/060012}.\par
+
+\noindent\hangindent=1.5em Lescot, M., Déhais, P., Thijs, G., Marchal, K., Moreau, Y., Van de Peer, Y., Rouzé, P., and Rombauts, S. 2002. PlantCARE, a database of plant cis-acting regulatory elements and a portal to tools for in silico analysis of promoter sequences. Nucleic Acids Res. 30:325-327. \url{https://doi.org/10.1093/nar/30.1.325}.\par
+
+\noindent\hangindent=1.5em Li, P., Li, W., Zhou, X., Situ, J., Xie, L., Xi, P., Yang, B., Kong, G., and Jiang, Z. 2023. \textit{Peronophythora litchii} RXLR effector PlAvh202 destabilizes a host ethylene biosynthesis enzyme. Plant Physiol. 193:756-774. \url{https://doi.org/10.1093/plphys/kiad311}.\par
+
+\noindent\hangindent=1.5em Liao, Y., Smyth, G. K., and Shi, W. 2014. featureCounts: An efficient general purpose program for assigning sequence reads to genomic features. Bioinformatics 30:923-930. \url{https://doi.org/10.1093/bioinformatics/btt656}.\par
+
+\noindent\hangindent=1.5em Liu, H., Yan, Q., Jiang, Y., Shi, F., Chen, J., Cai, C., and Ou, L. 2023. Identification of LcCDPKs and analysis of their expression patterns in response to downy mildew stresses in lychee. J. Fruit Sci. 40:442-456. \url{https://doi.org/10.13925/j.cnki.gsxb.20220307}.\par
+
+\noindent\hangindent=1.5em Love, M. I., Huber, W., and Anders, S. 2014. Moderated estimation of fold change and dispersion for RNA-seq data with DESeq2. Genome Biol. 15:550. \url{https://doi.org/10.1186/s13059-014-0550-8}.\par
+
+\noindent\hangindent=1.5em McLeay, R. C., and Bailey, T. L. 2010. Motif enrichment analysis: A unified framework and an evaluation on ChIP data. BMC Bioinformatics 11:165. \url{https://doi.org/10.1186/1471-2105-11-165}.\par
+
+\noindent\hangindent=1.5em Mölder, F., Jablonski, K. P., Letcher, B., Hall, M. B., Tomkins-Tinch, C. H., Sochat, V., Forster, J., Lee, S., Twardziok, S. O., Kanitz, A., Wilm, A., Holtgrewe, M., Rahmann, S., Nahnsen, S., and Köster, J. 2021. Sustainable data analysis with Snakemake. F1000Research 10:33. \url{https://doi.org/10.12688/f1000research.29032.2}.\par
+
+\noindent\hangindent=1.5em Morton, J. F. 1987. Lychee. Pages 249-259 in: Fruits of Warm Climates. Creative Resource Systems, Winterville, NC.\par
+
+\noindent\hangindent=1.5em Nowicka, M., and Robinson, M. D. 2016. DRIMSeq: A Dirichlet-multinomial framework for multivariate count outcomes in genomics. F1000Research 5:1356. \url{https://doi.org/10.12688/f1000research.8900.2}.\par
+
+\noindent\hangindent=1.5em Patro, R., Duggal, G., Love, M. I., Irizarry, R. A., and Kingsford, C. 2017. Salmon provides fast and bias-aware quantification of transcript expression. Nat. Methods 14:417-419. \url{https://doi.org/10.1038/nmeth.4197}.\par
+
+\noindent\hangindent=1.5em Pockrandt, C., Alzamel, M., Iliopoulos, C. S., and Reinert, K. 2020. GenMap: Ultra-fast computation of genome mappability. Bioinformatics 36:3687-3692. \url{https://doi.org/10.1093/bioinformatics/btaa222}.\par
+
+\noindent\hangindent=1.5em Rauluseviciute, I., Riudavets-Puig, R., Blanc-Mathieu, R., Castro-Mondragon, J. A., Ferenc, K., Kumar, V., Lemma, R. B., Lucas, J., Chèneby, J., Baranasic, D., Khan, A., Fornes, O., Gundersen, S., Johansen, M., Hovig, E., Lenhard, B., Sandelin, A., Wasserman, W. W., Parcy, F., and Mathelier, A. 2024. JASPAR 2024: 20th anniversary of the open-access database of transcription factor binding profiles. Nucleic Acids Res. 52:D174-D182. \url{https://doi.org/10.1093/nar/gkad1059}.\par
+
+\noindent\hangindent=1.5em Robinson, M. D., McCarthy, D. J., and Smyth, G. K. 2010. edgeR: A Bioconductor package for differential expression analysis of digital gene expression data. Bioinformatics 26:139-140. \url{https://doi.org/10.1093/bioinformatics/btp616}.\par
+
+\noindent\hangindent=1.5em Sun, J., Cao, L., Li, H., Wang, G., Wang, S., Li, F., Zou, X., and Wang, J. 2019. Early responses given distinct tactics to infection of \textit{Peronophythora litchii} in susceptible and resistant litchi cultivar. Sci. Rep. 9:2810. \url{https://doi.org/10.1038/s41598-019-39100-w}.\par
+
+\noindent\hangindent=1.5em Sun, J., Gao, Z., Zhang, X., Zou, X., Cao, L., and Wang, J. 2017. Transcriptome analysis of \textit{Phytophthora litchii} reveals pathogenicity arsenals and confirms taxonomic status. PLoS One 12:e0178245. \url{https://doi.org/10.1371/journal.pone.0178245}.\par
+
+\noindent\hangindent=1.5em UniProt Consortium. 2023. UniProt: The Universal Protein Knowledgebase in 2023. Nucleic Acids Res. 51:D523-D531. \url{https://doi.org/10.1093/nar/gkac1052}.\par
+
+\noindent\hangindent=1.5em Van den Berge, K., Soneson, C., Robinson, M. D., and Clement, L. 2017. stageR: A general stage-wise method for controlling the gene-level false discovery rate in differential expression and differential transcript usage. Genome Biol. 18:151. \url{https://doi.org/10.1186/s13059-017-1277-0}.\par
+
+\noindent\hangindent=1.5em Wu, D., Lim, E., Vaillant, F., Asselin-Labat, M. L., Visvader, J. E., and Smyth, G. K. 2010. ROAST: Rotation gene set tests for complex microarray experiments. Bioinformatics 26:2176-2182. \url{https://doi.org/10.1093/bioinformatics/btq401}.\par
+
+\noindent\hangindent=1.5em Wu, D., and Smyth, G. K. 2012. Camera: A competitive gene set test accounting for inter-gene correlation. Nucleic Acids Res. 40:e133. \url{https://doi.org/10.1093/nar/gks461}.\par
+
+\noindent\hangindent=1.5em Yi, C., Jiang, Y., Shi, J., Qu, H., Xue, S., Duan, X., Shi, J., and Prasad, N. K. 2010. ATP-regulation of antioxidant properties and phenolics in litchi fruit during browning and pathogen infection process. Food Chem. 118:42-47. \url{https://doi.org/10.1016/j.foodchem.2009.04.074}.\par
+
+\noindent\hangindent=1.5em Zhu, A., Ibrahim, J. G., and Love, M. I. 2019. Heavy-tailed prior distributions for sequence count data: Removing the noise and preserving large differences. Bioinformatics 35:2084-2092. \url{https://doi.org/10.1093/bioinformatics/bty895}.\par
+
+\clearpage
+\setlength{\tabcolsep}{5pt}
+\begin{longtable}{@{}>{\raggedright\arraybackslash}p{0.17\textwidth}>{\raggedright\arraybackslash}p{0.31\textwidth}>{\raggedright\arraybackslash}p{0.22\textwidth}>{\raggedright\arraybackslash}p{0.14\textwidth}@{}}
+\caption{Locked dataset roles and eligibility.} \\
+\toprule
+\textbf{Accession} & \textbf{Design} & \textbf{Locked role} & \textbf{Evidence class} \\
+\midrule
+\endfirsthead
+\multicolumn{4}{l}{\textit{Table 1 continued}} \\
+\toprule
+\textbf{Accession} & \textbf{Design} & \textbf{Locked role} & \textbf{Evidence class} \\
+\midrule
+\endhead
+\midrule \multicolumn{4}{r}{\textit{Continued on next page}} \\
+\endfoot
+\bottomrule
+\endlastfoot
+PRJNA830488 (GSE201243) & Guiwei/Yurong1 leaf; mock/infected; 24 h; 3 libraries per cell & Discovery & Conditional inferential \\
+PRJNA450886 & Guiwei/Heiye pericarp; mock/infected; 6, 24, 48 h; 3 libraries per cell & Primary external evaluation & Cross-context \\
+PRJNA922966 (GSE222651) & Feizixiao leaf/fruit; mock/infected; 24 h; 3 libraries per cell & Generic infection transfer & Cross-context \\
+PRJNA922965 (GSE222650) & Feizixiao leaf/fruit small RNA; mock/infected; 24 h; 3 libraries per cell & Orthogonal modality & Orthogonal \\
+PRJNA1090613 (GSE262200) & Guiwei/SFZ leaf; mock/infected; 3 libraries per cell & Exploratory only & Exploratory \\
+\end{longtable}
+
+\clearpage
+\setlength{\tabcolsep}{5pt}
+\begin{longtable}{@{}>{\raggedright\arraybackslash}p{0.16\textwidth}>{\raggedright\arraybackslash}p{0.34\textwidth}>{\raggedright\arraybackslash}p{0.34\textwidth}@{}}
+\caption{Formal genome-wide audit of the 18 exploratory-stage candidates. Interaction effects are re-estimated genome-wide values (Yurong1 response minus Guiwei response, log2 scale). No candidate met the registered discovery threshold (genome-wide \textit{q} < 0.05 and |log2FC| ≥ log2(1.5)).} \\
+\toprule
+\textbf{Gene} & \textbf{Exploratory annotation} & \textbf{Re-estimated interaction} \\
+\midrule
+\endfirsthead
+\multicolumn{3}{l}{\textit{Table 2 continued}} \\
+\toprule
+\textbf{Gene} & \textbf{Exploratory annotation} & \textbf{Re-estimated interaction} \\
+\midrule
+\endhead
+\midrule \multicolumn{3}{r}{\textit{Continued on next page}} \\
+\endfoot
+\bottomrule
+\endlastfoot
+\textbf{LITCHI001510} & Poorly characterized responsive gene & log2FC (SE): −2.83 (0.91); genome-wide \textit{q}: 0.080; uniform mappability: Pass \\
+\textbf{LITCHI019519} & EF-hand calcium-binding protein & log2FC (SE): −3.33 (1.14); genome-wide \textit{q}: 0.106; uniform mappability: Pass \\
+\textbf{LITCHI019299} & S-adenosylmethionine-related protein & log2FC (SE): −1.21 (0.47); genome-wide \textit{q}: 0.175; uniform mappability: Pass \\
+\textbf{LITCHI007102} & Phytosulfokine precursor & log2FC (SE): −0.74 (0.32); genome-wide \textit{q}: 0.238; uniform mappability: Pass \\
+\textbf{LITCHI019183} & Plant lipid-transfer protein & log2FC (SE): +0.99 (0.45); genome-wide \textit{q}: 0.273; uniform mappability: Pass \\
+\textbf{LITCHI028401} & Selected interaction candidate & log2FC (SE): −2.41 (1.13); genome-wide \textit{q}: 0.281; uniform mappability: Fail \\
+\textbf{LITCHI012388} & Heat-shock protein 70 & log2FC (SE): −0.90 (0.49); genome-wide \textit{q}: 0.381; uniform mappability: Pass \\
+\textbf{LITCHI001552} & Cyclase-like stress-related protein & log2FC (SE): +0.92 (0.55); genome-wide \textit{q}: 0.430; uniform mappability: Pass \\
+\textbf{LITCHI001512} & Poorly characterized responsive gene & log2FC (SE): −1.01 (0.63); genome-wide \textit{q}: 0.457; uniform mappability: Pass \\
+\textbf{LITCHI017676} & S-adenosylmethionine-related protein & log2FC (SE): −2.36 (1.53); genome-wide \textit{q}: 0.478; uniform mappability: Pass \\
+\textbf{LITCHI002550} & Cytochrome P450 & log2FC (SE): +0.76 (0.96); genome-wide \textit{q}: 0.762; uniform mappability: Pass \\
+\textbf{LITCHI028104} & Jacalin-like lectin & log2FC (SE): +1.39 (1.89); genome-wide \textit{q}: 0.785; uniform mappability: Pass \\
+\textbf{LITCHI002793} & Osmotin/thaumatin-like protein & log2FC (SE): +0.41 (0.55); genome-wide \textit{q}: 0.786; uniform mappability: Pass \\
+\textbf{LITCHI017995} & Metalloendoproteinase & log2FC (SE): +0.48 (0.73); genome-wide \textit{q}: 0.812; uniform mappability: Pass \\
+\textbf{LITCHI009301} & Osmotin/thaumatin-like protein & log2FC (SE): −0.70 (1.08); genome-wide \textit{q}: 0.816; uniform mappability: Fail \\
+\textbf{LITCHI025738} & Cyclase-like stress-related protein & log2FC (SE): −0.22 (0.62); genome-wide \textit{q}: 0.908; uniform mappability: Pass \\
+\textbf{LITCHI011394} & Pathogenesis-related protein & log2FC (SE): −0.25 (0.98); genome-wide \textit{q}: 0.940; uniform mappability: Pass \\
+\textbf{LITCHI018043} & Plant lipid-transfer protein & log2FC (SE): −0.10 (0.52); genome-wide \textit{q}: 0.954; uniform mappability: Pass \\
+\end{longtable}
+
+\clearpage
+\setlength{\tabcolsep}{5pt}
+\begin{longtable}{@{}>{\raggedright\arraybackslash}p{0.22\textwidth}>{\raggedright\arraybackslash}p{0.17\textwidth}>{\raggedright\arraybackslash}p{0.25\textwidth}>{\raggedright\arraybackslash}p{0.20\textwidth}@{}}
+\caption{Cross-context supported and contradictory genes in the primary external evaluation (PRJNA450886, pericarp, 24 h). Discovery effects are Yurong1-minus-Guiwei interaction log2 fold changes in leaf; external effects are Heiye-minus-Guiwei interaction log2 fold changes in pericarp with 95\% confidence intervals. All \textit{q}-values are Benjamini–Hochberg adjusted (discovery: genome-wide; external: across the frozen candidate-by-contrast family).} \\
+\toprule
+\textbf{Gene and annotation} & \textbf{Discovery interaction} & \textbf{External interaction} & \textbf{Outcome} \\
+\midrule
+\endfirsthead
+\multicolumn{4}{l}{\textit{Table 3 continued}} \\
+\toprule
+\textbf{Gene and annotation} & \textbf{Discovery interaction} & \textbf{External interaction} & \textbf{Outcome} \\
+\midrule
+\endhead
+\midrule \multicolumn{4}{r}{\textit{Continued on next page}} \\
+\endfoot
+\bottomrule
+\endlastfoot
+\textbf{LITCHI005518}; Alpha-xylosidase 1 & log2FC: +0.64; genome-wide \textit{q}: 0.025 & log2FC (95\% CI): +0.67 (+0.32 to +1.02); family-adjusted \textit{q}: 0.007 & Supported \\
+\textbf{LITCHI001963}; Uncharacterized; one-to-one \textit{Oryza} ortholog & log2FC: −1.41; genome-wide \textit{q}: 0.024 & log2FC (95\% CI): −0.94 (−1.43 to −0.46); family-adjusted \textit{q}: 0.007 & Supported \\
+\textbf{LITCHI030761}; Caffeoylshikimate esterase & log2FC: −0.92; genome-wide \textit{q}: 0.040 & log2FC (95\% CI): +1.31 (+0.78 to +1.85); family-adjusted \textit{q}: 0.0002 & Contradictory \\
+\textbf{LITCHI029534}; Thiamine thiazole synthase 2, chloroplastic & log2FC: +1.48; genome-wide \textit{q}: 0.002 & log2FC (95\% CI): −1.04 (−1.61 to −0.48); family-adjusted \textit{q}: 0.010 & Contradictory \\
+\textbf{LITCHI021860}; Phosphatidylinositol 4-kinase gamma 2 & log2FC: −0.65; genome-wide \textit{q}: 0.032 & log2FC (95\% CI): +0.97 (+0.39 to +1.54); family-adjusted \textit{q}: 0.029 & Contradictory \\
+\textbf{LITCHI008313}; Beta-glucosidase 44 & log2FC: +0.90; genome-wide \textit{q}: 0.045 & log2FC (95\% CI): −1.12 (−1.81 to −0.44); family-adjusted \textit{q}: 0.034 & Contradictory \\
+\textbf{LITCHI001700}; Fe(II)/2-oxoglutarate-dependent dioxygenase 4 & log2FC: +3.70; genome-wide \textit{q}: 0.033 & log2FC (95\% CI): −2.00 (−3.24 to −0.77); family-adjusted \textit{q}: 0.035 & Contradictory \\
+\end{longtable}
+
+\clearpage
+\setlength{\tabcolsep}{5pt}
+\begin{longtable}{@{}>{\raggedright\arraybackslash}p{0.35\textwidth}>{\raggedright\arraybackslash}p{0.23\textwidth}>{\raggedright\arraybackslash}p{0.26\textwidth}@{}}
+\caption{The twelve Tier B genes: internally robust genome-wide statistical candidates with direction-consistent but sub-threshold, or non-measurable, primary external evidence. Discovery effects are interaction log2 fold changes (Yurong1 response minus Guiwei response); positive values indicate a stronger infection response in Yurong1. External columns give the primary 24-h pericarp estimate with 95\% confidence interval and family-adjusted \textit{q}; NM denotes genes not measurable in the external cohort.} \\
+\toprule
+\textbf{Gene and family-level annotation} & \textbf{Discovery interaction} & \textbf{Primary external evidence} \\
+\midrule
+\endfirsthead
+\multicolumn{3}{l}{\textit{Table 4 continued}} \\
+\toprule
+\textbf{Gene and family-level annotation} & \textbf{Discovery interaction} & \textbf{Primary external evidence} \\
+\midrule
+\endhead
+\midrule \multicolumn{3}{r}{\textit{Continued on next page}} \\
+\endfoot
+\bottomrule
+\endlastfoot
+\textbf{LITCHI014613}; Sugar transporter ERD6-like 16 & log2FC: +3.69; genome-wide \textit{q}: 8.7 × 10\textsuperscript{-6} & log2FC (95\% CI): +0.60 (−0.04 to +1.25); family-adjusted \textit{q}: 0.27 \\
+\textbf{LITCHI015982}; WAT1-related protein & log2FC: +3.43; genome-wide \textit{q}: 7.8 × 10\textsuperscript{-7} & log2FC (95\% CI): +0.77 (+0.07 to +1.48); family-adjusted \textit{q}: 0.18 \\
+\textbf{LITCHI005805}; Phosphomannomutase/phosphoglucomutase & log2FC: +2.07; genome-wide \textit{q}: 5.5 × 10\textsuperscript{-8} & log2FC (95\% CI): NM; family-adjusted \textit{q}: — \\
+\textbf{LITCHI028926}; Exonuclease 1 & log2FC: +1.90; genome-wide \textit{q}: 5.7 × 10\textsuperscript{-5} & log2FC (95\% CI): +0.32 (−0.63 to +1.28); family-adjusted \textit{q}: 0.83 \\
+\textbf{LITCHI016077}; Serine carboxypeptidase 24 & log2FC: +1.81; genome-wide \textit{q}: 4.4 × 10\textsuperscript{-5} & log2FC (95\% CI): +0.23 (−1.05 to +1.51); family-adjusted \textit{q}: 0.89 \\
+\textbf{LITCHI013915}; 1,4-alpha-glucan-branching enzyme 3, chloroplastic & log2FC: +1.58; genome-wide \textit{q}: 4.4 × 10\textsuperscript{-5} & log2FC (95\% CI): +0.53 (+0.10 to +0.95); family-adjusted \textit{q}: 0.13 \\
+\textbf{LITCHI021546}; Homeobox-DDT domain protein RLT3 & log2FC: +1.31; genome-wide \textit{q}: 6.6 × 10\textsuperscript{-5} & log2FC (95\% CI): +0.12 (−0.30 to +0.54); family-adjusted \textit{q}: 0.83 \\
+\textbf{LITCHI022605}; Ribonuclease J & log2FC: +0.74; genome-wide \textit{q}: 2.9 × 10\textsuperscript{-4} & log2FC (95\% CI): +0.14 (−0.34 to +0.62); family-adjusted \textit{q}: 0.83 \\
+\textbf{LITCHI028717}; BAG-family molecular chaperone regulator 4 & log2FC: −0.91; genome-wide \textit{q}: 1.8 × 10\textsuperscript{-5} & log2FC (95\% CI): −1.20 (−2.52 to +0.12); family-adjusted \textit{q}: 0.29 \\
+\textbf{LITCHI008721}; Unannotated protein & log2FC: −1.91; genome-wide \textit{q}: 7.9 × 10\textsuperscript{-11} & log2FC (95\% CI): NM; family-adjusted \textit{q}: — \\
+\textbf{LITCHI015740}; Putative lipid-transfer protein DIR1 & log2FC: −1.96; genome-wide \textit{q}: 1.2 × 10\textsuperscript{-7} & log2FC (95\% CI): −0.21 (−1.10 to +0.69); family-adjusted \textit{q}: 0.88 \\
+\textbf{LITCHI010877}; Cytochrome P450 81Q32 & log2FC: −2.77; genome-wide \textit{q}: 2.1 × 10\textsuperscript{-7} & log2FC (95\% CI): NM; family-adjusted \textit{q}: — \\
+\end{longtable}
+
+\clearpage
+\nolinenumbers
+\begin{center}
+\includegraphics[width=\textwidth,height=4.9in,keepaspectratio]{\detokenize{/Users/rzhuang/Documents/VscodeProjects/lychee/docs/paper/unified_manuscript/figures/figure1_study_design_qc.pdf}}
+\end{center}
+\linenumbers
+\noindent\textbf{Figure 1.}  Study cohorts, discovery quality control, and expression structure. (A) The five public cohorts with prespecified roles and deposited library counts. (B) Per-library technical quality in the discovery cohort: fastp read survival, STAR unique-alignment rate, and Salmon mapping rate; all 12 libraries passed the fixed inclusion gates. (C) Principal-component analysis of the discovery libraries separates cultivar and infection status.
+\clearpage
+\nolinenumbers
+\begin{center}
+\includegraphics[width=\textwidth,height=4.9in,keepaspectratio]{\detokenize{/Users/rzhuang/Documents/VscodeProjects/lychee/docs/paper/unified_manuscript/figures/figure2_discovery_legacy.pdf}}
+\end{center}
+\linenumbers
+\noindent\textbf{Figure 2.}  Genome-wide discovery and formal reassessment of the exploratory candidates. (A) Cultivar-by-infection interaction effects across 19,445 expressed genes; 262 genes met the statistical threshold and 206 were retained after uniform mapping and gene-model quality control. (B) Genome-wide re-estimation of the 18 exploratory (legacy) candidates with 95\% confidence intervals; orange marks uniform-mappability failures. No legacy candidate met the genome-wide interaction criterion. (C) Evidence attrition from tested genes to internally robust candidates.
+\clearpage
+\nolinenumbers
+\begin{center}
+\includegraphics[width=\textwidth,height=4.9in,keepaspectratio]{\detokenize{/Users/rzhuang/Documents/VscodeProjects/lychee/docs/paper/unified_manuscript/figures/figure3_robustness_external.pdf}}
+\end{center}
+\linenumbers
+\noindent\textbf{Figure 3.}  Internal robustness and the primary external evaluation. (A) Candidates passing each predeclared robustness gate, the conjunction of the four analytic gates, and the additional observed-mapping gate. (B) The internally robust set (16 genes) and the externally supported set (2 genes) do not overlap. (C) Discovery interaction effects against the primary cross-context interaction effects (Heiye response minus Guiwei response, pericarp, 24 h); supported, contradictory, and internally robust genes are highlighted. The diagonal is a visual reference only; equal effects across contexts are not expected.
+\clearpage
+\nolinenumbers
+\begin{center}
+\includegraphics[width=\textwidth,height=4.9in,keepaspectratio]{\detokenize{/Users/rzhuang/Documents/VscodeProjects/lychee/docs/paper/unified_manuscript/figures/figure4_pathways_signatures.pdf}}
+\end{center}
+\linenumbers
+\noindent\textbf{Figure 4.}  Frozen pathway and signature evaluation. (A) Discovery normalized enrichment scores for the six frozen pathways; only circadian rhythm passed all internal gates, and none was supported in the primary external evaluation. (B) The frozen signed 206-gene signature across the six non-exploratory external contrasts; filled points denote q < 0.05. The quarantined PRJNA1090613 estimate is in Figure S3.
+\clearpage
+\nolinenumbers
+\begin{center}
+\includegraphics[width=\textwidth,height=4.9in,keepaspectratio]{\detokenize{/Users/rzhuang/Documents/VscodeProjects/lychee/docs/paper/unified_manuscript/figures/figure5_transcript_usage.pdf}}
+\end{center}
+\linenumbers
+\noindent\textbf{Figure 5.}  Conditional transcript usage. (A) Discovery gate and event counts. (B) External follow-up of the 225 discovery events, separated by prespecified study role.
+\clearpage
+\nolinenumbers
+\begin{center}
+\includegraphics[width=\textwidth,height=4.9in,keepaspectratio]{\detokenize{/Users/rzhuang/Documents/VscodeProjects/lychee/docs/paper/unified_manuscript/figures/figure6_orthogonal_tiers.pdf}}
+\end{center}
+\linenumbers
+\noindent\textbf{Figure 6.}  Orthogonal evidence and final tiers. (A) Annotation status of the 206 QC-retained genes. (B) Registered promoter-motif robustness and the small-RNA reference gate. (C) Deterministic final tiers over all 268 frozen entities.
+
+\end{document}
