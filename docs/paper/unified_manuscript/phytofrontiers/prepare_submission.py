@@ -40,7 +40,7 @@ AUTHOR = "Eric Zhuang"
 AFFILIATION = "NYU Langone Health, New York, NY, USA"
 EMAIL = "eric.zhuang@nyulangone.org"
 ORCID = "0009-0001-9050-0214"
-ZENODO_DOI = "https://doi.org/10.5281/zenodo.22436625"
+ZENODO_DOI = "https://zenodo.org/records/22436625"
 
 ABSTRACT = (
     "Litchi downy blight, caused by the oomycete *Peronophythora litchii*, is a "

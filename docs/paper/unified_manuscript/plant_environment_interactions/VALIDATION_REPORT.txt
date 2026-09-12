@@ -1,0 +1,19 @@
+Plant-Environment Interactions submission validation
+Build date: 2026-09-11
+Article type: Research Article
+Abstract: PASS (223 words; maximum 250)
+Main body (Introduction + Results + Discussion): PASS (2950 words; maximum 3,000)
+Materials and Methods: INFO (830 words; counted separately)
+Conclusions: INFO (85 words; counted separately)
+Total narrative (Introduction through Conclusions): INFO (3865 words)
+Running title: PASS (39 characters; required <40)
+Keywords: PASS (6; required 5–8)
+References: PASS (27; journal optimum 30)
+Main illustrations: PASS (5 figures + 2 tables = 7; maximum 10)
+Main DOCX structure: PASS (125 paragraphs; 5 embedded figures; 2 editable tables; continuous line numbering; page-number field)
+Supporting DOCX structure: PASS (88 paragraphs; 2 editable tables; 4 figures)
+Cover-letter DOCX structure: PASS (12 paragraphs)
+Main figures embedded and retained at original vector quality: PASS (5 embedded images + 5 PDFs)
+Supporting data/code archive MD5 matches verified Zenodo copy: PASS (a7dce65e381f77ca365820311704b736)
+Recommended upload files checksummed: PASS (9)
+Manual inspection in Microsoft Word and of the portal-generated proof remains required.

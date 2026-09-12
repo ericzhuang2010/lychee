@@ -73,7 +73,7 @@ This study reanalyzed publicly available sequencing datasets and involved no new
 
 ## Data and code availability
 
-All analyzed sequencing data are public under PRJNA830488/GSE201243, PRJNA450886, PRJNA922966/GSE222651, PRJNA922965/GSE222650, and PRJNA1090613/GSE262200. The registered protocol, complete result tables, supplementary figures, figure source data, analysis code, workflows, configurations, tests, and environment specifications are archived under CC BY 4.0 at <https://doi.org/10.5281/zenodo.22436625>.
+All analyzed sequencing data are public under PRJNA830488/GSE201243, PRJNA450886, PRJNA922966/GSE222651, PRJNA922965/GSE222650, and PRJNA1090613/GSE262200. The registered protocol, complete result tables, supplementary figures, figure source data, analysis code, workflows, configurations, tests, and environment specifications are archived under CC BY 4.0 at <https://zenodo.org/records/22436625>.
 
 ## Artificial-intelligence disclosure
 
@@ -92,7 +92,7 @@ This disclosure is included in the manuscript Acknowledgments, as required by cu
 
 **Title:** Supplementary Figures S1–S3 for “Cultivar-dependent transcriptional responses of lychee to *Peronophythora litchii*: a registered genome-wide analysis”
 
-**Description:** This four-page e-Xtra PDF contains a cover page and Figures S1–S3 with complete captions. Figure S1 shows replicate-level normalized counts, Figure S2 shows conditional parametric power curves, and Figure S3 shows the quarantined exploratory signed-signature estimate. Complete machine-readable Tables S1–S18, figure source data, the registered protocol, and analysis code are openly archived at <https://doi.org/10.5281/zenodo.22436625>.
+**Description:** This four-page e-Xtra PDF contains a cover page and Figures S1–S3 with complete captions. Figure S1 shows replicate-level normalized counts, Figure S2 shows conditional parametric power curves, and Figure S3 shows the quarantined exploratory signed-signature estimate. Complete machine-readable Tables S1–S18, figure source data, the registered protocol, and analysis code are openly archived at <https://zenodo.org/records/22436625>.
 
 ## License selection
 

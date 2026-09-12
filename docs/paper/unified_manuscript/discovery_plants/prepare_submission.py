@@ -44,7 +44,7 @@ AUTHOR = "Eric Zhuang"
 AFFILIATION = "NYU Langone Health, New York, New York, USA"
 EMAIL = "eric.zhuang@nyulangone.org"
 ORCID = "0009-0001-9050-0214"
-ZENODO_DOI = "https://doi.org/10.5281/zenodo.22436625"
+ZENODO_DOI = "https://zenodo.org/records/22436625"
 ARTICLE_TYPE = "Research"
 
 KEYWORDS_TEX = (
@@ -231,7 +231,7 @@ def add_doi_links(items: list[str]) -> list[str]:
             "Zhuang E. Supplemental material for ``Cultivar-dependent transcriptional "
             "responses of lychee to \\textit{Peronophythora litchii}: a registered "
             "genome-wide analysis.'' Zenodo. 2026. "
-            "\\url{https://doi.org/10.5281/zenodo.22436625}.",
+            "\\url{https://zenodo.org/records/22436625}.",
         ]
     )
     return enriched

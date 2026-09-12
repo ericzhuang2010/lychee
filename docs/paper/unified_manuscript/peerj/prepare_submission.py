@@ -40,7 +40,7 @@ AFFILIATION = "NYU Langone Health, New York, NY, USA"
 CORRESPONDENCE_ADDRESS = AFFILIATION
 EMAIL = "eric.zhuang@nyulangone.org"
 ORCID = "0009-0001-9050-0214"
-ZENODO_DOI = "https://doi.org/10.5281/zenodo.22240717"
+ZENODO_DOI = "https://zenodo.org/records/22436625"
 
 KEYWORDS = (
     "Litchi chinensis; Peronophythora litchii; plant-pathogen interaction; "

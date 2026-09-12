@@ -62,7 +62,7 @@ Use only if the form requests them:
 - Funding: This work received no external funding.
 - Competing interests: The author declares no conflicts of interest.
 - Ethics: This study reanalysed publicly available sequencing datasets and involved no new experiments with humans, human tissue, animals, or field sampling; ethical approval was not required.
-- Data and code: <https://doi.org/10.5281/zenodo.22240717>
+- Data and code: <https://zenodo.org/records/22436625>
 
 ## Upload file
 

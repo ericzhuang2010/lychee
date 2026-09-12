@@ -48,7 +48,7 @@ The manuscript clearly asks a new question and uses several independent public c
 - [ ] Select subject areas in this order where available: Plant Science, Genomics, Bioinformatics, Agricultural Science, Molecular Biology.
 - [ ] Paste the structured abstract, keywords, declarations, data-availability text, and confidential scope note from `submission_metadata.md`.
 - [ ] Verify every clause of the generative-AI disclosure, especially the model/version label and confirmation that the applicable terms of use were checked.
-- [ ] Publish a new Zenodo version containing the exact `PeerJ_supplemental_data_S1.zip`, replace `10.5281/zenodo.22240717` with the new version-specific DOI in `prepare_submission.py` and `submission_metadata.md`, and rebuild the package. The current DOI was checked through the public Zenodo API on September 6, 2026: it resolves to a September 1 archive containing the supplementary tables, figures, and figure source data, but no analysis-code directory, and it is not byte-identical to the current PeerJ supplement.
+- [ ] If this archived PeerJ package is reused, rebuild it with the current Zenodo record <https://zenodo.org/records/22436625> and confirm that its journal-specific supplement remains consistent with the public archive.
 - [ ] Review the CRediT roles and remove any that do not accurately describe the work.
 - [ ] Confirm that no human, animal, or field permits were required.
 - [ ] Add editors or reviewers only after checking subject fit and conflicts; do not invent names or contact details.

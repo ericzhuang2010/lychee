@@ -18,7 +18,7 @@ Retain `PhytoFrontiers_manuscript.docx` for revision, because APS requires edita
 
 Do not upload `README_submission.md`, `submission_metadata.md`, `reviewer_selection_template.md`, `FIGURE_CAPTIONS.txt`, `prepare_submission.py`, `PhytoFrontiers_initial_submission.tex`, `VALIDATION_REPORT.txt`, or `UPLOAD_FILE_MANIFEST_SHA256.tsv`; these are preparation and verification aids.
 
-The complete machine-readable supplement and reproducibility archive is publicly available at <https://doi.org/10.5281/zenodo.22436625>. This is the current version-specific DOI for the open CC BY 4.0 Zenodo record containing `lychee_unified_manuscript_supplement.zip` (19,167,242 bytes; MD5 `a7dce65e381f77ca365820311704b736`), which matches the local archive. The single e-Xtra PDF is therefore a concise journal-hosted supplement, while the DOI supplies Tables S1–S18, figure source data, code, workflows, tests, metadata, and environments to editors and reviewers.
+The complete machine-readable supplement and reproducibility archive is publicly available at <https://zenodo.org/records/22436625>. This open CC BY 4.0 Zenodo record contains `lychee_unified_manuscript_supplement.zip` (19,167,242 bytes; MD5 `a7dce65e381f77ca365820311704b736`), which matches the local archive. The single e-Xtra PDF is therefore a concise journal-hosted supplement, while the Zenodo record supplies Tables S1–S18, figure source data, code, workflows, tests, metadata, and environments to editors and reviewers.
 
 ## Journal-specific changes made
 

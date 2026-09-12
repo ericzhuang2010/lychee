@@ -84,7 +84,7 @@ This study reanalyzed publicly available sequencing datasets and involved no new
 
 ## Data availability
 
-All analyzed sequencing data are public under PRJNA830488/GSE201243, PRJNA450886, PRJNA922966/GSE222651, PRJNA922965/GSE222650, and PRJNA1090613/GSE262200. Supplementary Tables S1–S18, Figures S1–S3, and tab-separated figure source data are archived under CC BY 4.0 at <https://doi.org/10.5281/zenodo.22240717>. The supplementary tables, figures, and source data, together with the exact analysis code, Snakemake workflows, scripts, configurations, tests, metadata, and environment specifications used for this study, are supplied as `PeerJ_supplemental_data_S1.zip`.
+All analyzed sequencing data are public under PRJNA830488/GSE201243, PRJNA450886, PRJNA922966/GSE222651, PRJNA922965/GSE222650, and PRJNA1090613/GSE262200. Supplementary Tables S1–S18, Figures S1–S3, and tab-separated figure source data are archived under CC BY 4.0 at <https://zenodo.org/records/22436625>. The supplementary tables, figures, and source data, together with the exact analysis code, Snakemake workflows, scripts, configurations, tests, metadata, and environment specifications used for this study, are supplied as `PeerJ_supplemental_data_S1.zip`.
 
 ### Current DOI update required — do not paste this note
 

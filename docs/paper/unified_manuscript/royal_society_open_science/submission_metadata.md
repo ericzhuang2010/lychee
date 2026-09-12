@@ -57,7 +57,7 @@ This study reanalysed publicly available sequencing datasets and involved no new
 
 ## Data accessibility
 
-All analysed sequencing data are public under PRJNA830488/GSE201243, PRJNA450886, PRJNA922966/GSE222651, PRJNA922965/GSE222650 and PRJNA1090613/GSE262200. Supplementary Tables S1–S18, Figures S1–S3 and tab-separated figure source data are archived under CC BY 4.0 at <https://doi.org/10.5281/zenodo.22240717>. The analysis source code, Snakemake workflows, configuration files, tests and environment specifications are supplied within the electronic supplementary file `RSOS_supporting_information.zip`. The data, code and supporting materials required to reproduce the reported results are therefore available to editors and reviewers with this submission.
+All analysed sequencing data are public under PRJNA830488/GSE201243, PRJNA450886, PRJNA922966/GSE222651, PRJNA922965/GSE222650 and PRJNA1090613/GSE262200. Supplementary Tables S1–S18, Figures S1–S3 and tab-separated figure source data are archived under CC BY 4.0 at <https://zenodo.org/records/22436625>. The analysis source code, Snakemake workflows, configuration files, tests and environment specifications are supplied within the electronic supplementary file `RSOS_supporting_information.zip`. The data, code and supporting materials required to reproduce the reported results are therefore available to editors and reviewers with this submission.
 
 ## Use of artificial intelligence
 

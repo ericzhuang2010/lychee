@@ -37,7 +37,7 @@ AUTHOR = "Eric Zhuang"
 AFFILIATION = "NYU Langone Health, New York, NY, USA"
 EMAIL = "eric.zhuang@nyulangone.org"
 ORCID = "0009-0001-9050-0214"
-ZENODO_DOI = "https://doi.org/10.5281/zenodo.22240717"
+ZENODO_DOI = "https://zenodo.org/records/22436625"
 
 RSOS_ABSTRACT = (
     "Litchi downy blight, caused by the oomycete *Peronophythora litchii*, is a "
@@ -626,7 +626,7 @@ def build_manuscript() -> Path:
     references.append(
         "42. Zhuang E. 2026 Supplementary material for Cultivar-dependent "
         "transcriptional responses of lychee to Peronophythora litchii: a registered "
-        "genome-wide analysis. Zenodo. doi:10.5281/zenodo.22240717."
+        "genome-wide analysis. Zenodo. https://zenodo.org/records/22436625."
     )
 
     document = Document()

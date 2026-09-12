@@ -37,7 +37,7 @@ Copy title, abstract, keywords, author details, declarations, and scope terms fr
 - The package uses Springer Nature's official `sn-jnl.cls` version 3.1 (December 2024) in `pdflatex` mode.
 - Snapp requires all LaTeX files and figures in one ZIP directory; the generated ZIP is flat.
 - References are included directly in the TeX source to avoid bibliography-conversion failures.
-- Main and supplementary materials cite the current version-specific Zenodo record: <https://doi.org/10.5281/zenodo.22436625>.
+- Main and supplementary materials cite the current Zenodo record: <https://zenodo.org/records/22436625>.
 - The Zenodo record retains an earlier manuscript title. Before submission, either update its metadata to the current title or confirm that retaining the earlier title is acceptable; the DOI and archived contents are otherwise current and verified.
 - `VALIDATION_REPORT.txt` records automated compilation and package checks.
 - `UPLOAD_FILE_MANIFEST_SHA256.tsv` records exact checksums for the recommended Word-route upload files.

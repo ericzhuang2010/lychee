@@ -24,13 +24,15 @@ Upload these files to the Plant Direct Research Exchange submission portal:
 4. `supporting_information/Plant_Direct_supporting_figures.pdf` as supporting
    information.
 
-The complete machine-readable tables and source data are already permanently archived
-at <https://doi.org/10.5281/zenodo.22240717>. The local
-`supporting_information/lychee_unified_manuscript_supplement.zip` is the exact archive
-in that Zenodo record (matching MD5 `544c7bb34bb77db7837a37e2381e2186`). Upload the ZIP
-only if the portal/editor requests the large machine-readable supplement in addition to
-the DOI; it is about 18 MB and is not a replacement for the under-10-MB supporting-
-figures PDF.
+The complete machine-readable tables and source data are permanently archived at
+<https://zenodo.org/records/22436625>. On rebuilding this package, the local
+`supporting_information/lychee_unified_manuscript_supplement.zip` is copied from the
+current unified-manuscript archive and should match the Zenodo file (MD5
+`a7dce65e381f77ca365820311704b736`). The rejected-submission files currently retained
+in this directory may contain an earlier archive and should be rebuilt before reuse.
+Upload the ZIP only if the portal/editor requests the large machine-readable supplement
+in addition to the Zenodo record; it is about 19 MB and is not a replacement for the
+under-10-MB supporting-figures PDF.
 
 `UPLOAD_FILE_MANIFEST_SHA256.tsv` records byte sizes and SHA-256 checksums for every
 potential upload file. `prepare_submission.py` reproducibly rebuilds the package and is
