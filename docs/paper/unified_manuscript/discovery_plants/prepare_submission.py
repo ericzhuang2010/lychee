@@ -86,6 +86,28 @@ SUPPLEMENTARY_FIGURES = [
     ),
 ]
 
+SUPPLEMENTARY_TABLE_CAPTIONS = [
+    ("S1", "Biological-unit registry."),
+    ("S2", "Per-library quality control."),
+    ("S3", "Genome-wide discovery statistics."),
+    ("S4", "Robustness file manifest."),
+    ("S5", "All external frozen tests."),
+    ("S6", "Pathway and signature tests."),
+    ("S7", "Conditional differential-transcript-usage results."),
+    ("S8", "Candidate annotation and orthology evidence."),
+    ("S9", "Small-RNA reference-gate outcome."),
+    ("S10", "Motif-background tests and sensitivity results."),
+    ("S11", "Accession-aware evidence registry."),
+    ("S12", "Scripts, environments, and command inventory."),
+    ("S13", "Protocol amendment and deviation log."),
+    ("S14", "Legacy within-cultivar audit."),
+    ("S15", "Controlled promoter-motif background comparison."),
+    ("S16a", "Reconstructed dataset-search queries."),
+    ("S16b", "Dataset eligibility decisions."),
+    ("S17", "Exact software versions."),
+    ("S18", "Power-simulation minimum detectable effects."),
+]
+
 SOURCE_SUPPLEMENT = MANUSCRIPT_DIR / "lychee_unified_manuscript_supplement.zip"
 EXPECTED_SUPPLEMENT_MD5 = "a7dce65e381f77ca365820311704b736"
 
@@ -258,6 +280,14 @@ def adapt_body(text: str) -> str:
 
 def build_manuscript_tex() -> tuple[str, int]:
     source = SOURCE_TEX.read_text(encoding="utf-8")
+    supplementary_table_captions = "\n\n".join(
+        rf"\textbf{{Table {number}.}} {caption}"
+        for number, caption in SUPPLEMENTARY_TABLE_CAPTIONS
+    )
+    supplementary_figure_captions = "\n\n".join(
+        rf"\textbf{{Figure S{number}.}} {caption}"
+        for number, (_, _, caption) in enumerate(SUPPLEMENTARY_FIGURES, start=1)
+    )
     abstract = extract_abstract(source)
     introduction = adapt_body(extract_section(source, "Introduction", "Results"))
     results = adapt_body(extract_section(source, "Results", "Discussion"))
@@ -334,7 +364,17 @@ def build_manuscript_tex() -> tuple[str, int]:
 
 \bmhead{{Supplementary information}}
 
-Supplementary Information 1 provides an inventory of the supporting files and Figures S1--S3. Supplementary Data 2 provides machine-readable Tables S1--S18, figure source data, the registered protocol and amendment log, analysis code, workflows, configurations, tests, metadata, and environment specifications. The same complete archive is permanently available on Zenodo [46].
+All supplementary files and figures for this article are available exclusively in the version-specific Zenodo record at \url{{{ZENODO_DOI}}} [46]. The archive contains Figures S1--S3, machine-readable Tables S1--S18, figure source data, the registered protocol and amendment log, analysis code, workflows, configurations, tests, metadata, and environment specifications. Captions for the archived tables and figures are provided below.
+
+\subsection*{{Supplementary table captions}}
+
+The following captions correspond to the machine-readable TSV files archived in the Zenodo record [46].
+
+{supplementary_table_captions}
+
+\subsection*{{Supplementary figure captions}}
+
+{supplementary_figure_captions}
 
 \bmhead{{Acknowledgements}}
 
@@ -353,6 +393,10 @@ The author declares no competing interests.
 \subsection*{{Ethics approval and consent to participate}}
 
 Not applicable. This study reanalyzed publicly available plant sequencing datasets and involved no new experiments with humans, human tissue, animals, or field sampling.
+
+\subsection*{{Clinical trial number}}
+
+Clinical trial number: not applicable.
 
 \subsection*{{Consent for publication}}
 
@@ -398,6 +442,10 @@ def build_supplement_tex() -> str:
 \clearpage"""
         )
     figure_block = "\n\n".join(figures)
+    table_caption_items = "\n".join(
+        rf"\item \textbf{{Table {number}.}} {caption}"
+        for number, caption in SUPPLEMENTARY_TABLE_CAPTIONS
+    )
     return rf"""\documentclass[12pt]{{article}}
 \usepackage[margin=1in]{{geometry}}
 \usepackage{{graphicx}}
@@ -416,7 +464,17 @@ def build_supplement_tex() -> str:
 
 \section*{{Contents}}
 
-This file contains Figures S1--S3 and their captions. Supplementary Data 2, supplied as \texttt{{Discover\_Plants\_Data\_and\_Code.zip}}, contains machine-readable Tables S1--S18, all figure source data, the registered protocol and amendment log, analysis code, workflows, configurations, tests, metadata, and environment specifications. The complete archive is also permanently available at \url{{{ZENODO_DOI}}}.
+Figures S1--S3, machine-readable Tables S1--S18, all figure source data, the registered protocol and amendment log, analysis code, workflows, configurations, tests, metadata, and environment specifications are available exclusively in the version-specific Zenodo record at \url{{{ZENODO_DOI}}}. Their table and figure captions are listed below.
+
+\subsection*{{Supplementary table captions}}
+
+The following captions correspond to the machine-readable TSV files archived in the Zenodo record.
+
+\begin{{itemize}}
+{table_caption_items}
+\end{{itemize}}
+
+\subsection*{{Supplementary figure captions}}
 
 \begin{{itemize}}
 \item Figure S1: replicate-level normalized counts.
@@ -645,10 +703,10 @@ Prepared for the Springer Nature Snapp submission system from `../manuscript_v2.
 
 1. `Discover_Plants_manuscript.docx` — **Manuscript**. This editable Word file contains the complete article, Figures 1–6, Tables 1–4, references, and declarations.
 2. `Discover_Plants_cover_letter.docx` — **Cover letter**.
-3. `supplementary_information/Discover_Plants_Supplementary_Information.docx` — **Supplementary Information 1**. It contains the supplement inventory and Figures S1–S3.
-4. `supplementary_information/Discover_Plants_Data_and_Code.zip` — **Supplementary Data 2**. It contains Tables S1–S18, figure source data, the protocol, code, workflows, tests, metadata, and environments.
 
-Do not upload both Word and LaTeX/PDF versions of the same item unless the portal explicitly asks. The matching PDFs and `Discover_Plants_LaTeX_source.zip` remain in this directory as visual previews and alternate source files.
+Do not upload the files under `supplementary_information/` as journal supporting material. The manuscript identifies the version-specific Zenodo record at <{ZENODO_DOI}> as the exclusive location for Figures S1–S3, Tables S1–S18, source data, protocol materials, code, workflows, metadata, and environments. The local supplementary files are retained only as validation copies.
+
+Do not upload both Word and LaTeX/PDF versions of the same manuscript item unless the portal explicitly asks. The matching PDFs and `Discover_Plants_LaTeX_source.zip` remain in this directory as visual previews and alternate source files.
 
 ## Portal selections
 
@@ -671,12 +729,12 @@ Copy title, abstract, keywords, author details, declarations, and scope terms fr
 
 ## Source-package notes
 
-- The recommended manuscript and supplementary-information uploads are editable Word files. Both contain embedded high-resolution figures; no separate figure upload should be needed unless the portal requests one.
+- The recommended manuscript upload is an editable Word file containing embedded high-resolution main figures; no separate figure upload should be needed unless the portal requests one.
 - The Word manuscript uses continuous line numbering (displayed every five lines), double-spaced body text, Word heading styles, editable Word tables, numbered references, and accessible figure descriptions.
 - The package uses Springer Nature's official `sn-jnl.cls` version 3.1 (December 2024) in `pdflatex` mode.
 - Snapp requires all LaTeX files and figures in one ZIP directory; the generated ZIP is flat.
 - References are included directly in the TeX source to avoid bibliography-conversion failures.
-- Main and supplementary materials cite the current version-specific Zenodo record: <{ZENODO_DOI}>.
+- The manuscript cites the current version-specific Zenodo record as the exclusive supplementary-material location: <{ZENODO_DOI}>.
 - The Zenodo record retains an earlier manuscript title. Before submission, either update its metadata to the current title or confirm that retaining the earlier title is acceptable; the DOI and archived contents are otherwise current and verified.
 - `VALIDATION_REPORT.txt` records automated compilation and package checks.
 - `UPLOAD_FILE_MANIFEST_SHA256.tsv` records exact checksums for the recommended Word-route upload files.
@@ -800,6 +858,7 @@ def main() -> None:
         supplement_docx=supplement_docx,
         main_figures=MAIN_FIGURES,
         supplementary_figures=SUPPLEMENTARY_FIGURES,
+        supplementary_table_captions=SUPPLEMENTARY_TABLE_CAPTIONS,
         title_tex=TITLE_TEX,
         author=AUTHOR,
         affiliation=AFFILIATION,
@@ -819,8 +878,6 @@ def main() -> None:
     upload_files = [
         manuscript_docx,
         OUTPUT_DIR / "Discover_Plants_cover_letter.docx",
-        supplement_docx,
-        supplement_archive,
     ]
     manifest_lines = ["sha256\tbytes\tfile"]
     for path in upload_files:

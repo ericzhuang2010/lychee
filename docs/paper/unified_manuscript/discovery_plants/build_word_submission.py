@@ -648,6 +648,7 @@ def build_manuscript_docx(
 def build_supplement_docx(
     output_path: Path,
     supplementary_figures: list[tuple[Path, str, str]],
+    supplementary_table_captions: list[tuple[str, str]],
     title_tex: str,
     author: str,
     affiliation: str,
@@ -677,15 +678,28 @@ def build_supplement_docx(
     paragraph = document.add_paragraph()
     paragraph.paragraph_format.line_spacing = 1.15
     paragraph.add_run(
-        "This file contains Figures S1–S3 and their captions. Supplementary Data 2, "
-        "supplied as Discover_Plants_Data_and_Code.zip, contains machine-readable "
-        "Tables S1–S18, all figure source data, the registered protocol and amendment "
-        "log, analysis code, workflows, configurations, tests, metadata, and "
-        "environment specifications. The complete archive is also permanently "
-        "available at "
+        "Figures S1–S3, machine-readable Tables S1–S18, all figure source data, "
+        "the registered protocol and amendment log, analysis code, workflows, "
+        "configurations, tests, metadata, and environment specifications are "
+        "available exclusively in the version-specific Zenodo record at "
     )
     add_hyperlink(paragraph, Segment(zenodo_doi, url=zenodo_doi))
-    paragraph.add_run(".")
+    paragraph.add_run(". Their table and figure captions are listed below.")
+
+    document.add_heading("Supplementary table captions", level=2)
+    table_intro = document.add_paragraph(
+        "The following captions correspond to the machine-readable TSV files archived "
+        "in the Zenodo record."
+    )
+    table_intro.paragraph_format.line_spacing = 1.15
+    for number, caption in supplementary_table_captions:
+        item = document.add_paragraph(style="List Bullet")
+        item.paragraph_format.line_spacing = 1.0
+        item.paragraph_format.space_after = Pt(2)
+        item.add_run(f"Table {number}. ").bold = True
+        item.add_run(caption)
+
+    document.add_heading("Supplementary figure captions", level=2)
     for number, (_, _, caption_tex) in enumerate(supplementary_figures, start=1):
         item = document.add_paragraph(style="List Bullet")
         item.paragraph_format.line_spacing = 1.0
@@ -739,6 +753,7 @@ def build_word_files(
     supplement_docx: Path,
     main_figures: list[tuple[Path, str]],
     supplementary_figures: list[tuple[Path, str, str]],
+    supplementary_table_captions: list[tuple[str, str]],
     title_tex: str,
     author: str,
     affiliation: str,
@@ -763,6 +778,7 @@ def build_word_files(
         build_supplement_docx(
             supplement_docx,
             supplementary_figures,
+            supplementary_table_captions,
             title_tex,
             author,
             affiliation,
